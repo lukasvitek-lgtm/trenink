@@ -12,149 +12,181 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>Trénink</title>
 <style>
-:root{--bg:#000;--card:#111;--card2:#1c1c1e;--line:#262626;--txt:#f5f5f5;--mut:#8e8e8e;--acc:#0a84ff;--ok:#30d158;--warn:#ff9f0a;--bad:#ff453a;--tabh:56px;--sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px)}
+:root{--bg:#141414;--card:#232323;--card2:#2f2f2f;--line:#333;--txt:#fff;--mut:#9b9b9b;--y:#f5d24b;--o:#f4a35a;--s:#f28b74;--bad:#ff6b5e;--tabh:62px;--sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:16px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:16px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",system-ui,sans-serif;-webkit-text-size-adjust:100%}
 body{position:fixed;inset:0;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
 textarea{-webkit-user-select:text;user-select:text}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
-button:disabled{opacity:.4}
+button:disabled{opacity:.45}
 [hidden]{display:none!important}
 #scr{position:absolute;left:0;right:0;top:0;bottom:calc(var(--tabh) + var(--sb));overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:var(--st)}
 #scr.fixed{overflow:hidden;display:flex;flex-direction:column;padding-top:0}
-#tabs{position:absolute;left:0;right:0;bottom:0;height:calc(var(--tabh) + var(--sb));padding-bottom:var(--sb);display:flex;background:rgba(0,0,0,.94);border-top:1px solid var(--line);z-index:30}
-#tabs button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;color:var(--mut)}
-#tabs button.on{color:var(--txt)}
-#tabs svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-#tabs .live{color:var(--ok);font-variant-numeric:tabular-nums}
-.hd{padding:14px 16px 4px}
-.hd h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.3px}
+#tabs{position:absolute;left:0;right:0;bottom:0;height:calc(var(--tabh) + var(--sb));padding:4px 6px var(--sb);display:flex;background:#101010;z-index:30}
+#tabs button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:var(--mut);font-weight:500}
+#tabs .ic{width:54px;height:30px;border-radius:999px;display:grid;place-items:center}
+#tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#tabs button.on{color:#fff;font-weight:700}
+#tabs button.on .ic{background:#fff;color:#111}
+#tabs .live{color:var(--y);font-variant-numeric:tabular-nums;font-weight:700}
+.hd{padding:16px 18px 6px}
+.hd .lb{font-size:13px;color:var(--mut)}
+.hd h1{margin:2px 0 0;font-size:32px;font-weight:800;letter-spacing:-.8px}
 .mut{color:var(--mut)}
 .sm{font-size:13px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 12px}
-.card label,.sh label{display:block;font-size:13px;color:var(--mut);margin:12px 0 6px}
-.note{font-size:14px;color:#cfcfcf}
-.cn{font-size:13px;color:#e3cf86;background:#1f1b0c;border-radius:8px;padding:6px 9px;margin:6px 0}
-.an{font-size:13px;color:#9fd3ff;margin-top:6px}
-.btn{display:block;width:100%;padding:14px;border-radius:12px;background:var(--acc);color:#fff;font-weight:600;text-align:center;font-size:16px}
-.btn.sec{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
-.btn.red{background:#3a1512;color:#ff6b5e;border:1px solid #5a221d}
-.row2{display:flex;gap:8px;margin-top:12px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card{background:var(--card);border-radius:24px;padding:16px;margin:10px 12px}
+.card label,.sh label{display:block;font-size:13px;color:var(--mut);margin:14px 0 8px}
+.c-s{background:var(--s);color:#111}.c-y{background:var(--y);color:#111}.c-o{background:var(--o);color:#111}
+.c-s .mut,.c-y .mut,.c-o .mut{color:rgba(0,0,0,.58)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#111;color:#fff;font-size:13px;font-weight:600;white-space:nowrap}
+.pill.w{background:#fff;color:#111}
+.arr{width:40px;height:40px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font-size:17px;font-weight:700;flex:none}
+.num{font-size:44px;font-weight:800;letter-spacing:-1.5px;line-height:1}
+.pct{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.prog{height:6px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden}
+.prog i{display:block;height:100%;background:#fff;border-radius:3px}
+.c-s .prog,.c-y .prog,.c-o .prog{background:rgba(0,0,0,.14)}
+.c-s .prog i,.c-y .prog i,.c-o .prog i{background:#111}
+.btn{display:block;width:100%;padding:15px;border-radius:999px;background:var(--y);color:#111;font-weight:700;text-align:center;font-size:16px}
+.btn.sec{background:var(--card2);color:#fff}
+.btn.w{background:#fff;color:#111}
+.btn.dk{background:#111;color:#fff}
+.btn.red{background:#3a1d1a;color:var(--bad)}
+.row2{display:flex;gap:8px;margin-top:10px}
 .row2>*{flex:1}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{padding:8px 12px;border-radius:999px;background:var(--card2);border:1px solid var(--line);font-size:14px;white-space:nowrap}
-.chip.on{background:var(--txt);color:#000;border-color:var(--txt)}
-.badge{font-size:12px;padding:3px 8px;border-radius:999px;background:var(--card2);color:var(--mut);white-space:nowrap;flex:none}
-.badge.ok{color:var(--ok)}.badge.warn{color:var(--warn)}.badge.live{background:var(--ok);color:#000}
-details.acc{margin:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-details>summary{list-style:none;cursor:pointer;padding:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chip{padding:9px 14px;border-radius:999px;background:var(--card2);font-size:14px;font-weight:500;white-space:nowrap}
+.chip.on{background:#fff;color:#111;font-weight:700}
+.hs{display:flex;gap:8px;overflow-x:auto;padding:6px 12px 4px;scrollbar-width:none}
+.hs::-webkit-scrollbar{display:none}
+.badge{font-size:12px;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.1);color:#ddd;white-space:nowrap;flex:none;font-weight:600}
+.badge.ok{color:var(--y)}.badge.warn{color:var(--o)}.badge.live{background:#fff;color:#111}
+.c-s .badge,.c-y .badge,.c-o .badge{background:rgba(0,0,0,.12);color:#111}
+.cn{font-size:13px;color:#ead68b;background:rgba(245,210,75,.09);border-radius:14px;padding:8px 11px;margin:8px 0;cursor:pointer}
+.cn span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cn.open span{display:block}
+.c-s .cn,.c-y .cn,.c-o .cn,.ex.cur .cn{color:#111;background:rgba(0,0,0,.08)}
+.an{font-size:13px;color:#9fd3ff;margin-top:6px}
+.exr{padding:12px 0;border-top:1px solid var(--line)}
+.exr:first-child{border-top:0;padding-top:2px}
+.exr:last-child{padding-bottom:2px}
+.exr.skip{opacity:.45}
+.exn{font-weight:700}
+.logl{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.lg{font-size:13px;background:var(--card2);border-radius:9px;padding:4px 8px;font-variant-numeric:tabular-nums;font-weight:500}
+.lg.e1{background:var(--y);color:#111;font-weight:700}
+.dcard{display:block;width:calc(100% - 24px);margin:10px 12px;text-align:left;border-radius:26px;padding:16px 16px 18px}
+.dcard .l{display:flex;gap:6px;align-items:center;min-width:0}
+.dcard h2{font-size:27px;font-weight:800;letter-spacing:-.7px;margin:16px 0 4px;line-height:1.08}
+.dcard .sub{font-size:14px;opacity:.68;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dcard.done{background:var(--card);color:#fff}
+.dcard.today{box-shadow:inset 0 0 0 3px #111}
+details.dacc{background:var(--card);border-radius:22px;margin:10px 12px;overflow:hidden}
+details>summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 details>summary::-webkit-details-marker{display:none}
 details>summary>div:first-child{flex:1;min-width:0}
-details.acc>summary::after,details.dacc>summary::after{content:'›';color:var(--mut);font-size:22px;line-height:1;transform:rotate(90deg);transition:transform .2s;flex:none}
-details[open]>summary::after{transform:rotate(-90deg)!important}
-details.dacc{border-top:1px solid var(--line)}
-details.dacc>summary{padding:12px 14px}
-.dbody{padding:0 14px 14px}
-.wnote{padding:0 14px 12px;font-size:13px;color:var(--mut)}
-.exr{padding:10px 0;border-top:1px solid var(--line)}
-.exr:first-child{border-top:0}
-.exr.skip{opacity:.45}
-.exn{font-weight:600}
-.exn.big{font-size:27px;line-height:1.1;margin:4px 0 2px;letter-spacing:-.3px}
-.logl{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.lg{font-size:13px;background:var(--card2);border-radius:6px;padding:3px 7px;font-variant-numeric:tabular-nums}
-.dcard{display:block;width:calc(100% - 24px);margin:10px 12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
-.dch{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.ring{padding:2.5px;border-radius:50%;background:conic-gradient(#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5,#feda75);flex:none}
-.av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--card2);flex:none}
-.ring .av{box-shadow:0 0 0 2.5px #000}
-.av.done{background:var(--ok);color:#000}
-.prevw div{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:2px 0}
-.prevw span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.prevw span:last-child{flex:none}
+details.dacc>summary::after{content:'+';width:34px;height:34px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:20px;flex:none}
+details.dacc[open]>summary::after{content:'−'}
+.dbody{padding:0 16px 16px}
 #ov{position:absolute;left:0;right:0;top:0;bottom:calc(var(--tabh) + var(--sb));background:var(--bg);z-index:20;display:flex;flex-direction:column}
-.bar{display:flex;align-items:center;justify-content:space-between;padding:calc(var(--st) + 8px) 12px 8px;border-bottom:1px solid var(--line);background:#000}
-.bar button{color:var(--acc);font-size:17px;min-width:70px;text-align:left}
-.bar span{min-width:70px}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:calc(var(--st) + 8px) 12px 8px}
+.bar button{min-width:80px;text-align:left}
+.bar span{min-width:80px}
 .snap{position:relative;flex:1;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch}
-.page{min-height:100%;scroll-snap-align:start;scroll-snap-stop:always;padding:16px 16px 48px;border-bottom:1px solid var(--line)}
-.hint{text-align:center;color:#555;font-size:12px;margin-top:18px}
-.wsh{padding:calc(var(--st) + 8px) 14px 8px;border-bottom:1px solid var(--line);background:#000;flex:none}
-.wst{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.clock{font-variant-numeric:tabular-nums;font-size:26px;font-weight:700;color:var(--ok)}
-.seg{display:flex;background:var(--card2);border-radius:10px;padding:3px;margin-top:8px}
-.seg button{flex:1;padding:7px;border-radius:8px;font-size:14px;color:var(--mut)}
-.seg button.on{background:#3a3a3c;color:var(--txt)}
+.page{min-height:100%;scroll-snap-align:start;scroll-snap-stop:always;padding:4px 12px 40px}
+.hint{text-align:center;color:#555;font-size:12px;margin-top:16px}
+.hero{border-radius:26px;padding:14px 16px 16px}
+.hero .ht{font-size:30px;font-weight:800;letter-spacing:-.8px;line-height:1.05;margin:16px 0 4px}
+.dkh{background:var(--card)}
+.wsh{padding:calc(var(--st) + 8px) 12px 6px;flex:none}
+.ht2{font-size:21px;font-weight:800;letter-spacing:-.4px;line-height:1.1;min-width:0}
+.clock{font-variant-numeric:tabular-nums;font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1;flex:none}
+.seg{display:flex;background:var(--card);border-radius:999px;padding:4px}
+.seg button{flex:1;padding:10px;border-radius:999px;font-size:14px;color:var(--mut);font-weight:600}
+.seg button.on{background:#fff;color:#111}
 .wsb{position:relative;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .wsb.snap{overflow-y:scroll}
 .list{padding-bottom:24px}
-.npo .list,.npo .page,.npo .sh,.npo #scr:not(.fixed){padding-bottom:350px}
+.npo .list,.npo .page,.npo .sh,.npo #scr:not(.fixed){padding-bottom:360px}
+.ex{--cols:24px 1fr 66px 52px 52px;background:var(--card);border-radius:24px;padding:14px 14px 8px;margin:10px 12px}
+.fbig .ex{--cols:28px 1fr 78px 60px 60px;margin:10px 0}
+.ex.skip,.page.skip .ex{opacity:.4}
 .exh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.ibtn{width:36px;height:36px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:17px;flex:none}
-.ex{--cols:24px 1fr 66px 52px 52px}
-.big,.big .ex{--cols:28px 1fr 78px 60px 60px}
-.seth{display:grid;grid-template-columns:var(--cols);gap:6px;font-size:11px;color:var(--mut);margin-top:10px;text-transform:uppercase;letter-spacing:.4px}
+.ibtn{width:38px;height:38px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:16px;flex:none}
+.seth{display:grid;grid-template-columns:var(--cols);gap:6px;font-size:11px;color:var(--mut);margin-top:10px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
 .seth span:nth-child(n+3){text-align:center}
-.set{display:grid;grid-template-columns:var(--cols);gap:6px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
-.si{width:22px;height:22px;border-radius:50%;background:var(--card2);font-size:12px;display:grid;place-items:center}
-.set.done .si{background:var(--ok);color:#000;font-weight:700}
+.set{display:grid;grid-template-columns:var(--cols);gap:6px;align-items:center;padding:6px 0}
+.si{width:22px;height:22px;border-radius:50%;background:var(--card2);font-size:12px;display:grid;place-items:center;font-weight:700}
+.set.done .si{background:var(--y);color:#111}
 .plan{font-size:14px;line-height:1.2;min-width:0}
 .plan small{display:block;color:var(--mut);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cell{height:44px;border-radius:10px;background:var(--card2);border:1px solid var(--line);font-size:18px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;width:100%}
-.big .cell{height:54px;font-size:22px}
-.cell:empty::before{content:attr(data-ph);color:#5a5a5e;font-weight:400;font-size:15px}
-.cell.on{border-color:var(--acc);box-shadow:inset 0 0 0 1.5px var(--acc)}
+.cell{height:44px;border-radius:14px;background:#151515;border:0;font-size:18px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;width:100%}
+.fbig .cell{height:54px;font-size:22px}
+.cell:empty::before{content:attr(data-ph);color:#5d5d5d;font-weight:500;font-size:15px}
+.cell.on{box-shadow:inset 0 0 0 2px var(--y)}
 .cell.off{pointer-events:none;opacity:.35}
-.ex.skip,.page.skip .sets{opacity:.4}
-.meta{font-size:13px;color:var(--mut);margin-top:4px}
-.meta b{color:var(--txt);font-weight:600}
-.e1{color:var(--acc)}
-.e1 b{color:var(--acc)}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 6px}
-.tag{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--card2);border:1px solid var(--line)}
-.tools{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 12px}
-textarea{width:100%;min-height:90px;background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:16px;resize:vertical}
+.ex.cur{background:var(--y);color:#111}
+.ex.cur .mut,.ex.cur .meta,.ex.cur .seth,.ex.cur .plan small{color:rgba(0,0,0,.58)}
+.ex.cur .meta b,.ex.cur .e1,.ex.cur .e1 b{color:#111}
+.ex.cur .cell{background:rgba(255,255,255,.62);color:#111}
+.ex.cur .cell:empty::before{color:rgba(0,0,0,.33)}
+.ex.cur .cell.on{box-shadow:inset 0 0 0 2px #111}
+.ex.cur .ibtn{background:#111;color:#fff}
+.ex.cur .si{background:rgba(0,0,0,.12)}
+.ex.cur .set.done .si{background:#111;color:var(--y)}
+.meta{font-size:13px;color:var(--mut);margin-top:6px}
+.meta b{color:#fff;font-weight:600}
+.e1,.e1 b{color:var(--y)}
+.c-s .meta,.c-y .meta,.c-o .meta{color:rgba(0,0,0,.6)}
+.c-s .meta b,.c-y .meta b,.c-o .meta b,.c-s .e1,.c-y .e1,.c-o .e1,.c-s .e1 b,.c-y .e1 b,.c-o .e1 b{color:#111}
+.big2{font-size:30px;font-weight:800;letter-spacing:-.8px;line-height:1.05;margin:16px 0 2px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 4px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.tools .chip{background:#fff;color:#111;font-weight:600}
+textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);border:0;border-radius:20px;padding:12px 14px;font:inherit;font-size:16px;resize:vertical}
 .empty{text-align:center;color:var(--mut);padding:40px 20px}
-.sec-h{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);margin:22px 16px 4px}
-#np{position:absolute;left:0;right:0;bottom:0;z-index:60;background:#0c0c0c;border-top:1px solid var(--line);padding:8px 8px calc(8px + var(--sb));box-shadow:0 -10px 30px rgba(0,0,0,.6)}
-.np-h{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mut);padding:0 4px 2px}
-.np-x{width:40px;height:30px;font-size:16px;color:var(--mut)}
-.np-d{font-size:34px;font-weight:700;text-align:center;padding:0 0 8px;font-variant-numeric:tabular-nums;min-height:46px}
-.np-d small{font-size:15px;color:var(--mut);margin-left:6px;font-weight:500}
-.np-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.k{height:52px;border-radius:12px;background:#232325;font-size:22px;font-weight:500}
-.k:active{background:#3a3a3c}
+.sec-h{font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);margin:22px 18px 4px;font-weight:600}
+#np{position:absolute;left:0;right:0;bottom:0;z-index:60;background:#1c1c1c;border-radius:28px 28px 0 0;padding:12px 10px calc(10px + var(--sb));box-shadow:0 -12px 34px rgba(0,0,0,.6)}
+.np-h{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mut);padding:0 6px 2px}
+.np-x{width:34px;height:34px;border-radius:50%;background:var(--card2);font-size:14px;color:#fff}
+.np-d{font-size:36px;font-weight:800;text-align:center;padding:0 0 8px;font-variant-numeric:tabular-nums;min-height:48px;letter-spacing:-1px}
+.np-d small{font-size:15px;color:var(--mut);margin-left:6px;font-weight:500;letter-spacing:0}
+.np-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.k{height:52px;border-radius:16px;background:var(--card2);font-size:22px;font-weight:600}
+.k:active{background:#444}
 .k.sm{font-size:15px}
-.k.acc{background:var(--acc);color:#fff;font-weight:600}
-.k.sel{background:var(--txt);color:#000}
-.np-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.k.acc{background:var(--y);color:#111;font-weight:700}
+.k.sel{background:#fff;color:#111}
+.np-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
 #sheet{position:absolute;inset:0;z-index:50;background:rgba(0,0,0,.6);display:flex;align-items:flex-end}
-.sh{background:#141414;width:100%;max-height:90%;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + var(--sb));border-top:1px solid var(--line)}
-.sht{font-size:19px;font-weight:700;margin-bottom:4px}
-.li{display:block;width:100%;text-align:left;padding:14px 4px;border-bottom:1px solid var(--line);font-size:16px}
+.sh{background:#1e1e1e;width:100%;max-height:90%;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:28px 28px 0 0;padding:20px 16px calc(18px + var(--sb))}
+.sht{font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:4px}
+.li{display:block;width:100%;text-align:left;padding:15px 4px;border-bottom:1px solid var(--line);font-size:16px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.res{font-size:42px;font-weight:700;text-align:center;margin:14px 0 2px;font-variant-numeric:tabular-nums}
+.sh .cell{background:var(--card2)}
+.res{font-size:46px;font-weight:800;text-align:center;margin:14px 0 2px;font-variant-numeric:tabular-nums;letter-spacing:-1.5px}
 table.rt{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0 14px;font-variant-numeric:tabular-nums}
-.rt td{padding:6px 2px;border-top:1px solid var(--line);text-align:center}
+.rt td{padding:7px 2px;border-top:1px solid var(--line);text-align:center}
 .plv{display:flex;align-items:center;justify-content:center;height:130px;margin:8px 0}
 .plv .bb{width:46px;height:12px;background:#9a9a9a;border-radius:2px 0 0 2px}
 .plv .cl{width:8px;height:30px;background:#c7c7c7;border-radius:2px;margin-right:2px}
 .plv i{display:block;border-radius:3px;margin-right:2px;border:1px solid rgba(255,255,255,.15)}
 .plv .sv{width:40px;height:12px;background:#9a9a9a;border-radius:0 2px 2px 0}
-.warnt{color:var(--warn);font-size:14px;text-align:center}
-#rest{position:absolute;left:10px;right:10px;bottom:calc(var(--tabh) + var(--sb) + 10px);z-index:40;background:#1c1c1e;border:1px solid #333;border-radius:14px;padding:8px 8px 10px 14px;display:flex;align-items:center;gap:6px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.warnt{color:var(--o);font-size:14px;text-align:center}
+#rest{position:absolute;left:12px;right:12px;bottom:calc(var(--tabh) + var(--sb) + 10px);z-index:40;background:#fff;color:#111;border-radius:22px;padding:10px 10px 12px 16px;display:flex;align-items:center;gap:6px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.6)}
 .npo #rest{bottom:auto;top:calc(var(--st) + 6px)}
 #rest .rx{flex:1}
-#rest .rl{font-size:12px;color:var(--mut)}
-#rest .rt{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
-#rest .rbar{position:absolute;left:0;right:0;bottom:0;height:3px;background:#2c2c2e}
-#rest .rbar i{display:block;height:100%;background:var(--acc);width:0}
-#rest .rbtn{min-width:46px;height:38px;border-radius:10px;background:#2c2c2e;font-size:15px}
-#rest.fin{background:#0f3d1c;border-color:var(--ok)}
-#rest.fin .rl{color:#b8f5c8;font-size:15px;font-weight:600}
-#toast{position:absolute;left:50%;top:calc(var(--st) + 14px);transform:translateX(-50%);background:#2c2c2e;padding:10px 16px;border-radius:999px;z-index:80;font-size:14px;max-width:90%;text-align:center}
+#rest .rl{font-size:12px;color:rgba(0,0,0,.55);font-weight:600}
+#rest .rt{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+#rest .rbar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(0,0,0,.08)}
+#rest .rbar i{display:block;height:100%;background:#111;width:0}
+#rest .rbtn{min-width:46px;height:40px;border-radius:999px;background:#eee;font-size:15px;font-weight:600}
+#rest.fin{background:var(--y)}
+#rest.fin .rl{color:#111;font-size:14px}
+#toast{position:absolute;left:50%;top:calc(var(--st) + 14px);transform:translateX(-50%);background:#fff;color:#111;font-weight:600;padding:10px 18px;border-radius:999px;z-index:80;font-size:14px;max-width:90%;text-align:center}
 #err{position:absolute;top:0;left:0;right:0;background:#a00;color:#fff;font-size:12px;padding:6px 10px;z-index:99}
-.ban{background:#132238;border-color:#1f3a5f}
+.note{font-size:14px;color:#cfcfcf}
 </style>
 </head>
 <body>
@@ -162,10 +194,10 @@ table.rt{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0 14px;f
 <div id="ov" hidden></div>
 <div id="rest" hidden></div>
 <nav id="tabs">
-  <button data-act="tab" data-t="program"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Program</button>
-  <button data-act="tab" data-t="week"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>Týden</button>
-  <button data-act="tab" data-t="ws"><svg viewBox="0 0 24 24"><path d="M2.5 9v6M5.5 6.5v11M18.5 6.5v11M21.5 9v6M5.5 12h13"/></svg><span id="tabws">Trénink</span></button>
-  <button data-act="tab" data-t="more"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Více</button>
+  <button data-act="tab" data-t="program"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Program</button>
+  <button data-act="tab" data-t="week"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></span>Týden</button>
+  <button data-act="tab" data-t="ws"><span class="ic"><svg viewBox="0 0 24 24"><path d="M2.5 9v6M5.5 6.5v11M18.5 6.5v11M21.5 9v6M5.5 12h13"/></svg></span><span id="tabws">Trénink</span></button>
+  <button data-act="tab" data-t="more"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>Více</button>
 </nav>
 <div id="sheet" hidden></div>
 <div id="np" hidden></div>
@@ -174,7 +206,7 @@ table.rt{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0 14px;f
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.0';
+const APP_VER='1.1';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -399,7 +431,7 @@ const STAT={live:['● Probíhá','live'],done:['✓ Odjeto','ok'],skip:['Vynech
 function curWeek(){const t=today();return P.weeks.find(w=>w.from<=t&&t<=w.to)||[...P.weeks].reverse().find(w=>w.from<=t&&w.days.length)||P.weeks[0]}
 
 /* ---------- UI stav ---------- */
-const UI={tab:'week',ws:null,mode:'list',fi:0};
+const UI={tab:'week',ws:null,mode:'list',fi:0,pw:null};
 let PERSIST=false;
 
 function render(keep){
@@ -409,67 +441,75 @@ function render(keep){
  s.scrollTop=keep?top:0;tick()}
 
 /* ---------- čtecí bloky ---------- */
+const COL=['c-s','c-y','c-o'];
+const dayCol=d=>COL[d.week.days.indexOf(d)%3];
+const cnote=t=>t?`<div class="cn" data-act="cnt"><span>${esc(t)}</span></div>`:'';
 function exRead(e){const x=L.ex[e.id]||{},sets=[];
- for(let i=0;i<setsN(e);i++){const s=S(e,i);if(has(s))sets.push(`<span class="lg">${i+1}. ${esc(setStr(e,s))}</span>`)}
+ for(let i=0;i<setsN(e);i++){const s=S(e,i);if(has(s))sets.push(`<span class="lg">${esc(setStr(e,s))}</span>`)}
  const b=isSBD(e)&&bestE(e);
  return`<div class="exr${x.skip?' skip':''}"><div class="exn">${dispName(e)}${x.skip?' <span class="mut sm">· přeskočeno</span>':''}</div>
- <div class="mut sm">${esc(e.v)}${e.v?' · ':''}${esc(planSummary(e))}</div>
- ${e.note?`<div class="cn">${esc(e.note)}</div>`:''}
+ <div class="mut sm">${esc(planSummary(e))}${e.v?' · '+esc(e.v):''}</div>${cnote(e.note)}
  ${sets.length?`<div class="logl">${sets.join('')}${b?`<span class="lg e1">e1RM ${fmt(rInc(b.v))}</span>`:''}</div>`:''}
  ${x.note?`<div class="an">✎ ${esc(x.note)}</div>`:''}</div>`}
-function avatar(d){const st=dayStatus(d);return`<div class="${d.date===today()?'ring':''}"><div class="av${st==='done'?' done':''}">${dday(d.date)}</div></div>`}
 function badge(d){const[l,c]=STAT[dayStatus(d)];return l?`<span class="badge ${c}">${l}</span>`:''}
 function sessInfo(d){const s=L.sessions[d.id];return s&&s.start&&s.end?' · '+dur(s.end-s.start):''}
+function wkProg(w){const n=w.days.length,k=w.days.filter(d=>['done','skip'].includes(dayStatus(d))).length;return{n,k,p:n?Math.round(k/n*100):0}}
 
 /* ---------- Program ---------- */
-function weekBadge(w){const t=today();if(!w.days.length)return'<span class="badge">připravuje trenér</span>';
- if(w.from<=t&&t<=w.to)return'<span class="badge live">tento týden</span>';
- if(w.days.every(d=>['done','skip'].includes(dayStatus(d))))return'<span class="badge ok">✓</span>';return''}
-function vProgram(s){const cw=curWeek();
- s.innerHTML=`<div class="hd"><h1>Program</h1></div>
- <div class="card"><div class="exn">${esc(P.block.title)}</div><div class="mut sm">${rlab(P.block.from,P.block.to)} · ${esc(P.block.sub)}</div>
- <details style="margin-top:6px"><summary style="padding:8px 0;justify-content:flex-start;color:var(--acc);font-size:14px">Pravidla bloku</summary>${P.block.notes.map(n=>`<p class="note">${esc(n)}</p>`).join('')}</details></div>
- ${P.weeks.map(w=>`<details class="acc"${w===cw?' open':''}><summary><div><div class="exn">${esc(w.title)}</div><div class="mut sm">${rlab(w.from,w.to)}</div></div>${weekBadge(w)}</summary>
- <div class="wnote">${esc(w.note)}</div>
- ${w.days.length?w.days.map(d=>`<details class="dacc"><summary><div style="flex:1;min-width:0"><div class="exn">${dlab(d.date)} · ${esc(d.title)}</div><div class="mut sm">${d.ex.length} cviků${sessInfo(d)}</div></div>${badge(d)}</summary>
-  <div class="dbody">${d.note?`<div class="cn">${esc(d.note)}</div>`:''}${d.ex.map(exRead).join('')}
-  <div class="row2">${dayStatus(d)==='live'?`<button class="btn" data-act="gows" data-d="${d.id}">Otevřít trénink</button>`:`<button class="btn sec" data-act="edit" data-d="${d.id}">Upravit zápis</button>`}</div></div></details>`).join(''):'<div class="empty sm">Trenér tento týden ještě nepřipravil.</div>'}
- </details>`).join('')}<div style="height:20px"></div>`}
+function vProgram(s){const cw=curWeek();if(!P.weeks.find(w=>w.id===UI.pw))UI.pw=cw.id;const w=P.weeks.find(x=>x.id===UI.pw),wp=wkProg(w);
+ const day=864e5,tot=(new Date(P.block.to)-new Date(P.block.from))/day+1,el=Math.min(tot,Math.max(0,(new Date(today())-new Date(P.block.from))/day+1));
+ s.innerHTML=`<div class="hd"><div class="lb">${esc(P.name)}</div><h1>Program</h1></div>
+ <div class="card c-s"><div class="top"><span class="pill">${esc(P.block.title)}</span><button class="arr" data-act="rules" aria-label="Pravidla bloku">i</button></div>
+ <div class="num" style="margin-top:16px">Týden ${P.weeks.indexOf(cw)+1}<span style="font-size:22px;opacity:.5"> / ${P.weeks.length}</span></div>
+ <div class="mut sm" style="margin:6px 0 12px">${rlab(P.block.from,P.block.to)} · ${esc(P.block.sub)}</div><div class="prog"><i style="width:${Math.round(el/tot*100)}%"></i></div></div>
+ <div class="hs">${P.weeks.map(x=>chip(esc(x.title).replace(' ','&nbsp;'),'pw',`data-w="${x.id}"`,x.id===UI.pw)).join('')}</div>
+ <div class="card"><div class="top"><div><div class="exn" style="font-size:20px">${esc(w.title)}</div><div class="mut sm">${rlab(w.from,w.to)}</div></div>${w.days.length?`<span class="pct">${wp.k}/${wp.n}</span>`:'<span class="badge">připravuje trenér</span>'}</div>
+ ${w.days.length?`<div class="prog" style="margin-top:12px"><i style="width:${wp.p}%"></i></div>`:''}${cnote(w.note)}</div>
+ ${w.days.map(d=>`<details class="dacc"><summary><div><div class="l" style="display:flex;gap:6px;align-items:center"><span class="pill">${dlab(d.date)}</span>${badge(d)}</div>
+  <div class="exn" style="font-size:18px;margin-top:8px">${esc(d.title)}</div><div class="mut sm">${d.ex.length} cviků${sessInfo(d)}</div></div></summary>
+  <div class="dbody">${cnote(d.note)}${d.ex.map(exRead).join('')}<div class="row2">${dayStatus(d)==='live'?`<button class="btn" data-act="gows" data-d="${d.id}">Otevřít trénink</button>`:`<button class="btn sec" data-act="edit" data-d="${d.id}">Upravit zápis</button>`}</div></div></details>`).join('')}
+ ${w.days.length?'':'<div class="empty sm">Trenér tento týden ještě nepřipravil.</div>'}<div style="height:20px"></div>`}
+function rulesSheet(){SH='rules';sheet(`<div class="sht">Pravidla bloku</div>${P.block.notes.map(n=>`<p class="note">${esc(n)}</p>`).join('')}<div class="row2"><button class="btn sec" data-act="closesh">Zavřít</button></div>`)}
 
 /* ---------- Tento týden ---------- */
 function needBackup(){const S=L.settings,day=864e5;return S.lastBackup?Date.now()-S.lastBackup>30*day:Date.now()-S.firstRun>7*day}
-function vWeek(s){const w=curWeek();
- s.innerHTML=`<div class="hd"><h1>Tento týden</h1><div class="mut">${esc(w.title)} · ${rlab(w.from,w.to)}</div></div>
- ${needBackup()?`<div class="card ban"><div class="exn">Je čas na zálohu</div><div class="sm mut">${L.settings.lastBackup?'Naposledy '+dfull(L.settings.lastBackup):'Zatím žádná záloha'} · zabere to 5 vteřin</div><div class="row2"><button class="btn" data-act="backup">Uložit zálohu</button></div></div>`:''}
- ${w.note?`<div class="card note">${esc(w.note)}</div>`:''}
- ${w.days.length?w.days.map(d=>`<button class="dcard" data-act="pager" data-d="${d.id}"><div class="dch">${avatar(d)}<div style="flex:1;min-width:0"><div class="exn">${dlab(d.date)} · ${esc(d.title)}</div><div class="mut sm">${d.ex.length} cviků${sessInfo(d)}</div></div>${badge(d)}</div>
-  <div class="prevw">${d.ex.slice(0,6).map(e=>`<div><span>${esc(dispTxt(e))}</span><span class="mut">${esc((e.s+'×'+(e.r||'')).replace(/×$/,'')+' '+rpeInfo(e.p).lab)}</span></div>`).join('')}${d.ex.length>6?`<div class="mut">+ ${d.ex.length-6} další</div>`:''}</div></button>`).join('')
+function vWeek(s){const w=curWeek(),wp=wkProg(w);
+ s.innerHTML=`<div class="hd"><div class="lb">Tento týden · ${rlab(w.from,w.to)}</div><h1>${esc(w.title)}</h1></div>
+ ${needBackup()?`<div class="card c-o"><div class="top"><div><div class="exn">Je čas na zálohu</div><div class="mut sm">${L.settings.lastBackup?'Naposledy '+dfull(L.settings.lastBackup):'Zatím žádná záloha'} · zabere to 5 vteřin</div></div><button class="arr" data-act="backup" aria-label="Uložit zálohu">↑</button></div></div>`:''}
+ ${w.days.length?`<div class="card"><div class="top"><span class="mut sm">Odjeto</span><span class="pct">${wp.k} / ${wp.n}</span></div><div class="prog" style="margin:10px 0 4px"><i style="width:${wp.p}%"></i></div>${cnote(w.note)}</div>`
+  +w.days.map(dayCard).join('')
  :'<div class="empty">Trenér tento týden ještě nepřipravil.<br>Pošli mu check-in z minulého týdne (Více → Pro trenéra).</div>'}<div style="height:20px"></div>`}
+function dayCard(d){const st=dayStatus(d),done=st==='done'||st==='skip',tod=d.date===today();
+ return`<button class="dcard ${done?'done':dayCol(d)}${tod&&!done?' today':''}" data-act="pager" data-d="${d.id}"><div class="top"><div class="l"><span class="pill">${tod?'Dnes · ':''}${dlab(d.date)}</span>${badge(d)}</div><span class="arr">↗</span></div>
+ <h2>${esc(d.title)}</h2><div class="sub">${d.ex.length} cviků${sessInfo(d)} · ${esc(d.ex.map(dispTxt).join(', '))}</div></button>`}
 
 function openPager(d){const w=d.week,ov=$('#ov');
- ov.innerHTML=`<div class="bar"><button data-act="closeov">‹ Zpět</button><b>${esc(w.title)}</b><span></span></div><div class="snap" id="pgs">${w.days.map(dayPage).join('')}</div>`;
+ ov.innerHTML=`<div class="bar"><button class="pill" data-act="closeov">‹ Zpět</button><b>${esc(w.title)}</b><span></span></div><div class="snap" id="pgs">${w.days.map(dayPage).join('')}</div>`;
  ov.hidden=false;const pg=$('#pg-'+d.id);if(pg)$('#pgs').scrollTop=pg.offsetTop}
 function dayPage(d){const st=dayStatus(d);let b;
- if(st==='live')b=`<button class="btn" data-act="gows" data-d="${d.id}">Pokračovat v tréninku</button>`;
- else if(L.active)b=`<button class="btn sec" disabled>Běží jiný trénink</button>`;
- else b=`<button class="btn" data-act="start" data-d="${d.id}">▶ ${st==='done'?'Spustit znovu':'Spustit trénink'}</button>`;
- if(st!=='live')b+=`<button class="btn sec" data-act="edit" data-d="${d.id}" style="margin-top:8px">Upravit zápis</button>`;
- return`<section class="page" id="pg-${d.id}"><div class="dch">${avatar(d)}<div style="flex:1"><div class="exn">${dlab(d.date)} · ${esc(d.title)}</div><div class="mut sm">${d.ex.length} cviků${sessInfo(d)}</div></div>${badge(d)}</div>
- ${d.note?`<div class="cn">${esc(d.note)}</div>`:''}${d.ex.map(exRead).join('')}<div style="margin-top:16px">${b}</div><div class="hint">↑ ↓ další den</div></section>`}
+ if(st==='live')b=`<button class="btn dk" data-act="gows" data-d="${d.id}">Pokračovat v tréninku</button>`;
+ else if(L.active)b=`<button class="btn dk" disabled>Běží jiný trénink</button>`;
+ else b=`<button class="btn dk" data-act="start" data-d="${d.id}">▶ ${st==='done'?'Spustit znovu':'Spustit trénink'}</button>`;
+ if(st!=='live')b+=`<button class="btn w" data-act="edit" data-d="${d.id}" style="margin-top:8px">Upravit zápis</button>`;
+ return`<section class="page" id="pg-${d.id}"><div class="hero ${dayCol(d)}"><div class="top"><span class="pill">${d.date===today()?'Dnes · ':''}${dlab(d.date)}</span>${badge(d)}</div>
+ <div class="ht">${esc(d.title)}</div><div class="mut sm" style="margin-bottom:12px">${d.ex.length} cviků${sessInfo(d)}</div>${cnote(d.note)}<div style="margin-top:12px">${b}</div></div>
+ <div class="card" style="margin:10px 0">${d.ex.map(exRead).join('')}</div><div class="hint">↑ ↓ další den</div></section>`}
 function closeOv(){$('#ov').hidden=true;$('#ov').innerHTML=''}
 
 /* ---------- Trénink ---------- */
 function vWs(s){const id=UI.ws||(L.active&&L.active.dayId);
- if(!id){s.innerHTML=`<div class="hd"><h1>Trénink</h1></div><div class="empty">Teď neběží žádný trénink.<br><br><button class="btn" data-act="tab" data-t="week">Vybrat den</button></div>`;return}
+ if(!id){s.innerHTML=`<div class="hd"><div class="lb">Trénink</div><h1>Nic neběží</h1></div><div class="card c-y"><div class="exn" style="font-size:20px">Vyber den a spusť trénink</div><div class="mut sm" style="margin:4px 0 14px">Týden → den → ▶ Spustit trénink</div><button class="btn dk" data-act="tab" data-t="week">Otevřít tento týden</button></div>`;return}
  UI.ws=id;const d=dayById(id),live=!!(L.active&&L.active.dayId===id),foc=UI.mode==='focus';s.className='fixed';
- s.innerHTML=`<div class="wsh"><div class="wst"><div style="min-width:0"><div class="mut sm">${live?'Probíhá':'Úprava zápisu'} · ${dlab(d.date)}</div><div class="exn">${esc(d.title)}</div></div>${live?'<div class="clock" id="clock"></div>':`<button class="chip" data-act="doneedit">Hotovo</button>`}</div>
- <div class="seg"><button class="${foc?'':'on'}" data-act="mode" data-m="list">Všechny cviky</button><button class="${foc?'on':''}" data-act="mode" data-m="focus">Jeden cvik</button></div></div>
- <div class="wsb ${foc?'snap big':'list'}" id="wsb" data-scope>${foc?d.ex.map((e,i)=>exFocus(e,i,d.ex.length)).join('')+endPage(d,live,true):d.ex.map(exEdit).join('')+endPage(d,live,false)}</div>`;
+ s.innerHTML=`<div class="wsh"><div class="hero ${live?'c-s':'dkh'}"><div class="top"><span class="pill">${live?'● Probíhá':'Úprava zápisu'} · ${dlab(d.date)}</span>
+ ${live?`<button class="arr" data-act="cancelask" aria-label="Zrušit trénink">✕</button>`:`<button class="pill w" data-act="doneedit">Hotovo</button>`}</div>
+ <div class="top" style="margin-top:10px;align-items:flex-end"><div class="ht2">${esc(d.title)}</div>${live?'<div class="clock" id="clock"></div>':''}</div></div>
+ <div class="seg" style="margin-top:8px"><button class="${foc?'':'on'}" data-act="mode" data-m="list">Všechny cviky</button><button class="${foc?'on':''}" data-act="mode" data-m="focus">Jeden cvik</button></div></div>
+ <div class="wsb ${foc?'snap fbig':'list'}" id="wsb" data-scope>${foc?d.ex.map((e,i)=>exFocus(e,i,d.ex.length)).join('')+endPage(d,live,true):d.ex.map(exEdit).join('')+endPage(d,live,false)}</div>`;
  const b=$('#wsb');
  if(foc){const pg=$$('.page',b)[UI.fi];if(pg)b.scrollTop=pg.offsetTop;
   b.addEventListener('scroll',()=>{const ps=$$('.page',b);let k=0;ps.forEach((p,i)=>{if(p.offsetTop<=b.scrollTop+b.clientHeight/3)k=i});UI.fi=Math.min(k,d.ex.length-1)},{passive:true})}}
-function endPage(d,live,foc){const inner=live?`<button class="btn" data-act="finish">Ukončit trénink</button>`:`<button class="btn" data-act="doneedit">Hotovo</button>`;
- return foc?`<section class="page"><div class="empty">To je všechno 💪</div>${inner}</section>`:`<div style="margin:16px 12px 30px">${inner}</div>`}
+function endPage(d,live,foc){const inner=live?`<button class="btn" data-act="finish">Ukončit trénink</button><button class="btn sec" data-act="cancelask" style="margin-top:8px">Zrušit trénink</button>`:`<button class="btn" data-act="doneedit">Hotovo</button>`;
+ return foc?`<section class="page"><div class="hero c-y" style="margin-top:8px"><div class="ht">To je všechno 💪</div><div class="mut sm" style="margin-bottom:14px">Ukonči trénink a vyplň krátký check-in.</div>${inner.replace('class="btn"','class="btn dk"').replace('btn sec','btn w')}</div></section>`:`<div style="margin:16px 12px 30px">${inner}</div>`}
 function cell(k,f,v,ph,off){return`<button class="cell${off?' off':''}" data-k="${k}" data-f="${f}" data-ph="${esc(ph!=null?fmt(ph):'')}">${v!=null?(f==='w'&&v===0?'BW':fmt(v)):''}</button>`}
 function setRow(e,i){const s=S(e,i),k=e.id+'#'+i,ri=rpeInfo(e.p),c=isCardio(e),pw=planW(e,i),pr=planR(e,i),off=!!(L.ex[e.id]&&L.ex[e.id].skip);
  return`<div class="set${isDone(e,s)?' done':''}" id="s-${k}"><div class="si">${i+1}</div><div class="plan"><b>${esc(pr?pr.replace('/leg','/n'):'–')}${pr&&!c&&!/s$/.test(pr)?'×':''}</b> ${esc(ri.lab)}<small>${pw?'~'+esc(pw):''}</small></div>
@@ -479,29 +519,36 @@ function exMeta(e){const o=[],p=prevOf(e);
  if(p){const ss=[];for(let i=0;i<setsN(p);i++){const s=S(p,i);if(has(s))ss.push(setStr(p,s))}o.push(`<div>Minule <span class="sm">(${dlab(p.day.date)})</span>: <b>${esc(ss.join(' · '))}</b></div>`)}
  if(isSBD(e)){const b=bestE(e);if(b)o.push(`<div class="e1">Dnes e1RM <b>${fmt(rInc(b.v))} kg</b> <span class="mut">z ${esc(setStr(e,b.s))}</span></div>`)}
  return o.join('')}
+const exOpen=e=>!(L.ex[e.id]&&L.ex[e.id].skip)&&Array.from({length:setsN(e)},(_,i)=>i).some(i=>!isDone(e,S(e,i)));
+const curEx=d=>d.ex.find(exOpen);
 function exEdit(e){const x=L.ex[e.id]||{};let rows='';for(let i=0;i<setsN(e);i++)rows+=setRow(e,i);
- return`<div class="card ex${x.skip?' skip':''}" id="ex-${e.id}"><div class="exh"><div style="min-width:0"><div class="exn">${dispName(e)}</div><div class="mut sm">${esc(e.v)}${e.v?' · ':''}${esc(rpeInfo(e.p).full)}</div></div>
+ return`<div class="ex${x.skip?' skip':''}${e===curEx(e.day)?' cur':''}" id="ex-${e.id}" data-e="${e.id}"><div class="exh"><div style="min-width:0"><div class="exn" style="font-size:18px">${dispName(e)}</div>${e.v?`<div class="mut sm">${esc(e.v)}</div>`:''}</div>
  <div style="display:flex;gap:6px"><button class="ibtn" data-act="rest" data-e="${e.id}" aria-label="Pauza">⏱</button><button class="ibtn" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">⋯</button></div></div>
- ${e.note?`<div class="cn">${esc(e.note)}</div>`:''}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div>${setHead(e)}${rows}</div>`}
+ ${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div>${setHead(e)}${rows}</div>`}
 function exFocus(e,i,n){const x=L.ex[e.id]||{},ri=rpeInfo(e.p);let rows='';for(let j=0;j<setsN(e);j++)rows+=setRow(e,j);
- const tags=[e.s+(e.s===1?' série':e.s<5?' série':' sérií'),e.r?e.r.replace('/leg',' / nohu')+(unitOf(e)==='opak.'?' opak.':''):'',ri.full,e.t?'~ '+e.t:''].filter(Boolean);
- return`<section class="page ex${x.skip?' skip':''}" id="fp-${e.id}"><div class="mut sm">${i+1} / ${n}${x.skip?' · přeskočeno':''}</div>
- <div class="exn big">${dispName(e)}</div><div class="mut">${esc(e.v)}</div>
- <div class="tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
- ${e.note?`<div class="cn">${esc(e.note)}</div>`:''}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div>
- <div class="sets">${setHead(e)}${rows}</div>
- <div class="tools"><button class="chip" data-act="rest" data-e="${e.id}">⏱ Pauza ${mmss(restOf(e))}</button>${isSBD(e)?`<button class="chip" data-act="bo" data-e="${e.id}">Back-off</button>`:''}${isBar(e)?`<button class="chip" data-act="plates" data-e="${e.id}">Kotouče</button>`:''}<button class="chip" data-act="exmenu" data-e="${e.id}">⋯ Další</button></div>
- <label class="mut sm" style="display:block;margin-bottom:6px">Poznámka</label><textarea class="nt" data-e="${e.id}" placeholder="bolest 0–10, pocit, technika…">${esc(x.note||'')}</textarea>
+ const tags=[e.s+(e.s<5?' série':' sérií'),e.r?e.r.replace('/leg',' / nohu')+(unitOf(e)==='opak.'?' opak.':''):'',ri.full,e.t?'~ '+e.t:''].filter(Boolean);
+ return`<section class="page${x.skip?' skip':''}" id="fp-${e.id}"><div class="hero ${COL[i%3]}" style="margin-top:6px"><div class="top"><span class="pill">${i+1} / ${n}${x.skip?' · přeskočeno':''}</span><button class="arr" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">⋯</button></div>
+ <div class="big2">${dispName(e)}</div>${e.v?`<div class="mut sm">${esc(e.v)}</div>`:''}
+ <div class="tags">${tags.map(t=>`<span class="pill">${esc(t)}</span>`).join('')}</div>${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div></div>
+ <div class="ex">${setHead(e)}${rows}</div>
+ <div class="tools"><button class="chip" data-act="rest" data-e="${e.id}">⏱ Pauza ${mmss(restOf(e))}</button>${isSBD(e)?`<button class="chip" data-act="bo" data-e="${e.id}">Back-off</button>`:''}${isBar(e)?`<button class="chip" data-act="plates" data-e="${e.id}">Kotouče</button>`:''}</div>
+ <textarea class="nt" data-e="${e.id}" placeholder="Poznámka – bolest 0–10, pocit, technika…">${esc(x.note||'')}</textarea>
  <div class="hint">↓ další cvik</div></section>`}
 function reWs(){const b=$('#wsb'),t=b?b.scrollTop:0;render();const nb=$('#wsb');if(nb)nb.scrollTop=t}
 function refreshEx(e){const m=$('#exm-'+e.id);if(m)m.innerHTML=exMeta(e);
- for(let i=0;i<setsN(e);i++){const r=document.getElementById('s-'+e.id+'#'+i);if(r)r.classList.toggle('done',isDone(e,S(e,i)))}}
+ for(let i=0;i<setsN(e);i++){const r=document.getElementById('s-'+e.id+'#'+i);if(r)r.classList.toggle('done',isDone(e,S(e,i)))}
+ const c=curEx(e.day);$$('#wsb .ex[data-e]').forEach(el=>el.classList.toggle('cur',!!c&&el.dataset.e===c.id))}
 
 function start(id){if(L.active&&L.active.dayId!==id){toast('Nejdřív ukonči běžící trénink');return}
  if(!L.active){L.active={dayId:id,start:Date.now()};const ss=L.sessions[id]||(L.sessions[id]={});ss.start=L.active.start;delete ss.end;delete ss.hist;save()}
  unlockAudio();closeOv();UI.ws=id;UI.tab='ws';UI.fi=0;wake(true);render()}
 function openEdit(id){if(L.active&&L.active.dayId!==id){toast('Běží trénink – úpravy jiného dne až po ukončení');return}
  closeOv();UI.ws=id;UI.tab='ws';UI.fi=0;render()}
+function cancelAsk(){const d=dayById(L.active.dayId);SH='cancel';
+ sheet(`<div class="sht">Zrušit trénink?</div><div class="mut sm">${dlab(d.date)} · ${esc(d.title)} · běží ${clock(Date.now()-L.active.start)}</div>
+ <div class="row2" style="margin-top:16px"><button class="btn sec" data-act="cancelws" data-v="keep">Zrušit, zápisy nechat</button></div>
+ <div class="row2"><button class="btn red" data-act="cancelws" data-v="del">Zrušit a smazat zápisy z tohoto dne</button></div>
+ <div class="row2"><button class="btn" data-act="closesh">Trénovat dál</button></div>`)}
 
 /* ---------- číselník ---------- */
 const NP={cell:null,buf:'',fresh:true};
@@ -643,7 +690,7 @@ function finish(){const id=L.active.dayId,d=dayById(id);
  <label>Poznámka k tréninku</label><textarea id="ci_note">${esc(CI.note)}</textarea>
  <div class="row2"><button class="btn" data-act="cisave">Uložit a ukončit</button></div>
  <div class="row2"><button class="btn sec" data-act="closesh">Pokračovat v tréninku</button></div>
- <div class="row2"><button class="btn red" data-act="cancelws">Zrušit trénink (zápisy zůstanou, čas ne)</button></div>`)}
+ <div class="row2"><button class="btn red" data-act="cancelask">Zrušit trénink</button></div>`)}
 function ciSave(){const id=L.active.dayId;CI.pain=$('#ci_pain').value.trim();CI.note=$('#ci_note').value.trim();
  L.sessions[id]={start:L.active.start,end:Date.now(),checkin:CI};L.active=null;save();wake(false);closeSheet();
  UI.ws=null;UI.mode='list';UI.tab='week';render();toast('Trénink uložen 💪')}
@@ -740,8 +787,14 @@ document.addEventListener('click',ev=>{const t=ev.target;
   case'finish':finish();break;
   case'cichip':CI[A.f]=CI[A.f]===+A.v?null:+A.v;$$(`[data-act="cichip"][data-f="${A.f}"]`).forEach(b=>b.classList.toggle('on',CI[A.f]===+b.dataset.v));break;
   case'cisave':ciSave();break;
-  case'cancelws':if(!confirm('Zrušit běžící trénink? Zápisy sérií zůstanou, jen se neuloží čas.'))break;
-   {const id=L.active.dayId;if(L.sessions[id]&&!L.sessions[id].end)delete L.sessions[id];L.active=null;save();wake(false);closeSheet();UI.ws=null;UI.tab='week';render()}break;
+  case'cancelask':if(L.active)cancelAsk();break;
+  case'cancelws':{if(!L.active)break;const id=L.active.dayId;
+   if(A.v==='del')dayById(id).ex.forEach(x=>{for(let i=0;i<setsN(x);i++)delete L.sets[x.id+'#'+i];delete L.ex[x.id]});
+   if(L.sessions[id]&&!L.sessions[id].end)delete L.sessions[id];L.active=null;REST=null;LS.set('pl_rest',null);showRest();
+   save();wake(false);closeSheet();UI.ws=null;UI.mode='list';UI.tab='week';render();toast(A.v==='del'?'Trénink zrušen, zápisy smazány':'Trénink zrušen');break}
+  case'cnt':a.classList.toggle('open');break;
+  case'rules':rulesSheet();break;
+  case'pw':UI.pw=A.w;render(true);break;
   case'coach':coachSheet(A.w);break;
   case'copy':copyText();break;
   case'share':navigator.share({text:$('#cpta').value}).catch(()=>{});break;

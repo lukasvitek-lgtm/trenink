@@ -1,5 +1,5 @@
 // Offline režim: síť napřed (aby se nová verze programu hned projevila), bez signálu z mezipaměti.
-const C = 'trenink-v1';
+const C = 'trenink-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.png'];
 
 self.addEventListener('install', e => {
