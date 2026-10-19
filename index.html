@@ -70,7 +70,7 @@ button:disabled{opacity:.45}
 .cn span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .cn.open span{display:block}
 .c-s .cn{color:#fff;background:rgba(255,255,255,.18)}
-.c-y .cn,.c-o .cn,.ex.cur .cn{color:var(--navy);background:rgba(255,255,255,.45)}
+.c-y .cn,.c-o .cn{color:var(--navy);background:rgba(255,255,255,.45)}
 .an{font-size:13px;color:var(--blue);margin-top:6px}
 .exr{padding:12px 0;border-top:1px solid var(--line)}
 .exr:first-child{border-top:0;padding-top:2px}
@@ -131,18 +131,28 @@ details.dacc[open]>summary::after{content:'−'}
 .cell:empty::before{content:attr(data-ph);color:#a9b2cc;font-weight:500;font-size:15px}
 .cell.on{box-shadow:inset 0 0 0 2px var(--blue);background:#fff}
 .cell.off{pointer-events:none;opacity:.35}
-.ex.cur{background:var(--peri)}
-.ex.cur .mut,.ex.cur .meta,.ex.cur .seth,.ex.cur .plan small{color:rgba(27,45,82,.6)}
-.ex.cur .cell{background:rgba(255,255,255,.75)}
-.ex.cur .cell:empty::before{color:rgba(27,45,82,.35)}
-.ex.cur .cell.on{background:#fff;box-shadow:inset 0 0 0 2px var(--navy)}
+.ex{background:var(--peri)!important;box-shadow:none!important}
+.ex .mut,.ex .meta,.ex .seth,.ex .plan small{color:rgba(27,45,82,.6)}
+.ex .cell{background:rgba(255,255,255,.75)}
+.ex .cell:empty::before{color:rgba(27,45,82,.35)}
+.ex .cell.on{background:#fff;box-shadow:inset 0 0 0 2px var(--navy)}
+.ex .ibtn,.ex .si{background:rgba(255,255,255,.6)}
+.ex .set.done .si{background:var(--navy);color:#fff}
+.ex .e1,.ex .e1 b,.ex .meta b{color:var(--navy)}
+.ex .cn{color:var(--navy);background:rgba(255,255,255,.45)}
+.ex.cur{background:var(--blue)!important;color:#fff}
+.ex.cur .mut,.ex.cur .meta,.ex.cur .seth,.ex.cur .plan small{color:rgba(255,255,255,.78)}
+.ex.cur .meta b,.ex.cur .e1,.ex.cur .e1 b{color:#fff}
+.ex.cur .cell{background:rgba(255,255,255,.92);color:var(--navy)}
+.ex.cur .cell:empty::before{color:rgba(27,45,82,.38)}
+.ex.cur .cell.on{background:#fff;box-shadow:inset 0 0 0 3px var(--navy)}
 .ex.cur .ibtn{background:var(--navy);color:#fff}
-.ex.cur .si{background:rgba(255,255,255,.6)}
-.ex.cur .set.done .si{background:var(--navy);color:#fff}
+.ex.cur .si{background:rgba(255,255,255,.25);color:#fff}
+.ex.cur .set.done .si{background:#fff;color:var(--blue)}
+.ex.cur .cn{color:#fff;background:rgba(255,255,255,.18)}
 .meta{font-size:13px;color:var(--mut);margin-top:6px}
 .meta b{color:var(--navy);font-weight:600}
 .e1,.e1 b{color:var(--blue)}
-.ex.cur .e1,.ex.cur .e1 b{color:var(--navy)}
 .c-s .meta{color:rgba(255,255,255,.8)}.c-s .meta b,.c-s .e1,.c-s .e1 b{color:#fff}
 .c-y .meta,.c-o .meta{color:rgba(27,45,82,.62)}.c-y .meta b,.c-o .meta b,.c-y .e1,.c-o .e1,.c-y .e1 b,.c-o .e1 b{color:var(--navy)}
 .big2{font-size:30px;font-weight:800;letter-spacing:-.8px;line-height:1.05;margin:16px 0 2px}
@@ -208,7 +218,7 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.2';
+const APP_VER='1.3';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
