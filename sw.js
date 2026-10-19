@@ -1,5 +1,5 @@
 // Offline režim: síť napřed (aby se nová verze programu hned projevila), bez signálu z mezipaměti.
-const C = 'trenink-v7';
+const C = 'trenink-v8';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
