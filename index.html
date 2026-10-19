@@ -25,7 +25,13 @@ button:disabled{opacity:.45}
 #tabs{position:absolute;left:0;right:0;bottom:0;height:calc(var(--tabh) + var(--sb));padding:4px 6px var(--sb);display:flex;background:#fff;z-index:30;box-shadow:0 -1px 0 var(--line)}
 #tabs button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:var(--mut);font-weight:500}
 #tabs .ic{width:54px;height:30px;border-radius:999px;display:grid;place-items:center}
-#tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#tabs svg{width:22px;height:22px;fill:currentColor}
+.i{fill:currentColor;flex:none;display:inline-block;vertical-align:-3px}
+.li{display:flex;align-items:center;gap:12px}
+.btn{display:flex!important;align-items:center;justify-content:center;gap:8px}
+.chip,.pill,.badge{display:inline-flex;align-items:center;gap:6px}
+.badge{gap:3px}
+.k{display:grid;place-items:center}
 #tabs button.on{color:var(--navy);font-weight:700}
 #tabs button.on .ic{background:var(--navy);color:#fff}
 #tabs .live{color:var(--blue);font-variant-numeric:tabular-nums;font-weight:700}
@@ -206,10 +212,10 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 <div id="ov" hidden></div>
 <div id="rest" hidden></div>
 <nav id="tabs">
-  <button data-act="tab" data-t="program"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Program</button>
-  <button data-act="tab" data-t="week"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></span>Týden</button>
-  <button data-act="tab" data-t="ws"><span class="ic"><svg viewBox="0 0 24 24"><path d="M2.5 9v6M5.5 6.5v11M18.5 6.5v11M21.5 9v6M5.5 12h13"/></svg></span><span id="tabws">Trénink</span></button>
-  <button data-act="tab" data-t="more"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>Více</button>
+  <button data-act="tab" data-t="program"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg></span>Program</button>
+  <button data-act="tab" data-t="week"><span class="ic"><svg viewBox="0 0 24 24"><path d="M7 2h2.4v2h5.2V2H17v2h2.5A1.5 1.5 0 0 1 21 5.5v14a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-14A1.5 1.5 0 0 1 4.5 4H7zM5.4 9.5v9.1h13.2V9.5z"/></svg></span>Týden</button>
+  <button data-act="tab" data-t="ws"><span class="ic"><svg viewBox="0 0 24 24"><path d="M1 9.5h2v-2h2.5V5.5H8v13H5.5v-2H3v-2H1zm22 0h-2v-2h-2.5V5.5H16v13h2.5v-2H21v-2h2zM9.5 10.8h5v2.4h-5z"/></svg></span><span id="tabws">Trénink</span></button>
+  <button data-act="tab" data-t="more"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18v2.6H3zm0 5.7h18v2.6H3zm0 5.7h18V19H3z"/></svg></span>Více</button>
 </nav>
 <div id="sheet" hidden></div>
 <div id="np" hidden></div>
@@ -218,7 +224,7 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.4';
+const APP_VER='1.5';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -438,33 +444,33 @@ W('w3','Týden 3','2026-10-19','2026-10-25','SBD RPE 7,5 · \'sel.\' = obě sér
  D('2026-10-20','dřep (bez belt squatu)',[
   E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','7,5','62,5',''),
   E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','7,5','30',''),
-  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','',''),
-  E('Leg curl','lying nebo seated',2,'10','sel.','',''),
-  E('Abductor machine','trup v předklonu = víc zadek',2,'12','sel.','',''),
-  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','sel.','',''),
-  E('Pulldown','neutral grip',2,'10','sel.','',''),
-  E('Core work','plank',2,'45 s','','',''),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','10',''),
+  E('Leg curl','lying nebo seated',2,'10','sel.','30',''),
+  E('Abductor machine','trup v předklonu = víc zadek',2,'12','sel.','70',''),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','sel.','40',''),
+  E('Pulldown','neutral grip',2,'10','sel.','40',''),
+  E('Core work','plank',2,'45 s','','10 kg',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-10-21','tah (bez belt squatu)',[
   E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','7,5','77,5',''),
   E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','7,5','30',''),
-  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','',''),
-  E('Adductor machine','',2,'12','sel.','',''),
-  E('Leg curl','lying',2,'10','sel.','',''),
-  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','',''),
-  E('Core work','Pallof press',2,'10/side','','',''),
+  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','50',''),
+  E('Adductor machine','',2,'12','sel.','40',''),
+  E('Leg curl','lying',2,'10','sel.','35',''),
+  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','50',''),
+  E('Core work','Pallof press',2,'10/side','','10',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-10-23','bench (nejdelší den, jen 1 cvik na nohy)',[
   E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','7,5','32,5',''),
   E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','7,5','27,5',''),
-  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','',''),
-  E('Incline DB press','30°',3,'8','RIR 1','',''),
-  E('Pulldown','wide grip',2,'10','sel.','',''),
-  E('Cable fly / pec deck','',2,'10','sel.','',''),
-  E('Lateral raises','DB nebo kladka',2,'10','sel.','',''),
-  E('Triceps pushdown','lano nebo tyč',2,'10','sel.','',''),
-  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','sel.','',''),
-  E('Bicep curls','DB nebo stroj',2,'10','sel.','',''),
+  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','BS 50 / LP 80',''),
+  E('Incline DB press','30°',3,'8','RIR 1','12',''),
+  E('Pulldown','wide grip',2,'10','sel.','40',''),
+  E('Cable fly / pec deck','',2,'10','sel.','7,5',''),
+  E('Lateral raises','DB nebo kladka',2,'10','sel.','8',''),
+  E('Triceps pushdown','lano nebo tyč',2,'10','sel.','10',''),
+  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','sel.','FP 20',''),
+  E('Bicep curls','DB nebo stroj',2,'10','sel.','8',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-10-24','run',[
   E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
@@ -473,33 +479,33 @@ W('w4','Týden 4','2026-10-26','2026-11-01','SBD RPE 8 · \'sel.\' = obě série
  D('2026-10-27','dřep (bez belt squatu)',[
   E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','8','62,5',''),
   E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','8','30',''),
-  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','',''),
-  E('Leg curl','lying nebo seated',2,'10','sel.','',''),
-  E('Abductor machine','trup v předklonu = víc zadek',2,'12','sel.','',''),
-  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','sel.','',''),
-  E('Pulldown','neutral grip',2,'10','sel.','',''),
-  E('Core work','plank',2,'45 s','','',''),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','10',''),
+  E('Leg curl','lying nebo seated',2,'10','sel.','30',''),
+  E('Abductor machine','trup v předklonu = víc zadek',2,'12','sel.','70',''),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','sel.','40',''),
+  E('Pulldown','neutral grip',2,'10','sel.','40',''),
+  E('Core work','plank',2,'45 s','','10 kg',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-10-28','tah (bez belt squatu)',[
   E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','8','77,5–80',''),
   E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','8','30',''),
-  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','',''),
-  E('Adductor machine','',2,'12','sel.','',''),
-  E('Leg curl','lying',2,'10','sel.','',''),
-  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','',''),
-  E('Core work','Pallof press',2,'10/side','','',''),
+  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','50',''),
+  E('Adductor machine','',2,'12','sel.','40',''),
+  E('Leg curl','lying',2,'10','sel.','35',''),
+  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','50',''),
+  E('Core work','Pallof press',2,'10/side','','10',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-10-30','bench (nejdelší den, jen 1 cvik na nohy)',[
   E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','8','32,5–35',''),
   E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','8','27,5',''),
-  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','',''),
-  E('Incline DB press','30°',3,'8','RIR 1','',''),
-  E('Pulldown','wide grip',2,'10','sel.','',''),
-  E('Cable fly / pec deck','',2,'10','sel.','',''),
-  E('Lateral raises','DB nebo kladka',2,'10','sel.','',''),
-  E('Triceps pushdown','lano nebo tyč',2,'10','sel.','',''),
-  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','sel.','',''),
-  E('Bicep curls','DB nebo stroj',2,'10','sel.','',''),
+  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','BS 50 / LP 80',''),
+  E('Incline DB press','30°',3,'8','RIR 1','12',''),
+  E('Pulldown','wide grip',2,'10','sel.','40',''),
+  E('Cable fly / pec deck','',2,'10','sel.','7,5',''),
+  E('Lateral raises','DB nebo kladka',2,'10','sel.','8',''),
+  E('Triceps pushdown','lano nebo tyč',2,'10','sel.','10',''),
+  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','sel.','FP 20',''),
+  E('Bicep curls','DB nebo stroj',2,'10','sel.','8',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-10-31','run',[
   E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
@@ -508,33 +514,33 @@ W('w5','Týden 5','2026-11-02','2026-11-08','SBD RPE 8 · nejtěžší týden bl
  D('2026-11-03','dřep (bez belt squatu)',[
   E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','8','62,5–65',''),
   E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','8','30–32,5',''),
-  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','',''),
-  E('Leg curl','lying nebo seated',2,'10','sel.','',''),
-  E('Abductor machine','trup v předklonu = víc zadek',2,'12','sel.','',''),
-  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','sel.','',''),
-  E('Pulldown','neutral grip',2,'10','sel.','',''),
-  E('Core work','plank',2,'45 s','','',''),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','10',''),
+  E('Leg curl','lying nebo seated',2,'10','sel.','30',''),
+  E('Abductor machine','trup v předklonu = víc zadek',2,'12','sel.','70',''),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','sel.','40',''),
+  E('Pulldown','neutral grip',2,'10','sel.','40',''),
+  E('Core work','plank',2,'45 s','','10 kg',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-11-04','tah (bez belt squatu)',[
   E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','8','80',''),
   E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','8','30',''),
-  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','',''),
-  E('Adductor machine','',2,'12','sel.','',''),
-  E('Leg curl','lying',2,'10','sel.','',''),
-  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','',''),
-  E('Core work','Pallof press',2,'10/side','','',''),
+  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','50',''),
+  E('Adductor machine','',2,'12','sel.','40',''),
+  E('Leg curl','lying',2,'10','sel.','35',''),
+  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','50',''),
+  E('Core work','Pallof press',2,'10/side','','10',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-11-06','bench (nejdelší den, jen 1 cvik na nohy)',[
   E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','8','35',''),
   E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','8','27,5–30',''),
-  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','',''),
-  E('Incline DB press','30°',3,'8','RIR 1','',''),
-  E('Pulldown','wide grip',2,'10','sel.','',''),
-  E('Cable fly / pec deck','',2,'10','sel.','',''),
-  E('Lateral raises','DB nebo kladka',2,'10','sel.','',''),
-  E('Triceps pushdown','lano nebo tyč',2,'10','sel.','',''),
-  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','sel.','',''),
-  E('Bicep curls','DB nebo stroj',2,'10','sel.','',''),
+  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','BS 50 / LP 80',''),
+  E('Incline DB press','30°',3,'8','RIR 1','12',''),
+  E('Pulldown','wide grip',2,'10','sel.','40',''),
+  E('Cable fly / pec deck','',2,'10','sel.','7,5',''),
+  E('Lateral raises','DB nebo kladka',2,'10','sel.','8',''),
+  E('Triceps pushdown','lano nebo tyč',2,'10','sel.','10',''),
+  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','sel.','FP 20',''),
+  E('Bicep curls','DB nebo stroj',2,'10','sel.','8',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-11-07','run',[
   E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
@@ -543,33 +549,33 @@ W('w6','Týden 6','2026-11-09','2026-11-15','DELOAD · u všeho jen POLOVINA sé
  D('2026-11-10','dřep (bez belt squatu)',[
   E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','6','55',''),
   E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','6','25',''),
-  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 3','',''),
-  E('Leg curl','lying nebo seated',2,'10','RIR 3','',''),
-  E('Abductor machine','trup v předklonu = víc zadek',2,'12','RIR 3','',''),
-  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','RIR 3','',''),
-  E('Pulldown','neutral grip',2,'10','RIR 3','',''),
-  E('Core work','plank',2,'45 s','','',''),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 3','10',''),
+  E('Leg curl','lying nebo seated',2,'10','RIR 3','30',''),
+  E('Abductor machine','trup v předklonu = víc zadek',2,'12','RIR 3','70',''),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','RIR 3','40',''),
+  E('Pulldown','neutral grip',2,'10','RIR 3','40',''),
+  E('Core work','plank',2,'45 s','','10 kg',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-11-11','tah (bez belt squatu)',[
   E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','6','70',''),
   E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','6','25',''),
-  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 3','',''),
-  E('Adductor machine','',2,'12','RIR 3','',''),
-  E('Leg curl','lying',2,'10','RIR 3','',''),
-  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','RIR 3','',''),
-  E('Core work','Pallof press',2,'10/side','','',''),
+  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 3','50',''),
+  E('Adductor machine','',2,'12','RIR 3','40',''),
+  E('Leg curl','lying',2,'10','RIR 3','35',''),
+  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','RIR 3','50',''),
+  E('Core work','Pallof press',2,'10/side','','10',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-11-13','bench (nejdelší den, jen 1 cvik na nohy)',[
   E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','6','30',''),
   E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','6','22,5',''),
-  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 3','',''),
-  E('Incline DB press','30°',3,'8','RIR 3','',''),
-  E('Pulldown','wide grip',2,'10','RIR 3','',''),
-  E('Cable fly / pec deck','',2,'10','RIR 3','',''),
-  E('Lateral raises','DB nebo kladka',2,'10','RIR 3','',''),
-  E('Triceps pushdown','lano nebo tyč',2,'10','RIR 3','',''),
-  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','RIR 3','',''),
-  E('Bicep curls','DB nebo stroj',2,'10','RIR 3','',''),
+  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 3','BS 50 / LP 80',''),
+  E('Incline DB press','30°',3,'8','RIR 3','12',''),
+  E('Pulldown','wide grip',2,'10','RIR 3','40',''),
+  E('Cable fly / pec deck','',2,'10','RIR 3','7,5',''),
+  E('Lateral raises','DB nebo kladka',2,'10','RIR 3','8',''),
+  E('Triceps pushdown','lano nebo tyč',2,'10','RIR 3','10',''),
+  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','RIR 3','FP 20',''),
+  E('Bicep curls','DB nebo stroj',2,'10','RIR 3','8',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-11-14','run',[
   E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
@@ -592,6 +598,23 @@ const mmss=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
 function clock(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=String(s%60).padStart(2,'0');return h?h+':'+String(m).padStart(2,'0')+':'+x:m+':'+x}
 function dur(ms){const m=Math.round(ms/60000);return Math.floor(m/60)+':'+String(m%60).padStart(2,'0')+' h'}
 const chip=(label,act,attrs,on)=>`<button class="chip${on?' on':''}" data-act="${act}" ${attrs||''}>${label}</button>`;
+const IC={timer:'<path d="M9 1.5h6v2.2H9zM19.3 6.4l1.6-1.6 1.5 1.5-1.6 1.6A9 9 0 1 1 12 4a9 9 0 0 1 7.3 2.4zM12 6.3a6.8 6.8 0 1 0 0 13.6 6.8 6.8 0 0 0 0-13.6zm1.1 2.2v5.2l-2.2 1.3V8.5z"/>',
+ more:'<circle cx="5" cy="12" r="2.3"/><circle cx="12" cy="12" r="2.3"/><circle cx="19" cy="12" r="2.3"/>',
+ close:'<path d="m6.3 4.5 5.7 5.7 5.7-5.7 1.8 1.8-5.7 5.7 5.7 5.7-1.8 1.8-5.7-5.7-5.7 5.7-1.8-1.8 5.7-5.7-5.7-5.7z"/>',
+ arrow:'<path d="M7 4.5h12.5V17h-2.6V8.9L6.3 19.5l-1.8-1.8L15.1 7.1H7z"/>',
+ up:'<path d="M12 2.5 5 9.5l1.8 1.8 3.9-3.9V16h2.6V7.4l3.9 3.9L19 9.5zM4.5 18.5h15V21h-15z"/>',
+ edit:'<path d="M3 17.3V21h3.7L17.8 9.9l-3.7-3.7zM20.7 7a1 1 0 0 0 0-1.4l-2.3-2.3a1 1 0 0 0-1.4 0l-1.8 1.8 3.7 3.7z"/>',
+ play:'<path d="M7 3.8v16.4L20 12z"/>',
+ check:'<path d="m9.5 16.2-4.2-4.2-1.8 1.8 6 6L21.3 8l-1.8-1.8z"/>',
+ back:'<path d="M15.4 4.4 7.8 12l7.6 7.6 1.8-1.8L11.4 12l5.8-5.8z"/>',
+ plus:'<path d="M10.7 4h2.6v6.7H20v2.6h-6.7V20h-2.6v-6.7H4v-2.6h6.7z"/>',
+ minus:'<path d="M4 10.7h16v2.6H4z"/>',
+ swap:'<path d="M7.5 3 3 7.5 7.5 12V8.8H19V6.2H7.5zm9 9v3.2H5v2.6h11.5V21l4.5-4.5z"/>',
+ skip:'<path d="M4.5 4.5v15l10-7.5zm11.5 0h3v15h-3z"/>',
+ undo:'<path d="M12.5 7.5c-2.7 0-5.1 1-7 2.7L3 7.5v8.3h8.3l-3-3a7 7 0 0 1 11.1 2.9l2.4-.8a9.6 9.6 0 0 0-9.3-7.4z"/>',
+ plate:'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 7.3a2.7 2.7 0 1 1 0 5.4 2.7 2.7 0 0 1 0-5.4z"/>',
+ bksp:'<path d="M8.2 4.5 1.8 12l6.4 7.5h14V4.5zm9.4 10.1-1.5 1.5-2.8-2.8-2.8 2.8-1.5-1.5 2.8-2.8-2.8-2.8 1.5-1.5 2.8 2.8 2.8-2.8 1.5 1.5-2.8 2.8z"/>'};
+const ic=(n,s)=>`<svg class="i" viewBox="0 0 24 24" width="${s||18}" height="${s||18}" aria-hidden="true">${IC[n]}</svg>`;
 function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2400)}
 
 /* ---------- úložiště ---------- */
@@ -656,7 +679,7 @@ function prevOf(e){const j0=DAYS.indexOf(e.day);
  return null}
 const dayLogged=d=>d.ex.some(hasLog);
 function dayStatus(d){if(L.active&&L.active.dayId===d.id)return'live';if(L.sessions[d.id]&&L.sessions[d.id].end)return'done';if(d.skip)return'skip';if(dayLogged(d))return'part';return d.date<today()?'past':'todo'}
-const STAT={live:['● Probíhá','live'],done:['✓ Odjeto','ok'],skip:['Vynecháno',''],part:['Rozpracováno','warn'],past:['Nezapsáno',''],todo:['','']};
+const STAT={live:['Probíhá','live'],done:[ic('check',13)+'Odjeto','ok'],skip:['Vynecháno',''],part:['Rozpracováno','warn'],past:['Nezapsáno',''],todo:['','']};
 function curWeek(){const t=today();return P.weeks.find(w=>w.from<=t&&t<=w.to)||P.weeks.find(w=>w.from>t&&w.days.length)||[...P.weeks].reverse().find(w=>w.from<=t&&w.days.length)||P.weeks[0]}
 
 /* ---------- UI stav ---------- */
@@ -679,7 +702,7 @@ function exRead(e){const x=L.ex[e.id]||{},sets=[];
  return`<div class="exr${x.skip?' skip':''}"><div class="exn">${dispName(e)}${x.skip?' <span class="mut sm">· přeskočeno</span>':''}</div>
  <div class="mut sm">${esc(planSummary(e))}${e.v?' · '+esc(e.v):''}</div>${cnote(e.note)}
  ${sets.length?`<div class="logl">${sets.join('')}${b?`<span class="lg e1">e1RM ${fmt(rInc(b.v))}</span>`:''}</div>`:''}
- ${x.note?`<div class="an">✎ ${esc(x.note)}</div>`:''}</div>`}
+ ${x.note?`<div class="an">${ic('edit',13)} ${esc(x.note)}</div>`:''}</div>`}
 function badge(d){const[l,c]=STAT[dayStatus(d)];return l?`<span class="badge ${c}">${l}</span>`:''}
 function sessInfo(d){const s=L.sessions[d.id];return s&&s.start&&s.end?' · '+dur(s.end-s.start):''}
 function wkProg(w){const n=w.days.length,k=w.days.filter(d=>['done','skip'].includes(dayStatus(d))).length;return{n,k,p:n?Math.round(k/n*100):0}}
@@ -704,21 +727,21 @@ function rulesSheet(){SH='rules';sheet(`<div class="sht">Pravidla bloku</div>${P
 function needBackup(){const S=L.settings,day=864e5;return S.lastBackup?Date.now()-S.lastBackup>30*day:Date.now()-S.firstRun>7*day}
 function vWeek(s){const w=curWeek(),wp=wkProg(w);
  s.innerHTML=`<div class="hd"><div class="lb">Tento týden · ${rlab(w.from,w.to)}</div><h1>${esc(w.title)}</h1></div>
- ${needBackup()?`<div class="card c-o"><div class="top"><div><div class="exn">Je čas na zálohu</div><div class="mut sm">${L.settings.lastBackup?'Naposledy '+dfull(L.settings.lastBackup):'Zatím žádná záloha'} · zabere to 5 vteřin</div></div><button class="arr" data-act="backup" aria-label="Uložit zálohu">↑</button></div></div>`:''}
+ ${needBackup()?`<div class="card c-o"><div class="top"><div><div class="exn">Je čas na zálohu</div><div class="mut sm">${L.settings.lastBackup?'Naposledy '+dfull(L.settings.lastBackup):'Zatím žádná záloha'} · zabere to 5 vteřin</div></div><button class="arr" data-act="backup" aria-label="Uložit zálohu">${ic('up',20)}</button></div></div>`:''}
  ${w.days.length?`<div class="card"><div class="top"><span class="mut sm">Odjeto</span><span class="pct">${wp.k} / ${wp.n}</span></div><div class="prog" style="margin:10px 0 4px"><i style="width:${wp.p}%"></i></div>${cnote(w.note)}</div>`
   +w.days.map(dayCard).join('')
  :'<div class="empty">Trenér tento týden ještě nepřipravil.<br>Pošli mu check-in z minulého týdne (Více → Pro trenéra).</div>'}<div style="height:20px"></div>`}
 function dayCard(d){const st=dayStatus(d),done=st==='done'||st==='skip',tod=d.date===today();
- return`<button class="dcard ${done?'done':dayCol(d)}${tod&&!done?' today':''}" data-act="pager" data-d="${d.id}"><div class="top"><div class="l"><span class="pill">${tod?'Dnes · ':''}${dlab(d.date)}</span>${badge(d)}</div><span class="arr">↗</span></div>
+ return`<button class="dcard ${done?'done':dayCol(d)}${tod&&!done?' today':''}" data-act="pager" data-d="${d.id}"><div class="top"><div class="l"><span class="pill">${tod?'Dnes · ':''}${dlab(d.date)}</span>${badge(d)}</div><span class="arr">${ic('arrow',18)}</span></div>
  <h2>${esc(d.title)}</h2><div class="sub">${d.ex.length} cviků${sessInfo(d)} · ${esc(d.ex.map(dispTxt).join(', '))}</div></button>`}
 
 function openPager(d){const w=d.week,ov=$('#ov');
- ov.innerHTML=`<div class="bar"><button class="pill" data-act="closeov">‹ Zpět</button><b>${esc(w.title)}</b><span></span></div><div class="snap" id="pgs">${w.days.map(dayPage).join('')}</div>`;
+ ov.innerHTML=`<div class="bar"><button class="pill" data-act="closeov">${ic('back',16)} Zpět</button><b>${esc(w.title)}</b><span></span></div><div class="snap" id="pgs">${w.days.map(dayPage).join('')}</div>`;
  ov.hidden=false;const pg=$('#pg-'+d.id);if(pg)$('#pgs').scrollTop=pg.offsetTop}
 function dayPage(d){const st=dayStatus(d);let b;
  if(st==='live')b=`<button class="btn dk" data-act="gows" data-d="${d.id}">Pokračovat v tréninku</button>`;
  else if(L.active)b=`<button class="btn dk" disabled>Běží jiný trénink</button>`;
- else b=`<button class="btn dk" data-act="start" data-d="${d.id}">▶ ${st==='done'?'Spustit znovu':'Spustit trénink'}</button>`;
+ else b=`<button class="btn dk" data-act="start" data-d="${d.id}">${ic('play',16)} ${st==='done'?'Spustit znovu':'Spustit trénink'}</button>`;
  if(st!=='live')b+=`<button class="btn w" data-act="edit" data-d="${d.id}" style="margin-top:8px">Upravit zápis</button>`;
  return`<section class="page" id="pg-${d.id}"><div class="hero ${dayCol(d)}"><div class="top"><span class="pill">${d.date===today()?'Dnes · ':''}${dlab(d.date)}</span>${badge(d)}</div>
  <div class="ht">${esc(d.title)}</div><div class="mut sm" style="margin-bottom:12px">${d.ex.length} cviků${sessInfo(d)}</div>${cnote(d.note)}<div style="margin-top:12px">${b}</div></div>
@@ -727,9 +750,9 @@ function closeOv(){$('#ov').hidden=true;$('#ov').innerHTML=''}
 
 /* ---------- Trénink ---------- */
 function vWs(s){const id=UI.ws||(L.active&&L.active.dayId);
- if(!id){s.innerHTML=`<div class="hd"><div class="lb">Trénink</div><h1>Nic neběží</h1></div><div class="card c-y"><div class="exn" style="font-size:20px">Vyber den a spusť trénink</div><div class="mut sm" style="margin:4px 0 14px">Týden → den → ▶ Spustit trénink</div><button class="btn dk" data-act="tab" data-t="week">Otevřít tento týden</button></div>`;return}
+ if(!id){s.innerHTML=`<div class="hd"><div class="lb">Trénink</div><h1>Nic neběží</h1></div><div class="card c-y"><div class="exn" style="font-size:20px">Vyber den a spusť trénink</div><div class="mut sm" style="margin:4px 0 14px">Týden → den → Spustit trénink</div><button class="btn dk" data-act="tab" data-t="week">Otevřít tento týden</button></div>`;return}
  UI.ws=id;const d=dayById(id),live=!!(L.active&&L.active.dayId===id),foc=UI.mode==='focus';s.className='fixed';
- s.innerHTML=`<div class="wsh"><div class="top" style="padding:0 4px 8px">${live?`<div class="clock" id="clock"></div><button class="arr" data-act="cancelask" aria-label="Zrušit trénink">✕</button>`
+ s.innerHTML=`<div class="wsh"><div class="top" style="padding:0 4px 8px">${live?`<div class="clock" id="clock"></div><button class="arr" data-act="cancelask" aria-label="Zrušit trénink">${ic('close',18)}</button>`
   :`<div class="ht2">Úprava · ${dlab(d.date)}</div><button class="pill" data-act="doneedit">Hotovo</button>`}</div>
  <div class="seg"><button class="${foc?'':'on'}" data-act="mode" data-m="list">Všechny cviky</button><button class="${foc?'on':''}" data-act="mode" data-m="focus">Jeden cvik</button></div></div>
  <div class="wsb ${foc?'snap fbig':'list'}" id="wsb" data-scope>${foc?d.ex.map((e,i)=>exFocus(e,i,d.ex.length)).join('')+endPage(d,live,true):d.ex.map(exEdit).join('')+endPage(d,live,false)}</div>`;
@@ -737,7 +760,7 @@ function vWs(s){const id=UI.ws||(L.active&&L.active.dayId);
  if(foc){const pg=$$('.page',b)[UI.fi];if(pg)b.scrollTop=pg.offsetTop;
   b.addEventListener('scroll',()=>{const ps=$$('.page',b);let k=0;ps.forEach((p,i)=>{if(p.offsetTop<=b.scrollTop+b.clientHeight/3)k=i});UI.fi=Math.min(k,d.ex.length-1)},{passive:true})}}
 function endPage(d,live,foc){const inner=live?`<button class="btn" data-act="finish">Ukončit trénink</button><button class="btn sec" data-act="cancelask" style="margin-top:8px">Zrušit trénink</button>`:`<button class="btn" data-act="doneedit">Hotovo</button>`;
- return foc?`<section class="page"><div class="hero c-y" style="margin-top:8px"><div class="ht">To je všechno 💪</div><div class="mut sm" style="margin-bottom:14px">Ukonči trénink a vyplň krátký check-in.</div>${inner.replace('class="btn"','class="btn dk"').replace('btn sec','btn w')}</div></section>`:`<div style="margin:16px 12px 30px">${inner}</div>`}
+ return foc?`<section class="page"><div class="hero c-y" style="margin-top:8px"><div class="ht">To je všechno</div><div class="mut sm" style="margin-bottom:14px">Ukonči trénink a vyplň krátký check-in.</div>${inner.replace('class="btn"','class="btn dk"').replace('btn sec','btn w')}</div></section>`:`<div style="margin:16px 12px 30px">${inner}</div>`}
 function cell(k,f,v,ph,off){return`<button class="cell${off?' off':''}" data-k="${k}" data-f="${f}" data-ph="${esc(ph!=null?fmt(ph):'')}">${v!=null?(f==='w'&&v===0?'BW':fmt(v)):''}</button>`}
 function setRow(e,i){const s=S(e,i),k=e.id+'#'+i,ri=rpeInfo(e.p),c=isCardio(e),pw=planW(e,i),pr=planR(e,i),off=!!(L.ex[e.id]&&L.ex[e.id].skip);
  return`<div class="set${isDone(e,s)?' done':''}" id="s-${k}"><div class="si">${i+1}</div><div class="plan"><b>${esc(pr?pr.replace('/leg','/n'):'–')}${pr&&!c&&!/s$/.test(pr)?'×':''}</b> ${esc(ri.lab)}<small>${pw?'~'+esc(pw):''}</small></div>
@@ -751,15 +774,15 @@ const exOpen=e=>!(L.ex[e.id]&&L.ex[e.id].skip)&&Array.from({length:setsN(e)},(_,
 const curEx=d=>d.ex.find(exOpen);
 function exEdit(e){const x=L.ex[e.id]||{};let rows='';for(let i=0;i<setsN(e);i++)rows+=setRow(e,i);
  return`<div class="ex${x.skip?' skip':''}${e===curEx(e.day)?' cur':''}" id="ex-${e.id}" data-e="${e.id}"><div class="exh"><div style="min-width:0"><div class="exn" style="font-size:18px">${dispName(e)}</div>${e.v?`<div class="mut sm">${esc(e.v)}</div>`:''}</div>
- <div style="display:flex;gap:6px"><button class="ibtn" data-act="rest" data-e="${e.id}" aria-label="Pauza">⏱</button><button class="ibtn" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">⋯</button></div></div>
+ <div style="display:flex;gap:6px"><button class="ibtn" data-act="rest" data-e="${e.id}" aria-label="Pauza">${ic('timer',18)}</button><button class="ibtn" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">${ic('more',18)}</button></div></div>
  ${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div>${setHead(e)}${rows}</div>`}
 function exFocus(e,i,n){const x=L.ex[e.id]||{},ri=rpeInfo(e.p);let rows='';for(let j=0;j<setsN(e);j++)rows+=setRow(e,j);
  const tags=[e.s+(e.s<5?' série':' sérií'),e.r?e.r.replace('/leg',' / nohu')+(unitOf(e)==='opak.'?' opak.':''):'',ri.full,e.t?'~ '+e.t:''].filter(Boolean);
- return`<section class="page${x.skip?' skip':''}" id="fp-${e.id}"><div class="hero ${COL[i%3]}" style="margin-top:6px"><div class="top"><span class="pill">${i+1} / ${n}${x.skip?' · přeskočeno':''}</span><button class="arr" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">⋯</button></div>
+ return`<section class="page${x.skip?' skip':''}" id="fp-${e.id}"><div class="hero ${COL[i%3]}" style="margin-top:6px"><div class="top"><span class="pill">${i+1} / ${n}${x.skip?' · přeskočeno':''}</span><button class="arr" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">${ic('more',18)}</button></div>
  <div class="big2">${dispName(e)}</div>${e.v?`<div class="mut sm">${esc(e.v)}</div>`:''}
  <div class="tags">${tags.map(t=>`<span class="pill">${esc(t)}</span>`).join('')}</div>${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div></div>
  <div class="ex">${setHead(e)}${rows}</div>
- <div class="tools"><button class="chip" data-act="rest" data-e="${e.id}">⏱ Pauza ${mmss(restOf(e))}</button>${isBar(e)?`<button class="chip" data-act="plates" data-e="${e.id}">Kotouče</button>`:''}</div>
+ <div class="tools"><button class="chip" data-act="rest" data-e="${e.id}">${ic('timer',16)} Pauza ${mmss(restOf(e))}</button>${isBar(e)?`<button class="chip" data-act="plates" data-e="${e.id}">Kotouče</button>`:''}</div>
  <textarea class="nt" data-e="${e.id}" placeholder="Poznámka – bolest 0–10, pocit, technika…">${esc(x.note||'')}</textarea>
  <div class="hint">↓ další cvik</div></section>`}
 function reWs(){const b=$('#wsb'),t=b?b.scrollTop:0;render();const nb=$('#wsb');if(nb)nb.scrollTop=t}
@@ -797,9 +820,9 @@ function drawNP(){const m=meta(NP.cell),cur=m.get(),np=$('#np');
  if(m.kind==='p'){keys=`<div class="np-grid">${[6,6.5,7,7.5,8,8.5,9,9.5,10,5,5.5].map(v=>`<button class="k${cur===v?' sel':''}" data-np="v" data-v="${v}">${fmt(v)}</button>`).join('')}<button class="k sm" data-np="clr">Smazat</button></div>
   <div class="np-row"><button class="k sm" data-np="plan"${m.plan==null?' disabled':''}>= plán${m.plan!=null?' '+fmt(m.plan):''}</button><button class="k sm acc" data-np="next">Další →</button></div>`}
  else{const st=m.kind==='w'?L.settings.inc:1;
-  const K=[['7'],['8'],['9'],['−'+fmt(st),'dec','sm'],['4'],['5'],['6'],['+'+fmt(st),'inc','sm'],['1'],['2'],['3'],['= plán','plan','sm'],[','],['0'],['⌫','bs'],['OK →','ok','acc']];
-  keys=`<div class="np-grid">${K.map(([l,a,c])=>`<button class="k ${c||''}" data-np="${a||'d'}" data-v="${l}"${a==='plan'&&m.plan==null?' disabled':''}>${l}</button>`).join('')}</div>`}
- np.innerHTML=`<div class="np-h"><span>${esc(m.label)}${m.plan!=null?' · plán '+fmt(m.plan):''}</span><button class="np-x" data-np="close">✕</button></div>
+  const K=[['7'],['8'],['9'],['−'+fmt(st),'dec','sm'],['4'],['5'],['6'],['+'+fmt(st),'inc','sm'],['1'],['2'],['3'],['= plán','plan','sm'],[','],['0'],[ic('bksp',24),'bs'],['OK →','ok','acc']];
+  keys=`<div class="np-grid">${K.map(([l,a,c])=>`<button class="k ${c||''}" data-np="${a||'d'}" data-v="${a?'':l}"${a==='plan'&&m.plan==null?' disabled':''}>${l}</button>`).join('')}</div>`}
+ np.innerHTML=`<div class="np-h"><span>${esc(m.label)}${m.plan!=null?' · plán '+fmt(m.plan):''}</span><button class="np-x" data-np="close">${ic('close',14)}</button></div>
  <div class="np-d">${show?esc(show):'<span class="mut">—</span>'}<small>${esc(m.unit||'')}</small></div>${keys}`;np.hidden=false}
 function npCommit(v){const m=meta(NP.cell);m.set(v);const c=NP.cell;
  if(c.isConnected)c.textContent=v!=null?(c.dataset.f==='w'&&v===0?'BW':fmt(v)):'';
@@ -819,6 +842,9 @@ function npKey(b){const a=b.dataset.np,v=b.dataset.v;if(!NP.cell)return;const m=
  else if(a==='v'){npCommit(parseFloat(v));npNext();return}
  else if(a==='clr'){npCommit(null);drawNP();return}
  else if(a==='next'){npNext();return}
+ // zapisuje se průběžně – přepnutí do jiné kolonky nic nesmaže
+ const lv=NP.buf===''?null:num(NP.buf),c=NP.cell;m.set(lv);
+ if(c.isConnected)c.textContent=lv!=null?(c.dataset.f==='w'&&lv===0?'BW':fmt(lv)):'';
  drawNP()}
 
 /* ---------- pauza ---------- */
@@ -829,11 +855,11 @@ function beep(){try{navigator.vibrate&&navigator.vibrate([300,150,300]);if(!AC)r
   g.gain.setValueAtTime(.0001,t+o);g.gain.exponentialRampToValueAtTime(.6,t+o+.02);g.gain.exponentialRampToValueAtTime(.0001,t+o+.28);os.start(t+o);os.stop(t+o+.3)})}catch(e){}}
 function startRest(sec){unlockAudio();REST={end:Date.now()+sec*1000,dur:sec};LS.set('pl_rest',REST);showRest()}
 function showRest(){const el=$('#rest');if(!REST){el.hidden=true;return}
- el.innerHTML=`<div class="rx"><div class="rl" id="rl">Pauza</div><div class="rt" id="rt"></div></div><button class="rbtn" data-act="restadd" data-v="-30">−30</button><button class="rbtn" data-act="restadd" data-v="30">+30</button><button class="rbtn" data-act="restx">✕</button><div class="rbar"><i id="rb"></i></div>`;
+ el.innerHTML=`<div class="rx"><div class="rl" id="rl">Pauza</div><div class="rt" id="rt"></div></div><button class="rbtn" data-act="restadd" data-v="-30">−30</button><button class="rbtn" data-act="restadd" data-v="30">+30</button><button class="rbtn" data-act="restx">${ic('close',16)}</button><div class="rbar"><i id="rb"></i></div>`;
  el.hidden=false;tickRest()}
 function tickRest(){if(!REST)return;const el=$('#rest'),left=Math.ceil((REST.end-Date.now())/1000);if(!$('#rt'))return;
  if(left>0){$('#rt').textContent=mmss(left);$('#rb').style.width=Math.min(100,100-left/REST.dur*100)+'%';el.classList.remove('fin');$('#rl').textContent='Pauza'}
- else{$('#rt').textContent='Jdi na to 💪';$('#rl').textContent='Konec pauzy';$('#rb').style.width='100%';el.classList.add('fin');
+ else{$('#rt').textContent='Jdi na to';$('#rl').textContent='Konec pauzy';$('#rb').style.width='100%';el.classList.add('fin');
   if(!REST.beeped){REST.beeped=true;LS.set('pl_rest',REST);beep()}
   if(left<-45){REST=null;LS.set('pl_rest',null);el.hidden=true}}}
 
@@ -849,13 +875,13 @@ function closeSheet(){npClose();$('#sheet').hidden=true;$('#sheet').innerHTML=''
 let SH=null;
 function exMenu(id){const e=EX[id],x=L.ex[id]||{};SH='menu';
  sheet(`<div class="sht">${dispName(e)}</div><div class="mut sm">${esc(e.v)}</div>
- <button class="li" data-act="rest" data-e="${id}">⏱ Spustit pauzu (${mmss(restOf(e))})</button>
- ${isBar(e)?`<button class="li" data-act="plates" data-e="${id}">◎ Kotouče</button>`:''}
- <button class="li" data-act="addset" data-e="${id}">＋ Přidat sérii</button>
- ${x.extra>0?`<button class="li" data-act="rmset" data-e="${id}">− Odebrat přidanou sérii</button>`:''}
- <button class="li" data-act="sub" data-e="${id}">⇄ ${x.sub?'Změnit náhradu':'Nahradit cvik (obsazený stroj…)'}</button>
- ${x.sub?`<button class="li" data-act="unsub" data-e="${id}">↺ Vrátit původní cvik</button>`:''}
- <button class="li" data-act="skipex" data-e="${id}">${x.skip?'↺ Vrátit cvik':'⤼ Přeskočit cvik'}</button>
+ <button class="li" data-act="rest" data-e="${id}">${ic('timer',20)} Spustit pauzu (${mmss(restOf(e))})</button>
+ ${isBar(e)?`<button class="li" data-act="plates" data-e="${id}">${ic('plate',20)} Kotouče</button>`:''}
+ <button class="li" data-act="addset" data-e="${id}">${ic('plus',20)} Přidat sérii</button>
+ ${x.extra>0?`<button class="li" data-act="rmset" data-e="${id}">${ic('minus',20)} Odebrat přidanou sérii</button>`:''}
+ <button class="li" data-act="sub" data-e="${id}">${ic('swap',20)} ${x.sub?'Změnit náhradu':'Nahradit cvik (obsazený stroj…)'}</button>
+ ${x.sub?`<button class="li" data-act="unsub" data-e="${id}">${ic('undo',20)} Vrátit původní cvik</button>`:''}
+ <button class="li" data-act="skipex" data-e="${id}">${x.skip?ic('undo',20)+' Vrátit cvik':ic('skip',20)+' Přeskočit cvik'}</button>
  <button class="li mut" data-act="closesh">Zavřít</button>`)}
 
 /* kotouče */
@@ -899,7 +925,7 @@ function finish(){const id=L.active.dayId,d=dayById(id);
  <div class="row2"><button class="btn red" data-act="cancelask">Zrušit trénink</button></div>`)}
 function ciSave(){const id=L.active.dayId;CI.pain=$('#ci_pain').value.trim();CI.note=$('#ci_note').value.trim();
  L.sessions[id]={start:L.active.start,end:Date.now(),checkin:CI};L.active=null;save();wake(false);closeSheet();
- UI.ws=null;UI.mode='list';UI.tab='week';render();toast('Trénink uložen 💪')}
+ UI.ws=null;UI.mode='list';UI.tab='week';render();toast('Trénink uložen')}
 
 /* pro trenéra */
 function coachText(w){const o=[`${P.name} · ${P.block.title} · ${w.title} (${rlab(w.from,w.to)})`];
@@ -930,11 +956,11 @@ async function backup(){const data=JSON.stringify({app:'trenink',v:1,profile,sav
  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Záloha tréninku'});markBackup();return}}
  catch(e){if(e.name==='AbortError')return}
  const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=name;document.body.appendChild(a);a.click();a.remove();markBackup()}
-function markBackup(){L.settings.lastBackup=Date.now();save();render(true);toast('Záloha uložena ✓')}
+function markBackup(){L.settings.lastBackup=Date.now();save();render(true);toast('Záloha uložena')}
 $('#rf').addEventListener('change',async ev=>{const f=ev.target.files[0];ev.target.value='';if(!f)return;
  try{const o=JSON.parse(await f.text());if(!o||o.app!=='trenink'||!o.log||!o.log.sets)throw 0;
   if(!confirm(`Nahradit současná data zálohou z ${dfull(o.saved)}?`))return;
-  L=norm(o.log);save();render();toast('Záloha nahrána ✓')}catch(e){toast('Tohle není záloha z této aplikace')}});
+  L=norm(o.log);save();render();toast('Záloha nahrána')}catch(e){toast('Tohle není záloha z této aplikace')}});
 
 /* ---------- Více ---------- */
 const RESTS=[60,90,120,150,180,240,300];
@@ -948,7 +974,7 @@ function vMore(s){const S=L.settings,w=curWeek();
  <label>Doplňky</label><div class="chips">${RESTS.map(v=>chip(mmss(v),'setrest',`data-k="restAcc" data-v="${v}"`,S.restAcc===v)).join('')}</div></div>
  <div class="sec-h">Krok váhy (±, zaokrouhlení)</div><div class="card"><div class="chips">${[2.5,1.25,1,0.5].map(v=>chip(fmt(v)+' kg','setinc',`data-v="${v}"`,S.inc===v)).join('')}</div></div>
  ${Object.keys(PROGRAMS).length>1?`<div class="sec-h">Profil</div><div class="card"><div class="chips">${Object.entries(PROGRAMS).map(([k,p])=>chip(esc(p.name),'profile',`data-v="${k}"`,k===profile)).join('')}</div></div>`:''}
- <div class="sec-h">O aplikaci</div><div class="card sm mut">${esc(P.name)} · ${esc(P.block.title)} · verze ${APP_VER}<br>Data jsou jen v tomto telefonu · úložiště ${PERSIST?'trvalé ✓':'standardní'}<br>RPE tabulka a výpočty: rpecalculator.com</div><div style="height:20px"></div>`}
+ <div class="sec-h">O aplikaci</div><div class="card sm mut">${esc(P.name)} · ${esc(P.block.title)} · verze ${APP_VER}<br>Data jsou jen v tomto telefonu · úložiště ${PERSIST?'trvalé':'standardní'}<br>RPE tabulka a výpočty: rpecalculator.com</div><div style="height:20px"></div>`}
 
 /* ---------- události ---------- */
 document.addEventListener('click',ev=>{const t=ev.target;
@@ -964,7 +990,7 @@ document.addEventListener('click',ev=>{const t=ev.target;
   case'start':start(A.d);break;
   case'gows':closeOv();UI.ws=A.d;UI.tab='ws';render();break;
   case'edit':openEdit(A.d);break;
-  case'doneedit':UI.ws=null;UI.tab='week';UI.mode='list';render();toast('Uloženo ✓');break;
+  case'doneedit':UI.ws=null;UI.tab='week';UI.mode='list';render();toast('Uloženo');break;
   case'mode':if(A.m===UI.mode)break;
    if(A.m==='focus'){const b=$('#wsb'),cs=$$('.ex',b);let k=0;cs.forEach((x,i)=>{if(x.offsetTop<=b.scrollTop+40)k=i});UI.fi=k}
    UI.mode=A.m;render();
@@ -1012,7 +1038,7 @@ function tick(){const tw=$('#tabws');if(!L)return;
  else{tw.textContent='Trénink';tw.className=''}
  tickRest()}
 function chooser(){$('#tabs').hidden=true;
- $('#scr').innerHTML=`<div class="hd"><div class="lb">Vítej</div><h1>Kdo trénuje?</h1></div>${Object.entries(PROGRAMS).map(([k,p],i)=>`<button class="dcard ${COL[i%3]}" data-act="pickprof" data-v="${k}"><div class="top"><span class="pill">${esc(p.block.title)}</span><span class="arr">↗</span></div><h2>${esc(p.name)}</h2><div class="sub">Zápisy budou jen v tomto telefonu · změníš ve Více → Profil</div></button>`).join('')}`}
+ $('#scr').innerHTML=`<div class="hd"><div class="lb">Vítej</div><h1>Kdo trénuje?</h1></div>${Object.entries(PROGRAMS).map(([k,p],i)=>`<button class="dcard ${COL[i%3]}" data-act="pickprof" data-v="${k}"><div class="top"><span class="pill">${esc(p.block.title)}</span><span class="arr">${ic('arrow',18)}</span></div><h2>${esc(p.name)}</h2><div class="sub">Zápisy budou jen v tomto telefonu · změníš ve Více → Profil</div></button>`).join('')}`}
 function init(){if(!profile){chooser();return}$('#tabs').hidden=false;UI.ws=null;UI.pw=null;UI.mode='list';build();loadLog();seed();
  const h=location.hash.slice(1);UI.tab=['program','week','ws','more'].includes(h)?h:(L.active?'ws':'week');
  if(L.active)wake(true);render();showRest()}
