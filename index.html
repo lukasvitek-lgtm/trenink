@@ -218,7 +218,7 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.3';
+const APP_VER='1.4';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -359,7 +359,223 @@ W('w3','Týden 3','2026-10-19','2026-10-25','SBD RPE 7,5 · doplňky 2 série do
 W('w4','Týden 4','2026-10-26','2026-11-01','SBD RPE 8',[]),
 W('w5','Týden 5','2026-11-02','2026-11-08','SBD RPE 8 (primární dřep a sumo max 8,5)',[]),
 W('w6','Týden 6 · deload','2026-11-09','2026-11-15','Deload: série zhruba o polovinu, váhy ~90 %',[])
-]}};
+]},
+wife:{name:'Wife',
+block:{title:'Blok 1 · powerbuilding',from:'2026-10-06',to:'2026-11-14',sub:'5 týdnů práce + deload · série fixní, progrese přes RPE a váhu',notes:[
+`SBD (dřep, bench, tah): váhu hledej každý trénink podle RPE posledního warmupu – číslo v plánu je jen orientační, drž RPE.`,
+`PROGRESE: SBD týden 2 RPE 7–7,5 → 3: 7,5 → 4: 8 → 5: 8 → 6 (10.–14. 11.) deload: polovina sérií, váhy ~90 %. Když RPE vyjde o 1 výš dvakrát po sobě, uber 2,5 kg; když o 1 níž, přidej 2,5 kg. Doplňky: dvojitá progrese – když dáš všechny série na horní hranici opakování, příště o krok víc.`,
+`Bolest mezi lopatkami v sérii nad 3/10 → zbytek benche ten den vynech. Tah vždy s vlastním pásem.`]},
+weeks:[
+W('w1','Týden 1','2026-10-05','2026-10-11','SBD RPE 7 · doplňky RIR 1 (žádné selhání, první týden nového programu) · tah: hledáme pracovní váhu',[
+ D('2026-10-06','dřep (bez belt squatu)',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','7','57,5/62,5/62,5/60','',{w:'57.5/62.5/62.5/60',r:'5/4/5/5',p:'6/7/8/7.5'}),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','7','27,5/30/27,5','',{w:'27.5/30/27.5',r:'6/6/6',p:'6/8/7'}),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',3,'8/leg','RIR 2','6/7,5/8','',{w:'6/7.5/8',r:'8/12/8',p:'6/9.5/6.5'}),
+  E('Leg curl','lying',3,'12','RIR 1','20','',{w:'20/20/20',r:'12/12/12',p:'9/9/9',n:'šla jsem až po abductorech, v tuhle chvíli mě bolí hlava'}),
+  E('Abductor machine','trup v předklonu = víc zadek',3,'15','RIR 1','45/55','',{w:'45/55/55',r:'22/15/15',p:'9.5/8.5/10',n:'posledni sérii jsem nešla posledních 5 reps cely rozsah, uz mi to nešlo xd'}),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',3,'10','RIR 1','25/35','',{w:'25/35/35',r:'15/10/10',p:'7/9/10',n:'hlava od teto chvíle vůbec nebolí'}),
+  E('Pulldown','neutral grip',3,'10','RIR 2','30/35/40','',{w:'30/35/40',r:'10/10/10',p:'4/7/9',n:'mam blby odhad jak jsem predtim nejela shyby, krom toho si nevidím na ty záda'}),
+  E('Core work','plank',2,'60s','10','5/10','',{w:'5/10',r:'60/45',p:'7/10',n:'jela jsem před pulldownem, byl plný'}),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','',{n:'celkem 18:30-20:30'})]),
+ D('2026-10-07','tah (bez belt squatu)',[
+  E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','7','70/75/70','',{w:'70/75/70',r:'5/5/5',p:'6/7/6.5'}),
+  E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','7','27,5','',{w:'27.5/27.5/27.5',r:'5/5/5',p:'7/7/7.5'}),
+  E('Hip thrust','stroj na knížecí',4,'10','RIR 2','20/30','',{w:'20/30/30/30',r:'10/12/12/12',p:'7/8/8/8'}),
+  E('Adductor machine','',3,'15','RIR 1','25/35','',{w:'25/35/35',r:'22/15/15',p:'8/9/9',n:'cítím namožená třísla'}),
+  E('Leg curl','lying',3,'12','RIR 1','20/25','',{w:'20/25/25',r:'12/12/12',p:'7/9/9'}),
+  E('Cable row','seated · V-grip (když není: row machine)',3,'10','RIR 1','40/45/40','',{w:'40/45/40',r:'12/9/10',p:'9/10/10',n:'jela jsem po hip trustech, cítím namožená bedra'}),
+  E('Rear delts','reverse fly / reverse pec deck/face-pulls',3,'15','RIR 1','5','',{w:'5/5/5',r:'15/15/15',p:'8/9/10',n:'poslední jen 9 reps'}),
+  E('Core work','side plank / Pallof press',2,'30s each','','','',{r:'30/30',p:'8/9',n:'u druhé série mě bolely žebra, jsem se tam nějak divně zkroutila xd taky mi přijde že nevim jak správně držet ramena a lopatky'})],'Zápis: 17:30-20:30'),
+ D('2026-10-09','bench (nejdelší den, jen 1 cvik na nohy)',[
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','7','30/32,5/30','',{w:'30/32.5/30',r:'3/3/3',p:'7/7/7'}),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','7','25','',{w:'25/25',r:'8/8',p:'7.5/7'}),
+  E('Belt squat','když není: leg press',3,'10','RIR 2','20/40/45','',{w:'20/40/45',r:'16/10/10',p:'8/8/8',n:'cítím namožená třísla'}),
+  E('Incline DB press','30°',3,'10','RIR 1','10','',{w:'10/10/10',r:'10/10/7',p:'9/9.5/10'}),
+  E('Pulldown','wide grip',3,'10','RIR 1','30/35','',{w:'30/35/35',r:'10/10/10',p:'5/8/9'}),
+  E('Lateral raises','DB nebo kladka',3,'15','RIR 1','5/5/6','',{w:'5/5/6',r:'15/15/15',p:'9/7/10',n:'nebaví mě tolik reps'}),
+  E('Triceps pushdown','lano nebo tyč',3,'12','RIR 1','5/5/7,5','',{w:'5/5/7.5',r:'14/14/12',p:'9/9/9'}),
+  E('Face pull','lano, lokty vysoko, lopatky k sobě',3,'15','RIR 1','15/12,5/15','',{w:'15/12.5/15',r:'15/15/15',p:'8/6/7'}),
+  E('Bicep curls','DB nebo stroj',3,'12','RIR 1','6','',{w:'6/6/6',r:'12/12/12',p:'9/9/9'})],'Zápis: 11:00-13:00 · tenhle trénink mě nebavil, byl moc dlouhý'),
+ D('2026-10-10','run',[
+  E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
+],{done:true}),
+W('w2','Týden 2','2026-10-12','2026-10-18','SBD RPE 7–7,5 · \'sel.\' = poslední série opravdu do selhání',[
+ D('2026-10-13','dřep (bez belt squatu)',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','7–7,5','60','',{w:'60/60/60/60',r:'5/5/5/5',p:'6.5/8/7.5/7.5',n:'moc malá pauza před 2. sérii, podle tebe rpe 8 :p'}),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','7–7,5','30','',{w:'30/30/30',r:'5/6/6',p:'7.5/7.5/8',n:'dneska mi to přišlo nejake těžší'}),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','8','',{w:'8/8',r:'10/8',p:'8/8',n:'původně jsi měl napsané 7,5 kg · nejbližší 2,5 kg činky jsou nahoře, to je moc daleko:( na stoji je 20 nebo 25'}),
+  E('Leg curl','lying nebo seated',3,'10','sel.','25','',{w:'25/25/25',r:'13/13/10',p:'10/10/10'}),
+  E('Abductor machine','trup v předklonu = víc zadek',3,'12','sel.','55/65','',{w:'55/65/65',r:'20/14/14',p:'9/10/10',n:'v posledních dvou sériích jsem poslední 2 reps šla spis pul repy, uz to nebyl plny rozsah pohybu'}),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',3,'8','sel.','35','',{w:'35/35/35',r:'8/8/8',p:'9.5/9.5/10',n:'šla jsem po leg curl'}),
+  E('Pulldown','neutral grip',2,'8','sel.','40','',{n:'nebyl čas a byl furt zabrán :( šla jsem místo toho stojky:D'}),
+  E('Core work','plank',2,'45 s','','10','',{w:'10/10',r:'45/38',p:'9.5/10'}),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','',{n:'7:45-9:30'})]),
+ D('2026-10-14','tah (bez belt squatu)',[
+  E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','7–7,5','75/70','',{w:'75/70/70',r:'5/5/5',p:'7/6/7',n:'blby brace (bez mého pásu) prohýbají se spodní záda - cítím vzprimovače, více na pravé straně. pred 75 jsem šl jeste 70x5 - mega easy'}),
+  E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','7–7,5','30','',{w:'30/30/30',r:'5/5/5',p:'7/7.5/7.5'}),
+  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','40/45/50','',{w:'40/45/50',r:'8/8/8',p:'7/7.5/8'}),
+  E('Adductor machine','',3,'12','sel.','35','',{w:'35/35/35',r:'15/15/15',p:'10/10/10'}),
+  E('Leg curl','lying',2,'10','sel.','30','',{w:'30/30',r:'10/10',p:'10/10',n:'plánováno 25kg'}),
+  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','40/45','',{w:'40/45',r:'13/8',p:'10/10'}),
+  E('Core work','Pallof press',2,'10/side','','7,5','',{w:'7.5/7.5',r:'10/10',p:'8/8'}),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')],'šla jsem ČT 15.10. · Zápis: ČT 9:30'),
+ D('2026-10-16','bench (nejdelší den, jen 1 cvik na nohy)',[
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','7–7,5','32,5','',{w:'32.5/32.5/32.5',r:'3/3/3',p:'7/7.5/7.5',n:'už před tréninkem mě bolely bedra (namožení)'}),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','7–7,5','27,5','',{w:'27.5/27.5',r:'8/8',p:'7.5/7.5'}),
+  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','LP 70/75','',{w:'70/75',r:'8/8',p:'8/7',n:'belt squat nebyl'}),
+  E('Incline DB press','30°',3,'8','RIR 1','10','',{w:'10/10',r:'8/8',p:'9/9.5'}),
+  E('Pulldown','wide grip',3,'8','sel.','35/40','',{w:'35/40',r:'12/8',p:'9/9.5',n:'ty stoje jsou po 5 kg, nelze jit 37,5 aniž bych si chodila pro mini váhu'}),
+  E('Cable fly / pec deck','',3,'10','sel.','5','',{w:'5/5',r:'10/10',p:'10/10'}),
+  E('Lateral raises','DB nebo kladka',3,'10','sel.','7','',{w:'7/7',r:'10/10',p:'10/9'}),
+  E('Triceps pushdown','lano nebo tyč',3,'10','sel.','7,5/10','',{w:'7.5/10',r:'18/9',p:'10/10'}),
+  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',3,'12','sel.','FP 17,5','',{w:'17.5/17.5',r:'12/12',p:'8/8'}),
+  E('Bicep curls','DB nebo stroj',3,'10','sel.','7/8','',{w:'7/8',r:'15/9',p:'9/10'}),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')],'šla jsem SO 17.10., trochu nemocná'),
+ D('2026-10-17','run',[
+  E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
+],{done:true}),
+W('w3','Týden 3','2026-10-19','2026-10-25','SBD RPE 7,5 · \'sel.\' = obě série do selhání',[
+ D('2026-10-20','dřep (bez belt squatu)',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','7,5','62,5',''),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','7,5','30',''),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','',''),
+  E('Leg curl','lying nebo seated',2,'10','sel.','',''),
+  E('Abductor machine','trup v předklonu = víc zadek',2,'12','sel.','',''),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','sel.','',''),
+  E('Pulldown','neutral grip',2,'10','sel.','',''),
+  E('Core work','plank',2,'45 s','','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-10-21','tah (bez belt squatu)',[
+  E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','7,5','77,5',''),
+  E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','7,5','30',''),
+  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','',''),
+  E('Adductor machine','',2,'12','sel.','',''),
+  E('Leg curl','lying',2,'10','sel.','',''),
+  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','',''),
+  E('Core work','Pallof press',2,'10/side','','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-10-23','bench (nejdelší den, jen 1 cvik na nohy)',[
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','7,5','32,5',''),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','7,5','27,5',''),
+  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','',''),
+  E('Incline DB press','30°',3,'8','RIR 1','',''),
+  E('Pulldown','wide grip',2,'10','sel.','',''),
+  E('Cable fly / pec deck','',2,'10','sel.','',''),
+  E('Lateral raises','DB nebo kladka',2,'10','sel.','',''),
+  E('Triceps pushdown','lano nebo tyč',2,'10','sel.','',''),
+  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','sel.','',''),
+  E('Bicep curls','DB nebo stroj',2,'10','sel.','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-10-24','run',[
+  E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
+]),
+W('w4','Týden 4','2026-10-26','2026-11-01','SBD RPE 8 · \'sel.\' = obě série do selhání',[
+ D('2026-10-27','dřep (bez belt squatu)',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','8','62,5',''),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','8','30',''),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','',''),
+  E('Leg curl','lying nebo seated',2,'10','sel.','',''),
+  E('Abductor machine','trup v předklonu = víc zadek',2,'12','sel.','',''),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','sel.','',''),
+  E('Pulldown','neutral grip',2,'10','sel.','',''),
+  E('Core work','plank',2,'45 s','','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-10-28','tah (bez belt squatu)',[
+  E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','8','77,5–80',''),
+  E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','8','30',''),
+  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','',''),
+  E('Adductor machine','',2,'12','sel.','',''),
+  E('Leg curl','lying',2,'10','sel.','',''),
+  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','',''),
+  E('Core work','Pallof press',2,'10/side','','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-10-30','bench (nejdelší den, jen 1 cvik na nohy)',[
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','8','32,5–35',''),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','8','27,5',''),
+  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','',''),
+  E('Incline DB press','30°',3,'8','RIR 1','',''),
+  E('Pulldown','wide grip',2,'10','sel.','',''),
+  E('Cable fly / pec deck','',2,'10','sel.','',''),
+  E('Lateral raises','DB nebo kladka',2,'10','sel.','',''),
+  E('Triceps pushdown','lano nebo tyč',2,'10','sel.','',''),
+  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','sel.','',''),
+  E('Bicep curls','DB nebo stroj',2,'10','sel.','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-10-31','run',[
+  E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
+]),
+W('w5','Týden 5','2026-11-02','2026-11-08','SBD RPE 8 · nejtěžší týden bloku',[
+ D('2026-11-03','dřep (bez belt squatu)',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','8','62,5–65',''),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','8','30–32,5',''),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','',''),
+  E('Leg curl','lying nebo seated',2,'10','sel.','',''),
+  E('Abductor machine','trup v předklonu = víc zadek',2,'12','sel.','',''),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','sel.','',''),
+  E('Pulldown','neutral grip',2,'10','sel.','',''),
+  E('Core work','plank',2,'45 s','','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-11-04','tah (bez belt squatu)',[
+  E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','8','80',''),
+  E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','8','30',''),
+  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','',''),
+  E('Adductor machine','',2,'12','sel.','',''),
+  E('Leg curl','lying',2,'10','sel.','',''),
+  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','',''),
+  E('Core work','Pallof press',2,'10/side','','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-11-06','bench (nejdelší den, jen 1 cvik na nohy)',[
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','8','35',''),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','8','27,5–30',''),
+  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','',''),
+  E('Incline DB press','30°',3,'8','RIR 1','',''),
+  E('Pulldown','wide grip',2,'10','sel.','',''),
+  E('Cable fly / pec deck','',2,'10','sel.','',''),
+  E('Lateral raises','DB nebo kladka',2,'10','sel.','',''),
+  E('Triceps pushdown','lano nebo tyč',2,'10','sel.','',''),
+  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','sel.','',''),
+  E('Bicep curls','DB nebo stroj',2,'10','sel.','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-11-07','run',[
+  E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
+]),
+W('w6','Týden 6','2026-11-09','2026-11-15','DELOAD · u všeho jen POLOVINA sérií (zaokrouhli nahoru), SBD RPE 6, doplňky RIR 3, nic do selhání',[
+ D('2026-11-10','dřep (bez belt squatu)',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','6','55',''),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','6','25',''),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 3','',''),
+  E('Leg curl','lying nebo seated',2,'10','RIR 3','',''),
+  E('Abductor machine','trup v předklonu = víc zadek',2,'12','RIR 3','',''),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','RIR 3','',''),
+  E('Pulldown','neutral grip',2,'10','RIR 3','',''),
+  E('Core work','plank',2,'45 s','','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-11-11','tah (bez belt squatu)',[
+  E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','6','70',''),
+  E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','6','25',''),
+  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 3','',''),
+  E('Adductor machine','',2,'12','RIR 3','',''),
+  E('Leg curl','lying',2,'10','RIR 3','',''),
+  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','RIR 3','',''),
+  E('Core work','Pallof press',2,'10/side','','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-11-13','bench (nejdelší den, jen 1 cvik na nohy)',[
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','6','30',''),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','6','22,5',''),
+  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 3','',''),
+  E('Incline DB press','30°',3,'8','RIR 3','',''),
+  E('Pulldown','wide grip',2,'10','RIR 3','',''),
+  E('Cable fly / pec deck','',2,'10','RIR 3','',''),
+  E('Lateral raises','DB nebo kladka',2,'10','RIR 3','',''),
+  E('Triceps pushdown','lano nebo tyč',2,'10','RIR 3','',''),
+  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','RIR 3','',''),
+  E('Bicep curls','DB nebo stroj',2,'10','RIR 3','',''),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+ D('2026-11-14','run',[
+  E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
+]),
+]}
+};
 
 /* ---------- utility ---------- */
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -381,7 +597,8 @@ function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTim
 /* ---------- úložiště ---------- */
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){toast('Nepodařilo se uložit!');return false}}};
-let profile=LS.get('pl_profile','lukas');if(!PROGRAMS[profile])profile='lukas';
+let profile=LS.get('pl_profile',null);
+if(!PROGRAMS[profile]){profile=null;try{if(localStorage.getItem('pl_log_lukas'))profile='lukas'}catch(e){}if(profile)LS.set('pl_profile',profile)}
 let P,DAYS,EX,L;
 function build(){P=PROGRAMS[profile];DAYS=[];EX={};
  P.weeks.forEach(w=>w.days.forEach((d,di)=>{d.week=w;d.id=w.id+'d'+(di+1);DAYS.push(d);
@@ -408,7 +625,7 @@ function seed(){if((L.seeded||0)>=SEED)return;
 /* ---------- model ---------- */
 const isSBD=e=>/^(squat|bench|deadlift)$/i.test(e.n);
 const isBar=e=>/^(squat|bench|deadlift|rdl)$/i.test(e.n);
-const isCardio=e=>/^run$/i.test(e.n);
+const isCardio=e=>/^(run|roller)$/i.test(e.n);
 function tok(str,i){if(!str)return'';const p=str.split('/');if(p.length>1&&p.every(x=>/^\s*\d/.test(x)))return p[Math.min(i,p.length-1)].trim();return str}
 function rpeInfo(s){s=(s||'').trim();if(!s)return{lab:'',full:'',n:null};
  const m=s.match(/^RIR\s*(\d+(?:[.,]\d)?)/i);if(m){const r=num(m[1]);return{lab:'RIR '+fmt(r),full:'RIR '+fmt(r)+' (≈ RPE '+fmt(10-r)+')',n:10-r}}
@@ -440,7 +657,7 @@ function prevOf(e){const j0=DAYS.indexOf(e.day);
 const dayLogged=d=>d.ex.some(hasLog);
 function dayStatus(d){if(L.active&&L.active.dayId===d.id)return'live';if(L.sessions[d.id]&&L.sessions[d.id].end)return'done';if(d.skip)return'skip';if(dayLogged(d))return'part';return d.date<today()?'past':'todo'}
 const STAT={live:['● Probíhá','live'],done:['✓ Odjeto','ok'],skip:['Vynecháno',''],part:['Rozpracováno','warn'],past:['Nezapsáno',''],todo:['','']};
-function curWeek(){const t=today();return P.weeks.find(w=>w.from<=t&&t<=w.to)||[...P.weeks].reverse().find(w=>w.from<=t&&w.days.length)||P.weeks[0]}
+function curWeek(){const t=today();return P.weeks.find(w=>w.from<=t&&t<=w.to)||P.weeks.find(w=>w.from>t&&w.days.length)||[...P.weeks].reverse().find(w=>w.from<=t&&w.days.length)||P.weeks[0]}
 
 /* ---------- UI stav ---------- */
 const UI={tab:'week',ws:null,mode:'list',fi:0,pw:null};
@@ -624,7 +841,7 @@ function tickRest(){if(!REST)return;const el=$('#rest'),left=Math.ceil((REST.end
 let WL=null;
 async function wake(on){try{if(on&&!WL&&'wakeLock'in navigator){WL=await navigator.wakeLock.request('screen');WL.addEventListener('release',()=>{WL=null})}
  if(!on&&WL){await WL.release();WL=null}}catch(e){}}
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){if(L.active)wake(true);tick()}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&L){if(L.active)wake(true);tick()}});
 
 /* ---------- modální okna ---------- */
 function sheet(html){const s=$('#sheet');s.innerHTML=`<div class="sh" data-scope>${html}</div>`;s.hidden=false}
@@ -783,17 +1000,20 @@ document.addEventListener('click',ev=>{const t=ev.target;
   case'restore':$('#rf').click();break;
   case'setrest':L.settings[A.k]=+A.v;save();render(true);break;
   case'setinc':L.settings.inc=+A.v;save();render(true);break;
-  case'profile':profile=A.v;LS.set('pl_profile',profile);init();break;
+  case'profile':if(L.active){toast('Nejdřív ukonči běžící trénink');break}profile=A.v;LS.set('pl_profile',profile);init();break;
+  case'pickprof':profile=A.v;LS.set('pl_profile',profile);init();break;
   case'closesh':closeSheet();break;
  }});
 document.addEventListener('input',ev=>{const t=ev.target;if(t.matches('textarea.nt')){exL(t.dataset.e).note=t.value.trim()?t.value:'';if(!t.value.trim())delete L.ex[t.dataset.e].note;saveSoon()}});
 
 /* ---------- běh ---------- */
-function tick(){const tw=$('#tabws');
+function tick(){const tw=$('#tabws');if(!L)return;
  if(L.active){const t=clock(Date.now()-L.active.start),c=$('#clock');if(c)c.textContent=t;tw.textContent=t;tw.className='live'}
  else{tw.textContent='Trénink';tw.className=''}
  tickRest()}
-function init(){build();loadLog();seed();
+function chooser(){$('#tabs').hidden=true;
+ $('#scr').innerHTML=`<div class="hd"><div class="lb">Vítej</div><h1>Kdo trénuje?</h1></div>${Object.entries(PROGRAMS).map(([k,p],i)=>`<button class="dcard ${COL[i%3]}" data-act="pickprof" data-v="${k}"><div class="top"><span class="pill">${esc(p.block.title)}</span><span class="arr">↗</span></div><h2>${esc(p.name)}</h2><div class="sub">Zápisy budou jen v tomto telefonu · změníš ve Více → Profil</div></button>`).join('')}`}
+function init(){if(!profile){chooser();return}$('#tabs').hidden=false;UI.ws=null;UI.pw=null;UI.mode='list';build();loadLog();seed();
  const h=location.hash.slice(1);UI.tab=['program','week','ws','more'].includes(h)?h:(L.active?'ws':'week');
  if(L.active)wake(true);render();showRest()}
 init();
