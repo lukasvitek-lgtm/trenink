@@ -1,6 +1,6 @@
 // Offline režim: síť napřed (aby se nová verze programu hned projevila), bez signálu z mezipaměti.
-const C = 'trenink-v6';
-const FILES = ['./', './index.html', './manifest.webmanifest', './icon.png'];
+const C = 'trenink-v7';
+const FILES = ['./', './index.html', './manifest.webmanifest', './icon.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(C).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
