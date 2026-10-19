@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trénink">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Trénink</title>
+<style>
+:root{--bg:#000;--card:#111;--card2:#1c1c1e;--line:#262626;--txt:#f5f5f5;--mut:#8e8e8e;--acc:#0a84ff;--ok:#30d158;--warn:#ff9f0a;--bad:#ff453a;--tabh:56px;--sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:16px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+body{position:fixed;inset:0;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+textarea{-webkit-user-select:text;user-select:text}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:disabled{opacity:.4}
+[hidden]{display:none!important}
+#scr{position:absolute;left:0;right:0;top:0;bottom:calc(var(--tabh) + var(--sb));overflow-y:auto;-webkit-overflow-scrolling:touch;padding-top:var(--st)}
+#scr.fixed{overflow:hidden;display:flex;flex-direction:column;padding-top:0}
+#tabs{position:absolute;left:0;right:0;bottom:0;height:calc(var(--tabh) + var(--sb));padding-bottom:var(--sb);display:flex;background:rgba(0,0,0,.94);border-top:1px solid var(--line);z-index:30}
+#tabs button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;color:var(--mut)}
+#tabs button.on{color:var(--txt)}
+#tabs svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#tabs .live{color:var(--ok);font-variant-numeric:tabular-nums}
+.hd{padding:14px 16px 4px}
+.hd h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.3px}
+.mut{color:var(--mut)}
+.sm{font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 12px}
+.card label,.sh label{display:block;font-size:13px;color:var(--mut);margin:12px 0 6px}
+.note{font-size:14px;color:#cfcfcf}
+.cn{font-size:13px;color:#e3cf86;background:#1f1b0c;border-radius:8px;padding:6px 9px;margin:6px 0}
+.an{font-size:13px;color:#9fd3ff;margin-top:6px}
+.btn{display:block;width:100%;padding:14px;border-radius:12px;background:var(--acc);color:#fff;font-weight:600;text-align:center;font-size:16px}
+.btn.sec{background:var(--card2);color:var(--txt);border:1px solid var(--line)}
+.btn.red{background:#3a1512;color:#ff6b5e;border:1px solid #5a221d}
+.row2{display:flex;gap:8px;margin-top:12px}
+.row2>*{flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:8px 12px;border-radius:999px;background:var(--card2);border:1px solid var(--line);font-size:14px;white-space:nowrap}
+.chip.on{background:var(--txt);color:#000;border-color:var(--txt)}
+.badge{font-size:12px;padding:3px 8px;border-radius:999px;background:var(--card2);color:var(--mut);white-space:nowrap;flex:none}
+.badge.ok{color:var(--ok)}.badge.warn{color:var(--warn)}.badge.live{background:var(--ok);color:#000}
+details.acc{margin:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+details>summary{list-style:none;cursor:pointer;padding:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+details>summary::-webkit-details-marker{display:none}
+details>summary>div:first-child{flex:1;min-width:0}
+details.acc>summary::after,details.dacc>summary::after{content:'›';color:var(--mut);font-size:22px;line-height:1;transform:rotate(90deg);transition:transform .2s;flex:none}
+details[open]>summary::after{transform:rotate(-90deg)!important}
+details.dacc{border-top:1px solid var(--line)}
+details.dacc>summary{padding:12px 14px}
+.dbody{padding:0 14px 14px}
+.wnote{padding:0 14px 12px;font-size:13px;color:var(--mut)}
+.exr{padding:10px 0;border-top:1px solid var(--line)}
+.exr:first-child{border-top:0}
+.exr.skip{opacity:.45}
+.exn{font-weight:600}
+.exn.big{font-size:27px;line-height:1.1;margin:4px 0 2px;letter-spacing:-.3px}
+.logl{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.lg{font-size:13px;background:var(--card2);border-radius:6px;padding:3px 7px;font-variant-numeric:tabular-nums}
+.dcard{display:block;width:calc(100% - 24px);margin:10px 12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.dch{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.ring{padding:2.5px;border-radius:50%;background:conic-gradient(#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5,#feda75);flex:none}
+.av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--card2);flex:none}
+.ring .av{box-shadow:0 0 0 2.5px #000}
+.av.done{background:var(--ok);color:#000}
+.prevw div{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:2px 0}
+.prevw span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prevw span:last-child{flex:none}
+#ov{position:absolute;left:0;right:0;top:0;bottom:calc(var(--tabh) + var(--sb));background:var(--bg);z-index:20;display:flex;flex-direction:column}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:calc(var(--st) + 8px) 12px 8px;border-bottom:1px solid var(--line);background:#000}
+.bar button{color:var(--acc);font-size:17px;min-width:70px;text-align:left}
+.bar span{min-width:70px}
+.snap{position:relative;flex:1;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch}
+.page{min-height:100%;scroll-snap-align:start;scroll-snap-stop:always;padding:16px 16px 48px;border-bottom:1px solid var(--line)}
+.hint{text-align:center;color:#555;font-size:12px;margin-top:18px}
+.wsh{padding:calc(var(--st) + 8px) 14px 8px;border-bottom:1px solid var(--line);background:#000;flex:none}
+.wst{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.clock{font-variant-numeric:tabular-nums;font-size:26px;font-weight:700;color:var(--ok)}
+.seg{display:flex;background:var(--card2);border-radius:10px;padding:3px;margin-top:8px}
+.seg button{flex:1;padding:7px;border-radius:8px;font-size:14px;color:var(--mut)}
+.seg button.on{background:#3a3a3c;color:var(--txt)}
+.wsb{position:relative;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.wsb.snap{overflow-y:scroll}
+.list{padding-bottom:24px}
+.npo .list,.npo .page,.npo .sh,.npo #scr:not(.fixed){padding-bottom:350px}
+.exh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ibtn{width:36px;height:36px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-size:17px;flex:none}
+.ex{--cols:24px 1fr 66px 52px 52px}
+.big,.big .ex{--cols:28px 1fr 78px 60px 60px}
+.seth{display:grid;grid-template-columns:var(--cols);gap:6px;font-size:11px;color:var(--mut);margin-top:10px;text-transform:uppercase;letter-spacing:.4px}
+.seth span:nth-child(n+3){text-align:center}
+.set{display:grid;grid-template-columns:var(--cols);gap:6px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.si{width:22px;height:22px;border-radius:50%;background:var(--card2);font-size:12px;display:grid;place-items:center}
+.set.done .si{background:var(--ok);color:#000;font-weight:700}
+.plan{font-size:14px;line-height:1.2;min-width:0}
+.plan small{display:block;color:var(--mut);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cell{height:44px;border-radius:10px;background:var(--card2);border:1px solid var(--line);font-size:18px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;width:100%}
+.big .cell{height:54px;font-size:22px}
+.cell:empty::before{content:attr(data-ph);color:#5a5a5e;font-weight:400;font-size:15px}
+.cell.on{border-color:var(--acc);box-shadow:inset 0 0 0 1.5px var(--acc)}
+.cell.off{pointer-events:none;opacity:.35}
+.ex.skip,.page.skip .sets{opacity:.4}
+.meta{font-size:13px;color:var(--mut);margin-top:4px}
+.meta b{color:var(--txt);font-weight:600}
+.e1{color:var(--acc)}
+.e1 b{color:var(--acc)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 6px}
+.tag{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--card2);border:1px solid var(--line)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 12px}
+textarea{width:100%;min-height:90px;background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:16px;resize:vertical}
+.empty{text-align:center;color:var(--mut);padding:40px 20px}
+.sec-h{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);margin:22px 16px 4px}
+#np{position:absolute;left:0;right:0;bottom:0;z-index:60;background:#0c0c0c;border-top:1px solid var(--line);padding:8px 8px calc(8px + var(--sb));box-shadow:0 -10px 30px rgba(0,0,0,.6)}
+.np-h{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mut);padding:0 4px 2px}
+.np-x{width:40px;height:30px;font-size:16px;color:var(--mut)}
+.np-d{font-size:34px;font-weight:700;text-align:center;padding:0 0 8px;font-variant-numeric:tabular-nums;min-height:46px}
+.np-d small{font-size:15px;color:var(--mut);margin-left:6px;font-weight:500}
+.np-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.k{height:52px;border-radius:12px;background:#232325;font-size:22px;font-weight:500}
+.k:active{background:#3a3a3c}
+.k.sm{font-size:15px}
+.k.acc{background:var(--acc);color:#fff;font-weight:600}
+.k.sel{background:var(--txt);color:#000}
+.np-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+#sheet{position:absolute;inset:0;z-index:50;background:rgba(0,0,0,.6);display:flex;align-items:flex-end}
+.sh{background:#141414;width:100%;max-height:90%;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + var(--sb));border-top:1px solid var(--line)}
+.sht{font-size:19px;font-weight:700;margin-bottom:4px}
+.li{display:block;width:100%;text-align:left;padding:14px 4px;border-bottom:1px solid var(--line);font-size:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.res{font-size:42px;font-weight:700;text-align:center;margin:14px 0 2px;font-variant-numeric:tabular-nums}
+table.rt{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0 14px;font-variant-numeric:tabular-nums}
+.rt td{padding:6px 2px;border-top:1px solid var(--line);text-align:center}
+.plv{display:flex;align-items:center;justify-content:center;height:130px;margin:8px 0}
+.plv .bb{width:46px;height:12px;background:#9a9a9a;border-radius:2px 0 0 2px}
+.plv .cl{width:8px;height:30px;background:#c7c7c7;border-radius:2px;margin-right:2px}
+.plv i{display:block;border-radius:3px;margin-right:2px;border:1px solid rgba(255,255,255,.15)}
+.plv .sv{width:40px;height:12px;background:#9a9a9a;border-radius:0 2px 2px 0}
+.warnt{color:var(--warn);font-size:14px;text-align:center}
+#rest{position:absolute;left:10px;right:10px;bottom:calc(var(--tabh) + var(--sb) + 10px);z-index:40;background:#1c1c1e;border:1px solid #333;border-radius:14px;padding:8px 8px 10px 14px;display:flex;align-items:center;gap:6px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.npo #rest{bottom:auto;top:calc(var(--st) + 6px)}
+#rest .rx{flex:1}
+#rest .rl{font-size:12px;color:var(--mut)}
+#rest .rt{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+#rest .rbar{position:absolute;left:0;right:0;bottom:0;height:3px;background:#2c2c2e}
+#rest .rbar i{display:block;height:100%;background:var(--acc);width:0}
+#rest .rbtn{min-width:46px;height:38px;border-radius:10px;background:#2c2c2e;font-size:15px}
+#rest.fin{background:#0f3d1c;border-color:var(--ok)}
+#rest.fin .rl{color:#b8f5c8;font-size:15px;font-weight:600}
+#toast{position:absolute;left:50%;top:calc(var(--st) + 14px);transform:translateX(-50%);background:#2c2c2e;padding:10px 16px;border-radius:999px;z-index:80;font-size:14px;max-width:90%;text-align:center}
+#err{position:absolute;top:0;left:0;right:0;background:#a00;color:#fff;font-size:12px;padding:6px 10px;z-index:99}
+.ban{background:#132238;border-color:#1f3a5f}
+</style>
+</head>
+<body>
+<main id="scr"></main>
+<div id="ov" hidden></div>
+<div id="rest" hidden></div>
+<nav id="tabs">
+  <button data-act="tab" data-t="program"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Program</button>
+  <button data-act="tab" data-t="week"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>Týden</button>
+  <button data-act="tab" data-t="ws"><svg viewBox="0 0 24 24"><path d="M2.5 9v6M5.5 6.5v11M18.5 6.5v11M21.5 9v6M5.5 12h13"/></svg><span id="tabws">Trénink</span></button>
+  <button data-act="tab" data-t="more"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Více</button>
+</nav>
+<div id="sheet" hidden></div>
+<div id="np" hidden></div>
+<div id="toast" hidden></div>
+<input type="file" id="rf" accept="application/json,.json" hidden>
+<script>
+'use strict';
+window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
+const APP_VER='1.0';
+
+/* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
+   % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
+const PCT=[100,97.8,95.5,93.9,92.2,90.7,89.2,87.8,86.3,85,83.7,82.4,81.1,79.9,78.6,77.4,76.2,75.1,73.9,72.3,70.7,69.4,68,66.7,65.3,64,62.6,61.3,59.9,58.6,57.4];
+function pct(r,p){if(!(r>=1&&r<=12)||!(p>=5&&p<=10))return null;p=Math.round(p*2)/2;return PCT[Math.round((Math.round(r)+10-p-1)*2)]??null}
+function e1rm(w,r,p){const q=pct(r,p);return w>0&&q?w/q*100:null}
+
+/* ---------- Program ---------- */
+const E=(n,v,s,r,p,t,note,h)=>({n,v:v||'',s,r:String(r??''),p:String(p??''),t:String(t??''),note:note||'',h});
+const D=(date,title,ex,note,opt)=>Object.assign({date,title,ex,note:note||''},opt);
+const W=(id,title,from,to,note,days,opt)=>Object.assign({id,title,from,to,note,days},opt);
+
+const PROGRAMS={lukas:{name:'Lukáš',
+block:{title:'Blok 1 · hypertrofie',from:'2026-10-05',to:'2026-11-15',sub:'5 týdnů práce + deload · série fixní, progrese přes RPE a váhu',notes:[
+`Progrese SBD: týden 1 RPE 7 → 2: 7–7,5 → 3: 7,5 → 4: 8 → 5: 8 (primární dřep a sumo max 8,5) → 6 (9.–15. 11.) deload: série zhruba o polovinu, váhy ~90 %. Série se v bloku nemění, roste váha.`,
+`Doplňky: dvojitá progrese – když dáš všechny série na horní hranici opakování, příště o krok víc. Od týdne 3 doplňky 2 série. „sel.“ = obě série do selhání (stroje, kladky, belt squat, leg press). „tech. sel.“ = do posledního čistého opakování, bez grindu a dopomoci. Bez selhání: cokoli s osou – řídí RPE. Noc pod 6 h → ten den bez selhání u doplňků.`,
+`Tah: sumo je hlavní styl natrvalo, v úterý tempo sumo. Primární bench 4×4 ve čtvrtek, long pause v úterý.`,
+`LOPATKA (vpravo mezi lopatkou a páteří): bolest do 3/10, která se v sérii nezhoršuje a do druhého dne je zpátky = OK. V sérii nad 3/10 → zbytek benche ten den vynech a zapiš (kolikátá série, 0–10). Záložní varianta: cluster 3+3. Když se 2 týdny nedostane pod 3/10 → fyzioterapeut.`,
+`LOKTY: stejné pravidlo 3/10. Před každým benchem cable row. Skull crushers na laně. Biceps od týdne 3 do selhání; loket nad 3/10 → zpět na RIR 2. KYČEL na sumu: 0–10 do poznámky, 4. série jen při ≤2/10.`,
+`Pondělní dřep: když je mezi pin squatem a pondělkem jen 1 den, strop RPE 7. Grip na sumu: když povolí, zapiš sérii a opakování. Dech: nádech před každým opakováním.`,
+`Jídlo ~3450 kcal, váha 81,8 (11. 10.): když průměr k 25. 10. nebude aspoň 82, přidáme ~150–200 kcal; nad 83 ubereme ~150. Běh: zóna 3 max 1× za 14 dní, jinak zóna 2.`]},
+weeks:[
+W('w1','Týden 1','2026-10-05','2026-10-11','SBD RPE 7 · lopatku zapisuj do poznámky (0–10) · 3 poctivé série',[
+ D('2026-10-05','dřep',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',3,5,7,'140/135/130','',{w:'140/135/130',p:'6.5/7/7'}),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,3,7,'82,5/80/80','',{w:'82.5/80/80',p:'7.5/7/7',n:`1. sérka byla tak 7 až 7,5 – bylo to celkem „ez“, ale hýbalo se to nějak pomalu, nevím. Pocitově ale ok`}),
+  E('Leg extension','S.L.',3,12,'sel.','40/35/35','',{w:'40/35/35',r:'10/10/11',p:'9/10/10'}),
+  E('Leg curl','seated',3,12,'sel.','45/40/40','',{w:'45/40/40',r:'10/13/11'}),
+  E('Calf raise','standing S.L. – hacken obě',3,12,'sel.','90','',{w:'90/90/90',r:'11/11/11'}),
+  E('Bicep curls','machine',2,12,'sel.','30/25','',{w:'30/25',r:'9/11'}),
+  E('Core work','',2,'','','')]),
+ D('2026-10-06','bench, tempo sumo, leg press',[
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,4,7,'75','',{w:'75/75/75',p:'6.5/7/7',n:'Bolest loktů/bicepsů – tak 5–6/10'}),
+  E('Deadlift','SEKUNDÁRNÍ tah · sumo tempo 3 s ke kolenům',3,3,6,'150/150/140','',{w:'150/150/140',p:'6/6/6'}),
+  E('Leg press','místo belt squatu (v úterním gymu není)',3,10,'RIR 2','200','',{w:'200/200/200',r:'11/10/10',p:'8/8/8'}),
+  E('Chest-supported row','stroj / T-bar s oporou hrudi; když není: DB row S.A. s oporou o lavici',3,10,'RIR 1','60/60/55','',{w:'60/60/55',r:'10/8/8',p:'9/9/9'}),
+  E('Pulldown','neutral grip',3,8,'RIR 1','60','',{w:'60/60/60',r:'10/8/8',p:'9/9/9'}),
+  E('Incline DB press','',3,8,'RIR 2','25','',{w:'25/25/25',r:'8/8/8',p:'7/8/9'}),
+  E('Shoulder press machine','',3,10,'RIR 2','35/30','',{w:'35/30/30',r:'8/10/10',p:'9/8/8'}),
+  E('Skull crushers','',3,10,'sel.','17,5','',{w:'17.5/17.5/17.5',r:'10/8/8',n:'Menší váhy, s lanem – kvůli bolesti z benche (ta už v tréninku ale odešla)'}),
+  E('Adductor machine','',3,12,'sel.','70/60/60','',{w:'70/60/60',r:'11/10/8',p:'10/10/10'})],'jiný gym: stiff bar'),
+ D('2026-10-08','sumo a zadní řetězec',[
+  E('Deadlift','PRIMÁRNÍ tah · sumo',4,3,7,'170/170/160','',{w:'170/170/160',p:'7/7/7'}),
+  E('RDL','',3,8,7,'120','',{w:'120/120',p:'8/8'}),
+  E('Bench','TERCIÁRNÍ bench · long pause 3 s',3,4,7,'70/72,5/70','',{w:'70/72.5/70',p:'6.5/7/7',n:'Dal jsem si cable rows před benchem a extrémně to pomohlo na tu bolest loktů – prakticky jsem nic necítil'}),
+  E('Cable row','S.A.',3,10,'sel.','65/60/60','',{w:'65/60/60',r:'8/8/8',p:'10/10/10'}),
+  E('Leg curl','lying',3,10,'sel.','45','',{w:'45/45/45',r:'11/10/10',p:'10/10/10'}),
+  E('Abductor machine','',3,12,'sel.','65','',{w:'65/65/65',r:'10/10/9',p:'10/10/10'}),
+  E('Core work','weighted plank',2,'60 s','','20 kg','',{w:'20/20',r:'60/50'})]),
+ D('2026-10-09','dřep podruhé a objem',[
+  E('Squat','SEKUNDÁRNÍ dřep · pin',3,5,7,'120','',{w:'120/120/120',p:'6.5/7/7'}),
+  E('Belt squat','',3,10,'RIR 2','130','',{w:'130/130/130',p:'8/8/9'}),
+  E('Bulgarian split squat','Smith, S.L.',3,'8/leg','RIR 2','35','',{w:'35/35',p:'8/8'}),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',3,6,7,'72,5/72,5/70','',{w:'72.5/72.5/70',p:'7/7.5/7',n:'Opět ještě důraznější rozehřátí zad – mega to pomohlo, asi mám prostě tvrdohlavá záda, je nutno je rozehřát ještě víc'}),
+  E('Pulldown','wide grip',3,10,'sel.','60/55/50','',{w:'60/55/50',r:'10/10/10',p:'9.5/10/10'}),
+  E('Dips','',3,8,'RIR 2','vlastní váha','',{w:'0/0/0',r:'9/8/8',p:'8/8/8'}),
+  E('Rear delts','reverse fly/facepulls',3,12,'sel.','20','',{w:'20/20',r:'12/11',p:'10/10',n:'Face pulls'}),
+  E('Lateral raises','',3,12,'sel.','6/6/5','',{w:'6/6/5',r:'12/10/10',p:'10/10/10'}),
+  E('Calf raise','leg press horizontal',3,12,'sel.','150','',{w:'150/150/150',r:'12/10/10',p:'10/10/10'})]),
+ D('2026-10-10','běh',[E('Run','zone 2, 20–30 min',1,'','','')])
+],{done:true}),
+W('w2','Týden 2','2026-10-12','2026-10-18','SBD RPE 7–7,5 · před každým benchem cable row · lokty a kyčel zapisuj do poznámky (0–10)',[
+ D('2026-10-12','dřep',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',3,5,'7–7,5','142,5/140/140','',{w:'142.5/140/140',p:'7/7/7.5',n:'Bolela trochu lopatka, 3/10 – stejná věc jak na benchi'}),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,3,'7–7,5','85/80/80','',{w:'85/80/80',p:'8/7/8',n:'Loket pohoda, bolela jen záda mezi lopatkou a páteří tak 3/10, ale to je to místo, odkud to pramení, takže se to zlepšuje a nejde to až k lokti'}),
+  E('Leg extension','S.L.',3,12,'sel.','40/40/35','',{w:'40/40',r:'10/10',p:'10/10'}),
+  E('Leg curl','seated',3,12,'sel.','45/45/40','',{w:'45/45/40',r:'13/11/12',p:'9/10/10'}),
+  E('Bicep curls','machine',2,12,'RIR 2','30/25','RIR 2, dokud lokty nejsou v klidu',{w:'30/25',r:'10/10',p:'10/10'})],'V gymu 15:50–17:50'),
+ D('2026-10-13','long pause bench, tempo sumo, leg press',[
+  E('Bench','TERCIÁRNÍ bench · long pause 3 s',3,4,'7–7,5','70–72,5','Nejdřív cable row; 72,5 jen když letí. Loket v sérii nad 3/10 → zbytek benche vynech'),
+  E('Deadlift','SEKUNDÁRNÍ tah · sumo tempo 3 s ke kolenům',3,3,'6–6,5','150–155'),
+  E('Leg press','místo belt squatu (v úterním gymu není)',3,10,'RIR 2','205–210'),
+  E('Chest-supported row','stroj / T-bar s oporou hrudi; když není: DB row S.A. s oporou o lavici',3,10,'RIR 1','60'),
+  E('Pulldown','neutral grip',3,8,'RIR 1','60'),
+  E('Incline DB press','',3,8,'RIR 2','25'),
+  E('Shoulder press machine','',3,10,'RIR 2','32,5'),
+  E('Skull crushers','na laně (kladka), dokud lokty nejsou v klidu',3,10,'sel.','17,5'),
+  E('Adductor machine','',3,12,'sel.','70/60/60')],'VYNECHÁNO – v Po spadl kotouč na nohu (naražený nárt a palec) · nedohání se',{skip:true}),
+ D('2026-10-15','sumo, RDL, primární bench, zadní řetězec',[
+  E('Deadlift','PRIMÁRNÍ tah · sumo',4,3,7,'175/175/170','NOHA: chůze a rozcvičovací série do 3/10 → 3 série @≤7, 4. série tento týden ne. Bolí víc nebo se to v sérii zhoršuje → PLÁN B. Kyčel 0–10.',{w:'175/175/170',p:'7/7.5/7',n:'Bolest zadku 3/10 po 3. sérii'}),
+  E('RDL','',3,8,'7,5','120/115/110','Jen když noha na sumu prošla',{w:'120/115/110',p:'7.5/7.5/7.5'}),
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,4,'7–7,5','80/80/75/70','Nejdřív cable row; drž se cíle (v Po 85 @8 bylo nad plánem a lopatka na 3/10)',{w:'80/80/75/70',p:'8.5/8.5/7.5/7.5',n:'1. série byla missgroove – snažím se o explozivní leg drive od hrudi nahoru, poprvé, posral jsem to u 4. opakování. 2. série byla stejná. Snižuju a jdu se soustředit na techniku. Bench stojí poslední dobou fakt za hovno. Záda ani loket ale nebolí.'}),
+  E('Cable row','S.A. – před benchem',2,10,'sel.','65/60','',{w:'65/60',r:'11.5/9'}),
+  E('Leg curl','lying',2,10,'sel.','45','',{w:'45/45',r:'10.5/10.5'}),
+  E('Abductor machine','',2,12,'sel.','70','',{w:'70/70',r:'12/11.5'}),
+  E('Calf raise','standing S.L. – hacken obě',2,12,'sel.','90','Jen když noha nebolí – stoj na špičkách tlačí na palec'),
+  E('Core work','weighted plank',2,'60 s','','20 kg','',{w:'20/20',r:'60/45'})],'NOHA: nejdřív test. PLÁN B (noha nedovolí tahat): bench 4×4, pak z úterý chest-supported row, pulldown neutral, incline DB, shoulder press, k tomu cable row, leg curl lying, abductor. Bez suma, RDL a lýtek.'),
+ D('2026-10-16','dřep podruhé a objem',[
+  E('Squat','SEKUNDÁRNÍ dřep · pin',3,5,'7–7,5','122,5/122,5/120','',{w:'122.5/122.5/120',p:'7/7.5/7.5',n:'Tempo 2 sekundy dolů'}),
+  E('Belt squat','',3,10,'RIR 2','140','',{w:'140/140',r:'11/10',p:'10/10'}),
+  E('Bulgarian split squat','Smith, S.L.',3,'8/leg','RIR 2','40/45','Zadní noha leží nártem na lavici → když tlačí, nahraď S.L. leg extension 3×12',{w:'40/45',r:'10/8',p:'9/9.5'}),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',3,6,'7–7,5','72,5/72,5/70','',{w:'72.5/72.5/70',p:'7/7.5/7',n:'Záda bolest 3/10'}),
+  E('Pulldown','wide grip',3,10,'sel.','60/55','',{w:'60/55',r:'10/10',p:'10/10'}),
+  E('Dips','',3,8,'RIR 2','10 kg','',{w:'10/10',r:'7/8.5',p:'9/10'}),
+  E('Rear delts','reverse fly/facepulls – FP',3,12,'sel.','22,5/25','',{w:'22.5/25',r:'10/9',p:'8/10'}),
+  E('Lateral raises','',3,12,'sel.','6/6/5','',{w:'6/6/5',r:'10/10/9',p:'10/10/10'}),
+  E('Calf raise','leg press horizontal',3,12,'sel.','150')]),
+ D('2026-10-17','kolo / orbitrek místo běhu (noha)',[E('Run','kolo nebo orbitrek, zone 2, 20–30 min; běh až chůze úplně bez bolesti',1,'','','')])
+],{done:true}),
+W('w3','Týden 3','2026-10-19','2026-10-25','SBD RPE 7,5 · doplňky 2 série do selhání (volná váha do technického selhání) · před benchem cable row · lopatka, lokty, kyčel, noha do poznámky (0–10)',[
+ D('2026-10-19','dřep',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',3,5,'7,5','145','1. série nad 7,5 → zbytek 142,5. RPE o 1 výš než předpis (po pátečním belt squatu do selhání) → belt squat zpět na RIR 1'),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,3,'7,5','82,5–85','Nejdřív cable row; 85 jen když 82,5 jde ≤7,5 a lopatka ≤3/10'),
+  E('Leg extension','S.L.',2,12,'sel.','40'),
+  E('Leg curl','seated',2,12,'sel.','45'),
+  E('Bicep curls','machine',2,12,'sel.','30','Loket v sérii nad 3/10 → zpět na RIR 2')]),
+ D('2026-10-20','long pause bench, tempo sumo, leg press',[
+  E('Bench','TERCIÁRNÍ bench · long pause 3 s',3,4,'7,5','72,5','Nejdřív cable row. Loket nebo lopatka v sérii nad 3/10 → zbytek benche vynech'),
+  E('Deadlift','SEKUNDÁRNÍ tah · sumo tempo 3 s ke kolenům',3,3,'6–6,5','150–155','Noha 0–10 do poznámky'),
+  E('Leg press','místo belt squatu (v úterním gymu není)',2,10,'sel.','210'),
+  E('Chest-supported row','stroj / T-bar s oporou hrudi; když není: DB row S.A. s oporou o lavici',2,10,'sel.','60'),
+  E('Pulldown','neutral grip',2,8,'sel.','62,5–65'),
+  E('Incline DB press','',2,8,'tech. sel.','27,5','Do posledního čistého opakování, bez grindu'),
+  E('Shoulder press machine','',2,10,'sel.','35'),
+  E('Skull crushers','na laně (kladka), dokud lokty nejsou v klidu',2,10,'sel.','17,5'),
+  E('Adductor machine','',2,12,'sel.','70')]),
+ D('2026-10-22','sumo, RDL, primární bench, zadní řetězec',[
+  E('Deadlift','PRIMÁRNÍ tah · sumo',4,3,'7,5','175–177,5','Kyčel/zadek 0–10; 4. série jen při ≤2/10 a noze bez bolesti'),
+  E('RDL','',3,8,'7,5','115–120','S osou → řídí RPE, do selhání ne'),
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,4,'7,5','77,5–80','Nejdřív cable row. Nový leg drive tady nezkoušej, jeď, jak to umíš (zkoušet v pátek na 3×6)'),
+  E('Cable row','S.A. – před benchem',2,10,'sel.','65'),
+  E('Leg curl','lying',2,10,'sel.','47,5'),
+  E('Abductor machine','',2,12,'sel.','70'),
+  E('Calf raise','standing S.L. – hacken obě',2,12,'sel.','90','Jen když noha nebolí'),
+  E('Core work','weighted plank',2,'60 s','','20 kg')]),
+ D('2026-10-23','pin, objem',[
+  E('Squat','SEKUNDÁRNÍ dřep · pin',3,5,'7,5','122,5–125','Tempo 2 s dolů drž každý týden stejně, jinak nejde porovnat'),
+  E('Belt squat','',2,10,'sel.','145'),
+  E('Bulgarian split squat','Smith, S.L.',2,'8/leg','tech. sel.','45','Do posledního čistého opakování. Nárt na lavici tlačí → S.L. leg extension 2×12'),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',3,6,'7,5','72,5–75','75 jen když 1. série 72,5 ≤7 a lopatka ≤2/10. Tady můžeš zkoušet nový leg drive'),
+  E('Pulldown','wide grip',2,10,'sel.','60'),
+  E('Dips','',2,8,'tech. sel.','10 kg','Do posledního čistého opakování; rameno/loket/lopatka nad 3/10 → stop'),
+  E('Rear delts','reverse fly/facepulls – FP',2,12,'sel.','22,5'),
+  E('Lateral raises','',2,12,'sel.','6'),
+  E('Calf raise','leg press horizontal',2,12,'sel.','150','Jen když noha nebolí')]),
+ D('2026-10-24','běh + posilování kyčlí',[E('Run','zone 2, 20–30 min',1,'','','Kyčle po běhu: max ~30 min, RPE ≤7 (2–3 opakování v rezervě), žádné selhání – nesmí to brát z pondělního dřepu. Cviky zapiš do poznámky.')])
+]),
+W('w4','Týden 4','2026-10-26','2026-11-01','SBD RPE 8',[]),
+W('w5','Týden 5','2026-11-02','2026-11-08','SBD RPE 8 (primární dřep a sumo max 8,5)',[]),
+W('w6','Týden 6 · deload','2026-11-09','2026-11-15','Deload: série zhruba o polovinu, váhy ~90 %',[])
+]}};
+
+/* ---------- utility ---------- */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>n==null||n===''||isNaN(n)?'':String(Math.round(n*100)/100).replace('.',',');
+const num=s=>{if(s==null)return null;const m=String(s).replace(',','.').match(/\d+(\.\d+)?/);return m?parseFloat(m[0]):null};
+const DN=['Ne','Po','Út','St','Čt','Pá','So'];
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function dlab(iso){const d=new Date(iso+'T12:00');return DN[d.getDay()]+' '+d.getDate()+'. '+(d.getMonth()+1)+'.'}
+function dday(iso){return DN[new Date(iso+'T12:00').getDay()]}
+function rlab(a,b){const x=new Date(a+'T12:00'),y=new Date(b+'T12:00');return x.getDate()+'.'+(x.getMonth()===y.getMonth()?'':' '+(x.getMonth()+1)+'.')+'–'+y.getDate()+'. '+(y.getMonth()+1)+'.'}
+function dfull(ts){const d=new Date(ts);return d.getDate()+'. '+(d.getMonth()+1)+'. '+d.getFullYear()}
+const mmss=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+function clock(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=String(s%60).padStart(2,'0');return h?h+':'+String(m).padStart(2,'0')+':'+x:m+':'+x}
+function dur(ms){const m=Math.round(ms/60000);return Math.floor(m/60)+':'+String(m%60).padStart(2,'0')+' h'}
+const chip=(label,act,attrs,on)=>`<button class="chip${on?' on':''}" data-act="${act}" ${attrs||''}>${label}</button>`;
+function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2400)}
+
+/* ---------- úložiště ---------- */
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+ set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){toast('Nepodařilo se uložit!');return false}}};
+let profile=LS.get('pl_profile','lukas');if(!PROGRAMS[profile])profile='lukas';
+let P,DAYS,EX,L;
+function build(){P=PROGRAMS[profile];DAYS=[];EX={};
+ P.weeks.forEach(w=>w.days.forEach((d,di)=>{d.week=w;d.id=w.id+'d'+(di+1);DAYS.push(d);
+  d.ex.forEach((e,ei)=>{e.id=d.id+'e'+(ei+1);e.day=d;e.key=(e.n+'|'+e.v).toLowerCase();EX[e.id]=e})}));
+ DAYS.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0)}
+function norm(l){l=l||{};l.sets=l.sets||{};l.ex=l.ex||{};l.sessions=l.sessions||{};l.active=l.active||null;const S=l.settings=l.settings||{};
+ S.bar??=20;S.plates??={'25':true,'20':true,'15':true,'10':true,'5':true,'2.5':true,'1.25':true};S.restMain??=180;S.restAcc??=90;S.inc??=2.5;S.firstRun??=Date.now();return l}
+function loadLog(){L=norm(LS.get('pl_log_'+profile,null))}
+function save(){LS.set('pl_log_'+profile,L)}
+let saveT;function saveSoon(){clearTimeout(saveT);saveT=setTimeout(save,400)}
+const exL=id=>L.ex[id]||(L.ex[id]={});
+const SEED=1;
+function seed(){if((L.seeded||0)>=SEED)return;
+ DAYS.forEach(d=>{d.ex.forEach(e=>{const h=e.h;if(!h)return;
+   const ws=(h.w||'').split('/'),rs=(h.r||'').split('/'),ps=(h.p||'').split('/');
+   const n=Math.max(h.w?ws.length:0,h.r?rs.length:0,h.p?ps.length:0);
+   for(let i=0;i<n;i++){const k=e.id+'#'+i;if(L.sets[k])continue;
+    L.sets[k]={w:h.w?num(ws[Math.min(i,ws.length-1)]):null,r:h.r?num(rs[Math.min(i,rs.length-1)]):num(tok(e.r,i)),p:h.p?num(ps[Math.min(i,ps.length-1)]):null}}
+   if(n>e.s)exL(e.id).extra=n-e.s;
+   if(h.n&&!(L.ex[e.id]&&L.ex[e.id].note))exL(e.id).note=h.n});
+  if(d.week.done&&!d.skip&&!L.sessions[d.id])L.sessions[d.id]={end:new Date(d.date+'T20:00').getTime(),hist:true}});
+ L.seeded=SEED;save()}
+
+/* ---------- model ---------- */
+const isSBD=e=>/^(squat|bench|deadlift)$/i.test(e.n);
+const isBar=e=>/^(squat|bench|deadlift|rdl)$/i.test(e.n);
+const isCardio=e=>/^run$/i.test(e.n);
+function tok(str,i){if(!str)return'';const p=str.split('/');if(p.length>1&&p.every(x=>/^\s*\d/.test(x)))return p[Math.min(i,p.length-1)].trim();return str}
+function rpeInfo(s){s=(s||'').trim();if(!s)return{lab:'',full:'',n:null};
+ const m=s.match(/^RIR\s*(\d+(?:[.,]\d)?)/i);if(m){const r=num(m[1]);return{lab:'RIR '+fmt(r),full:'RIR '+fmt(r)+' (≈ RPE '+fmt(10-r)+')',n:10-r}}
+ if(/tech/i.test(s))return{lab:'tech. sel.',full:'do technického selhání',n:10};
+ if(/sel/i.test(s))return{lab:'selhání',full:'do selhání (RPE 10)',n:10};
+ return{lab:'@'+s.replace('.',','),full:'RPE '+s.replace('.',','),n:num(s)}}
+const unitOf=e=>isCardio(e)?'min':/\d\s*s$/.test(e.r)?'s':'opak.';
+const setsN=e=>e.s+((L.ex[e.id]&&L.ex[e.id].extra)||0);
+const S=(e,i)=>L.sets[e.id+'#'+i]||{};
+const has=s=>s.w!=null||s.r!=null||s.p!=null;
+const isDone=(e,s)=>isCardio(e)?(s.r!=null||s.p!=null):(s.p!=null||(s.r!=null&&s.w!=null));
+const hasLog=e=>{for(let i=0;i<setsN(e);i++)if(has(S(e,i)))return true;return false};
+function planW(e,i){const t=L.ex[e.id]&&L.ex[e.id].tgt;if(t&&t[i]!=null)return fmt(t[i]);return tok(e.t,i)}
+const planR=(e,i)=>tok(e.r,i);
+const dispName=e=>{const x=L.ex[e.id];return x&&x.sub?esc(x.sub)+' <span class="mut sm">(místo '+esc(e.n)+')</span>':esc(e.n)};
+const dispTxt=e=>{const x=L.ex[e.id];return x&&x.sub?x.sub:e.n};
+function planSummary(e){const ri=rpeInfo(e.p);return e.s+' × '+(e.r?e.r.replace('/leg','/nohu'):'—')+(ri.lab?' '+ri.lab:'')+(e.t?' · '+e.t:'')}
+function setStr(e,s){if(isCardio(e))return[(s.r!=null?fmt(s.r)+' min':''),(s.p!=null?'@'+fmt(s.p):'')].filter(Boolean).join(' ');
+ return(s.w==null?'–':s.w===0?'BW':fmt(s.w))+'×'+(s.r==null?'–':fmt(s.r))+(s.p!=null?' @'+fmt(s.p):'')}
+function bestE(e){let b=null;for(let i=0;i<setsN(e);i++){const s=S(e,i),v=e1rm(s.w,s.r,s.p);if(v&&(!b||v>b.v))b={v,i,s}}return b}
+const rInc=v=>Math.round(v/L.settings.inc)*L.settings.inc;
+const dayById=id=>DAYS.find(d=>d.id===id);
+const restOf=e=>isSBD(e)?L.settings.restMain:L.settings.restAcc;
+function prevOf(e){const j0=DAYS.indexOf(e.day);
+ for(let j=j0-1;j>=0;j--){const m=DAYS[j].ex.find(x=>x.key===e.key&&hasLog(x));if(m)return m}
+ if(isSBD(e))return null;
+ for(let j=j0-1;j>=0;j--){const m=DAYS[j].ex.find(x=>x.n.toLowerCase()===e.n.toLowerCase()&&hasLog(x));if(m)return m}
+ return null}
+const dayLogged=d=>d.ex.some(hasLog);
+function dayStatus(d){if(L.active&&L.active.dayId===d.id)return'live';if(L.sessions[d.id]&&L.sessions[d.id].end)return'done';if(d.skip)return'skip';if(dayLogged(d))return'part';return d.date<today()?'past':'todo'}
+const STAT={live:['● Probíhá','live'],done:['✓ Odjeto','ok'],skip:['Vynecháno',''],part:['Rozpracováno','warn'],past:['Nezapsáno',''],todo:['','']};
+function curWeek(){const t=today();return P.weeks.find(w=>w.from<=t&&t<=w.to)||[...P.weeks].reverse().find(w=>w.from<=t&&w.days.length)||P.weeks[0]}
+
+/* ---------- UI stav ---------- */
+const UI={tab:'week',ws:null,mode:'list',fi:0};
+let PERSIST=false;
+
+function render(keep){
+ $$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===UI.tab));
+ const s=$('#scr'),top=s.scrollTop;s.className='';
+ ({program:vProgram,week:vWeek,ws:vWs,more:vMore})[UI.tab](s);
+ s.scrollTop=keep?top:0;tick()}
+
+/* ---------- čtecí bloky ---------- */
+function exRead(e){const x=L.ex[e.id]||{},sets=[];
+ for(let i=0;i<setsN(e);i++){const s=S(e,i);if(has(s))sets.push(`<span class="lg">${i+1}. ${esc(setStr(e,s))}</span>`)}
+ const b=isSBD(e)&&bestE(e);
+ return`<div class="exr${x.skip?' skip':''}"><div class="exn">${dispName(e)}${x.skip?' <span class="mut sm">· přeskočeno</span>':''}</div>
+ <div class="mut sm">${esc(e.v)}${e.v?' · ':''}${esc(planSummary(e))}</div>
+ ${e.note?`<div class="cn">${esc(e.note)}</div>`:''}
+ ${sets.length?`<div class="logl">${sets.join('')}${b?`<span class="lg e1">e1RM ${fmt(rInc(b.v))}</span>`:''}</div>`:''}
+ ${x.note?`<div class="an">✎ ${esc(x.note)}</div>`:''}</div>`}
+function avatar(d){const st=dayStatus(d);return`<div class="${d.date===today()?'ring':''}"><div class="av${st==='done'?' done':''}">${dday(d.date)}</div></div>`}
+function badge(d){const[l,c]=STAT[dayStatus(d)];return l?`<span class="badge ${c}">${l}</span>`:''}
+function sessInfo(d){const s=L.sessions[d.id];return s&&s.start&&s.end?' · '+dur(s.end-s.start):''}
+
+/* ---------- Program ---------- */
+function weekBadge(w){const t=today();if(!w.days.length)return'<span class="badge">připravuje trenér</span>';
+ if(w.from<=t&&t<=w.to)return'<span class="badge live">tento týden</span>';
+ if(w.days.every(d=>['done','skip'].includes(dayStatus(d))))return'<span class="badge ok">✓</span>';return''}
+function vProgram(s){const cw=curWeek();
+ s.innerHTML=`<div class="hd"><h1>Program</h1></div>
+ <div class="card"><div class="exn">${esc(P.block.title)}</div><div class="mut sm">${rlab(P.block.from,P.block.to)} · ${esc(P.block.sub)}</div>
+ <details style="margin-top:6px"><summary style="padding:8px 0;justify-content:flex-start;color:var(--acc);font-size:14px">Pravidla bloku</summary>${P.block.notes.map(n=>`<p class="note">${esc(n)}</p>`).join('')}</details></div>
+ ${P.weeks.map(w=>`<details class="acc"${w===cw?' open':''}><summary><div><div class="exn">${esc(w.title)}</div><div class="mut sm">${rlab(w.from,w.to)}</div></div>${weekBadge(w)}</summary>
+ <div class="wnote">${esc(w.note)}</div>
+ ${w.days.length?w.days.map(d=>`<details class="dacc"><summary><div style="flex:1;min-width:0"><div class="exn">${dlab(d.date)} · ${esc(d.title)}</div><div class="mut sm">${d.ex.length} cviků${sessInfo(d)}</div></div>${badge(d)}</summary>
+  <div class="dbody">${d.note?`<div class="cn">${esc(d.note)}</div>`:''}${d.ex.map(exRead).join('')}
+  <div class="row2">${dayStatus(d)==='live'?`<button class="btn" data-act="gows" data-d="${d.id}">Otevřít trénink</button>`:`<button class="btn sec" data-act="edit" data-d="${d.id}">Upravit zápis</button>`}</div></div></details>`).join(''):'<div class="empty sm">Trenér tento týden ještě nepřipravil.</div>'}
+ </details>`).join('')}<div style="height:20px"></div>`}
+
+/* ---------- Tento týden ---------- */
+function needBackup(){const S=L.settings,day=864e5;return S.lastBackup?Date.now()-S.lastBackup>30*day:Date.now()-S.firstRun>7*day}
+function vWeek(s){const w=curWeek();
+ s.innerHTML=`<div class="hd"><h1>Tento týden</h1><div class="mut">${esc(w.title)} · ${rlab(w.from,w.to)}</div></div>
+ ${needBackup()?`<div class="card ban"><div class="exn">Je čas na zálohu</div><div class="sm mut">${L.settings.lastBackup?'Naposledy '+dfull(L.settings.lastBackup):'Zatím žádná záloha'} · zabere to 5 vteřin</div><div class="row2"><button class="btn" data-act="backup">Uložit zálohu</button></div></div>`:''}
+ ${w.note?`<div class="card note">${esc(w.note)}</div>`:''}
+ ${w.days.length?w.days.map(d=>`<button class="dcard" data-act="pager" data-d="${d.id}"><div class="dch">${avatar(d)}<div style="flex:1;min-width:0"><div class="exn">${dlab(d.date)} · ${esc(d.title)}</div><div class="mut sm">${d.ex.length} cviků${sessInfo(d)}</div></div>${badge(d)}</div>
+  <div class="prevw">${d.ex.slice(0,6).map(e=>`<div><span>${esc(dispTxt(e))}</span><span class="mut">${esc((e.s+'×'+(e.r||'')).replace(/×$/,'')+' '+rpeInfo(e.p).lab)}</span></div>`).join('')}${d.ex.length>6?`<div class="mut">+ ${d.ex.length-6} další</div>`:''}</div></button>`).join('')
+ :'<div class="empty">Trenér tento týden ještě nepřipravil.<br>Pošli mu check-in z minulého týdne (Více → Pro trenéra).</div>'}<div style="height:20px"></div>`}
+
+function openPager(d){const w=d.week,ov=$('#ov');
+ ov.innerHTML=`<div class="bar"><button data-act="closeov">‹ Zpět</button><b>${esc(w.title)}</b><span></span></div><div class="snap" id="pgs">${w.days.map(dayPage).join('')}</div>`;
+ ov.hidden=false;const pg=$('#pg-'+d.id);if(pg)$('#pgs').scrollTop=pg.offsetTop}
+function dayPage(d){const st=dayStatus(d);let b;
+ if(st==='live')b=`<button class="btn" data-act="gows" data-d="${d.id}">Pokračovat v tréninku</button>`;
+ else if(L.active)b=`<button class="btn sec" disabled>Běží jiný trénink</button>`;
+ else b=`<button class="btn" data-act="start" data-d="${d.id}">▶ ${st==='done'?'Spustit znovu':'Spustit trénink'}</button>`;
+ if(st!=='live')b+=`<button class="btn sec" data-act="edit" data-d="${d.id}" style="margin-top:8px">Upravit zápis</button>`;
+ return`<section class="page" id="pg-${d.id}"><div class="dch">${avatar(d)}<div style="flex:1"><div class="exn">${dlab(d.date)} · ${esc(d.title)}</div><div class="mut sm">${d.ex.length} cviků${sessInfo(d)}</div></div>${badge(d)}</div>
+ ${d.note?`<div class="cn">${esc(d.note)}</div>`:''}${d.ex.map(exRead).join('')}<div style="margin-top:16px">${b}</div><div class="hint">↑ ↓ další den</div></section>`}
+function closeOv(){$('#ov').hidden=true;$('#ov').innerHTML=''}
+
+/* ---------- Trénink ---------- */
+function vWs(s){const id=UI.ws||(L.active&&L.active.dayId);
+ if(!id){s.innerHTML=`<div class="hd"><h1>Trénink</h1></div><div class="empty">Teď neběží žádný trénink.<br><br><button class="btn" data-act="tab" data-t="week">Vybrat den</button></div>`;return}
+ UI.ws=id;const d=dayById(id),live=!!(L.active&&L.active.dayId===id),foc=UI.mode==='focus';s.className='fixed';
+ s.innerHTML=`<div class="wsh"><div class="wst"><div style="min-width:0"><div class="mut sm">${live?'Probíhá':'Úprava zápisu'} · ${dlab(d.date)}</div><div class="exn">${esc(d.title)}</div></div>${live?'<div class="clock" id="clock"></div>':`<button class="chip" data-act="doneedit">Hotovo</button>`}</div>
+ <div class="seg"><button class="${foc?'':'on'}" data-act="mode" data-m="list">Všechny cviky</button><button class="${foc?'on':''}" data-act="mode" data-m="focus">Jeden cvik</button></div></div>
+ <div class="wsb ${foc?'snap big':'list'}" id="wsb" data-scope>${foc?d.ex.map((e,i)=>exFocus(e,i,d.ex.length)).join('')+endPage(d,live,true):d.ex.map(exEdit).join('')+endPage(d,live,false)}</div>`;
+ const b=$('#wsb');
+ if(foc){const pg=$$('.page',b)[UI.fi];if(pg)b.scrollTop=pg.offsetTop;
+  b.addEventListener('scroll',()=>{const ps=$$('.page',b);let k=0;ps.forEach((p,i)=>{if(p.offsetTop<=b.scrollTop+b.clientHeight/3)k=i});UI.fi=Math.min(k,d.ex.length-1)},{passive:true})}}
+function endPage(d,live,foc){const inner=live?`<button class="btn" data-act="finish">Ukončit trénink</button>`:`<button class="btn" data-act="doneedit">Hotovo</button>`;
+ return foc?`<section class="page"><div class="empty">To je všechno 💪</div>${inner}</section>`:`<div style="margin:16px 12px 30px">${inner}</div>`}
+function cell(k,f,v,ph,off){return`<button class="cell${off?' off':''}" data-k="${k}" data-f="${f}" data-ph="${esc(ph!=null?fmt(ph):'')}">${v!=null?(f==='w'&&v===0?'BW':fmt(v)):''}</button>`}
+function setRow(e,i){const s=S(e,i),k=e.id+'#'+i,ri=rpeInfo(e.p),c=isCardio(e),pw=planW(e,i),pr=planR(e,i),off=!!(L.ex[e.id]&&L.ex[e.id].skip);
+ return`<div class="set${isDone(e,s)?' done':''}" id="s-${k}"><div class="si">${i+1}</div><div class="plan"><b>${esc(pr?pr.replace('/leg','/n'):'–')}${pr&&!c&&!/s$/.test(pr)?'×':''}</b> ${esc(ri.lab)}<small>${pw?'~'+esc(pw):''}</small></div>
+ ${c?'<span></span>':cell(k,'w',s.w,num(pw),off)}${cell(k,'r',s.r,num(pr),off)}${cell(k,'p',s.p,ri.n,off)}</div>`}
+const setHead=e=>`<div class="seth"><span></span><span>Plán</span><span>${isCardio(e)?'':'kg'}</span><span>${unitOf(e)}</span><span>RPE</span></div>`;
+function exMeta(e){const o=[],p=prevOf(e);
+ if(p){const ss=[];for(let i=0;i<setsN(p);i++){const s=S(p,i);if(has(s))ss.push(setStr(p,s))}o.push(`<div>Minule <span class="sm">(${dlab(p.day.date)})</span>: <b>${esc(ss.join(' · '))}</b></div>`)}
+ if(isSBD(e)){const b=bestE(e);if(b)o.push(`<div class="e1">Dnes e1RM <b>${fmt(rInc(b.v))} kg</b> <span class="mut">z ${esc(setStr(e,b.s))}</span></div>`)}
+ return o.join('')}
+function exEdit(e){const x=L.ex[e.id]||{};let rows='';for(let i=0;i<setsN(e);i++)rows+=setRow(e,i);
+ return`<div class="card ex${x.skip?' skip':''}" id="ex-${e.id}"><div class="exh"><div style="min-width:0"><div class="exn">${dispName(e)}</div><div class="mut sm">${esc(e.v)}${e.v?' · ':''}${esc(rpeInfo(e.p).full)}</div></div>
+ <div style="display:flex;gap:6px"><button class="ibtn" data-act="rest" data-e="${e.id}" aria-label="Pauza">⏱</button><button class="ibtn" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">⋯</button></div></div>
+ ${e.note?`<div class="cn">${esc(e.note)}</div>`:''}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div>${setHead(e)}${rows}</div>`}
+function exFocus(e,i,n){const x=L.ex[e.id]||{},ri=rpeInfo(e.p);let rows='';for(let j=0;j<setsN(e);j++)rows+=setRow(e,j);
+ const tags=[e.s+(e.s===1?' série':e.s<5?' série':' sérií'),e.r?e.r.replace('/leg',' / nohu')+(unitOf(e)==='opak.'?' opak.':''):'',ri.full,e.t?'~ '+e.t:''].filter(Boolean);
+ return`<section class="page ex${x.skip?' skip':''}" id="fp-${e.id}"><div class="mut sm">${i+1} / ${n}${x.skip?' · přeskočeno':''}</div>
+ <div class="exn big">${dispName(e)}</div><div class="mut">${esc(e.v)}</div>
+ <div class="tags">${tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+ ${e.note?`<div class="cn">${esc(e.note)}</div>`:''}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div>
+ <div class="sets">${setHead(e)}${rows}</div>
+ <div class="tools"><button class="chip" data-act="rest" data-e="${e.id}">⏱ Pauza ${mmss(restOf(e))}</button>${isSBD(e)?`<button class="chip" data-act="bo" data-e="${e.id}">Back-off</button>`:''}${isBar(e)?`<button class="chip" data-act="plates" data-e="${e.id}">Kotouče</button>`:''}<button class="chip" data-act="exmenu" data-e="${e.id}">⋯ Další</button></div>
+ <label class="mut sm" style="display:block;margin-bottom:6px">Poznámka</label><textarea class="nt" data-e="${e.id}" placeholder="bolest 0–10, pocit, technika…">${esc(x.note||'')}</textarea>
+ <div class="hint">↓ další cvik</div></section>`}
+function reWs(){const b=$('#wsb'),t=b?b.scrollTop:0;render();const nb=$('#wsb');if(nb)nb.scrollTop=t}
+function refreshEx(e){const m=$('#exm-'+e.id);if(m)m.innerHTML=exMeta(e);
+ for(let i=0;i<setsN(e);i++){const r=document.getElementById('s-'+e.id+'#'+i);if(r)r.classList.toggle('done',isDone(e,S(e,i)))}}
+
+function start(id){if(L.active&&L.active.dayId!==id){toast('Nejdřív ukonči běžící trénink');return}
+ if(!L.active){L.active={dayId:id,start:Date.now()};const ss=L.sessions[id]||(L.sessions[id]={});ss.start=L.active.start;delete ss.end;delete ss.hist;save()}
+ unlockAudio();closeOv();UI.ws=id;UI.tab='ws';UI.fi=0;wake(true);render()}
+function openEdit(id){if(L.active&&L.active.dayId!==id){toast('Běží trénink – úpravy jiného dne až po ukončení');return}
+ closeOv();UI.ws=id;UI.tab='ws';UI.fi=0;render()}
+
+/* ---------- číselník ---------- */
+const NP={cell:null,buf:'',fresh:true};
+const FREE={};
+function meta(c){
+ if(c.dataset.free){return FREE[c.dataset.free]}
+ const[id,i]=c.dataset.k.split('#'),e=EX[id],f=c.dataset.f,j=+i;
+ return{kind:f,unit:f==='w'?'kg':f==='r'?unitOf(e):'RPE',label:dispTxt(e)+' · série '+(j+1),
+  plan:f==='w'?num(planW(e,j)):f==='r'?num(planR(e,j)):rpeInfo(e.p).n,
+  get:()=>S(e,j)[f],
+  set:v=>{const k=e.id+'#'+j,s=L.sets[k]||{};s[f]=v;if(has(s))L.sets[k]=s;else delete L.sets[k];save();refreshEx(e)}}}
+function npOpen(c){if(NP.cell)NP.cell.classList.remove('on');NP.cell=c;NP.fresh=true;NP.buf='';c.classList.add('on');document.body.classList.add('npo');drawNP();reveal(c)}
+function npClose(){if(NP.cell)NP.cell.classList.remove('on');NP.cell=null;$('#np').hidden=true;document.body.classList.remove('npo')}
+function reveal(c){const sc=c.closest('.wsb,#scr,.sh');if(!sc)return;requestAnimationFrame(()=>{const r=c.getBoundingClientRect(),sr=sc.getBoundingClientRect(),npTop=innerHeight-$('#np').offsetHeight;
+ if(r.top<sr.top+8||r.bottom>npTop-12)sc.scrollBy({top:r.top-(sr.top+Math.min(160,(npTop-sr.top)*.4)),behavior:'smooth'})})}
+function drawNP(){const m=meta(NP.cell),cur=m.get(),np=$('#np');
+ const show=NP.fresh?(cur!=null?fmt(cur):''):NP.buf;let keys;
+ if(m.kind==='p'){keys=`<div class="np-grid">${[6,6.5,7,7.5,8,8.5,9,9.5,10,5,5.5].map(v=>`<button class="k${cur===v?' sel':''}" data-np="v" data-v="${v}">${fmt(v)}</button>`).join('')}<button class="k sm" data-np="clr">Smazat</button></div>
+  <div class="np-row"><button class="k sm" data-np="plan"${m.plan==null?' disabled':''}>= plán${m.plan!=null?' '+fmt(m.plan):''}</button><button class="k sm acc" data-np="next">Další →</button></div>`}
+ else{const st=m.kind==='w'?L.settings.inc:1;
+  const K=[['7'],['8'],['9'],['−'+fmt(st),'dec','sm'],['4'],['5'],['6'],['+'+fmt(st),'inc','sm'],['1'],['2'],['3'],['= plán','plan','sm'],[','],['0'],['⌫','bs'],['OK →','ok','acc']];
+  keys=`<div class="np-grid">${K.map(([l,a,c])=>`<button class="k ${c||''}" data-np="${a||'d'}" data-v="${l}"${a==='plan'&&m.plan==null?' disabled':''}>${l}</button>`).join('')}</div>`}
+ np.innerHTML=`<div class="np-h"><span>${esc(m.label)}${m.plan!=null?' · plán '+fmt(m.plan):''}</span><button class="np-x" data-np="close">✕</button></div>
+ <div class="np-d">${show?esc(show):'<span class="mut">—</span>'}<small>${esc(m.unit||'')}</small></div>${keys}`;np.hidden=false}
+function npCommit(v){const m=meta(NP.cell);m.set(v);const c=NP.cell;
+ if(c.isConnected)c.textContent=v!=null?(c.dataset.f==='w'&&v===0?'BW':fmt(v)):'';
+ if(m.after)m.after()}
+function npNext(){const c=NP.cell,m=meta(c);if(m.single||!c.isConnected){npClose();return}
+ const sc=c.closest('[data-scope]')||document,list=$$('.cell:not(.off)',sc),n=list[list.indexOf(c)+1];
+ if(n)npOpen(n);else npClose()}
+function npKey(b){const a=b.dataset.np,v=b.dataset.v;if(!NP.cell)return;const m=meta(NP.cell);
+ if(a==='close'){npClose();return}
+ if(a==='d'){if(NP.fresh){NP.buf='';NP.fresh=false}
+  if(v===','){if(!NP.buf.includes(','))NP.buf=(NP.buf||'0')+','}else if(NP.buf.length<6)NP.buf=(NP.buf==='0'?'':NP.buf)+v}
+ else if(a==='bs'){if(NP.fresh){const c=m.get();NP.buf=c!=null?fmt(c):'';NP.fresh=false}NP.buf=NP.buf.slice(0,-1)}
+ else if(a==='dec'||a==='inc'){const st=m.kind==='w'?L.settings.inc:1,base=!NP.fresh&&NP.buf?num(NP.buf):(m.get()??m.plan??0);
+  NP.buf=fmt(Math.max(0,Math.round((base+(a==='inc'?st:-st))*100)/100));NP.fresh=false}
+ else if(a==='plan'){if(m.plan!=null){npCommit(m.plan);npNext()}return}
+ else if(a==='ok'){if(!NP.fresh)npCommit(NP.buf===''?null:num(NP.buf));npNext();return}
+ else if(a==='v'){npCommit(parseFloat(v));npNext();return}
+ else if(a==='clr'){npCommit(null);drawNP();return}
+ else if(a==='next'){npNext();return}
+ drawNP()}
+
+/* ---------- pauza ---------- */
+let REST=LS.get('pl_rest',null),AC=null;
+function unlockAudio(){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}}
+function beep(){try{navigator.vibrate&&navigator.vibrate([300,150,300]);if(!AC)return;const t=AC.currentTime;
+ [0,.35,.7].forEach(o=>{const os=AC.createOscillator(),g=AC.createGain();os.frequency.value=880;os.connect(g);g.connect(AC.destination);
+  g.gain.setValueAtTime(.0001,t+o);g.gain.exponentialRampToValueAtTime(.6,t+o+.02);g.gain.exponentialRampToValueAtTime(.0001,t+o+.28);os.start(t+o);os.stop(t+o+.3)})}catch(e){}}
+function startRest(sec){unlockAudio();REST={end:Date.now()+sec*1000,dur:sec};LS.set('pl_rest',REST);showRest()}
+function showRest(){const el=$('#rest');if(!REST){el.hidden=true;return}
+ el.innerHTML=`<div class="rx"><div class="rl" id="rl">Pauza</div><div class="rt" id="rt"></div></div><button class="rbtn" data-act="restadd" data-v="-30">−30</button><button class="rbtn" data-act="restadd" data-v="30">+30</button><button class="rbtn" data-act="restx">✕</button><div class="rbar"><i id="rb"></i></div>`;
+ el.hidden=false;tickRest()}
+function tickRest(){if(!REST)return;const el=$('#rest'),left=Math.ceil((REST.end-Date.now())/1000);if(!$('#rt'))return;
+ if(left>0){$('#rt').textContent=mmss(left);$('#rb').style.width=Math.min(100,100-left/REST.dur*100)+'%';el.classList.remove('fin');$('#rl').textContent='Pauza'}
+ else{$('#rt').textContent='Jdi na to 💪';$('#rl').textContent='Konec pauzy';$('#rb').style.width='100%';el.classList.add('fin');
+  if(!REST.beeped){REST.beeped=true;LS.set('pl_rest',REST);beep()}
+  if(left<-45){REST=null;LS.set('pl_rest',null);el.hidden=true}}}
+
+/* ---------- displej nezhasne ---------- */
+let WL=null;
+async function wake(on){try{if(on&&!WL&&'wakeLock'in navigator){WL=await navigator.wakeLock.request('screen');WL.addEventListener('release',()=>{WL=null})}
+ if(!on&&WL){await WL.release();WL=null}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){if(L.active)wake(true);tick()}});
+
+/* ---------- modální okna ---------- */
+function sheet(html){const s=$('#sheet');s.innerHTML=`<div class="sh" data-scope>${html}</div>`;s.hidden=false}
+function closeSheet(){npClose();$('#sheet').hidden=true;$('#sheet').innerHTML='';SH=null}
+let SH=null;
+function exMenu(id){const e=EX[id],x=L.ex[id]||{};SH='menu';
+ sheet(`<div class="sht">${dispName(e)}</div><div class="mut sm">${esc(e.v)}</div>
+ <button class="li" data-act="rest" data-e="${id}">⏱ Spustit pauzu (${mmss(restOf(e))})</button>
+ ${isSBD(e)?`<button class="li" data-act="bo" data-e="${id}">↘ Back-off kalkulačka</button>`:''}
+ ${isBar(e)?`<button class="li" data-act="plates" data-e="${id}">◎ Kotouče</button>`:''}
+ <button class="li" data-act="addset" data-e="${id}">＋ Přidat sérii</button>
+ ${x.extra>0?`<button class="li" data-act="rmset" data-e="${id}">− Odebrat přidanou sérii</button>`:''}
+ <button class="li" data-act="sub" data-e="${id}">⇄ ${x.sub?'Změnit náhradu':'Nahradit cvik (obsazený stroj…)'}</button>
+ ${x.sub?`<button class="li" data-act="unsub" data-e="${id}">↺ Vrátit původní cvik</button>`:''}
+ <button class="li" data-act="skipex" data-e="${id}">${x.skip?'↺ Vrátit cvik':'⤼ Přeskočit cvik'}</button>
+ <button class="li mut" data-act="closesh">Zavřít</button>`)}
+
+/* kotouče */
+const PLATES=[25,20,15,10,5,2.5,1.25];
+const PCOL={25:'#d32f2f',20:'#1e63c4',15:'#e8b000',10:'#2e8b3e',5:'#eeeeee','2.5':'#2b2b2b','1.25':'#b0b0b0'};
+const PH={25:118,20:118,15:104,10:92,5:72,'2.5':58,'1.25':48},PWD={25:17,20:15,15:13,10:11,5:9,'2.5':8,'1.25':7};
+let PLW=null;
+function plateCalc(w){const S=L.settings,av=PLATES.filter(p=>S.plates[p]);let rem=Math.round((w-S.bar)/2*1000)/1000;const out=[];
+ for(const p of av)while(rem>=p-1e-9){out.push(p);rem=Math.round((rem-p)*1000)/1000}return{out,rem}}
+function plateSettings(ctx){const S=L.settings;
+ return`<label>Osa</label><div class="chips">${[20,15,10].map(b=>chip(b+' kg','plbar',`data-v="${b}" data-ctx="${ctx}"`,S.bar===b)).join('')}</div>
+ <label>Dostupné kotouče – ťuknutím vypneš/zapneš</label><div class="chips">${PLATES.map(p=>chip(fmt(p),'pltog',`data-v="${p}" data-ctx="${ctx}"`,S.plates[p])).join('')}</div>`}
+function plates(id){const e=EX[id];let w=null;
+ for(let i=0;i<setsN(e);i++){if(!isDone(e,S(e,i))){w=S(e,i).w??num(planW(e,i));break}}
+ if(w==null)for(let i=setsN(e)-1;i>=0;i--)if(S(e,i).w){w=S(e,i).w;break}
+ PLW=w||L.settings.bar;FREE.plw={kind:'w',unit:'kg',label:'Váha na ose',plan:null,single:true,get:()=>PLW,set:v=>{PLW=v??L.settings.bar},after:drawPlates};
+ SH='plates';drawPlates()}
+function drawPlates(){const S=L.settings,{out,rem}=plateCalc(PLW),g={};out.forEach(p=>g[p]=(g[p]||0)+1);
+ sheet(`<div class="sht">Kotouče</div><label>Váha na ose</label><button class="cell" data-free="plw" style="height:56px;font-size:24px">${fmt(PLW)}</button>
+ ${PLW<S.bar?`<p class="warnt">Méně než samotná osa (${S.bar} kg)</p>`:`<div class="plv"><div class="bb"></div><div class="cl"></div>${out.map(p=>`<i style="height:${PH[p]}px;width:${PWD[p]}px;background:${PCOL[p]}"></i>`).join('')}<div class="sv"></div></div>
+ <div style="text-align:center;font-size:18px;font-weight:600">Na každou stranu: ${out.length?Object.keys(g).sort((a,b)=>b-a).map(p=>g[p]+'× '+fmt(+p)).join(' · '):'nic, jen osa'}</div>
+ ${rem>0?`<p class="warnt">S dostupnými kotouči nejde přesně – chybí ${fmt(rem)} kg na stranu</p>`:''}`}
+ ${plateSettings('sheet')}<div class="row2"><button class="btn sec" data-act="closesh">Zavřít</button></div>`)}
+
+/* back-off */
+const BO={id:null,mode:'rpe',reps:5,rpe:7,pc:10};
+function backoff(id){const e=EX[id],b=bestE(e);if(!b){toast('Nejdřív zapiš top sérii: kg, opakování a RPE');return}
+ if(BO.id!==id){BO.id=id;let j=0;for(let i=0;i<setsN(e);i++)if(!isDone(e,S(e,i))){j=i;break}
+  BO.reps=num(planR(e,j))||b.s.r;BO.rpe=rpeInfo(e.p).n||b.s.p}
+ SH='bo';drawBO()}
+function drawBO(){const e=EX[BO.id],b=bestE(e);if(!b){closeSheet();return}
+ const RP=[6,6.5,7,7.5,8,8.5,9,9.5,10],q=pct(BO.reps,BO.rpe);
+ const w=rInc(BO.mode==='rpe'?(q||0)*b.v/100:(1-BO.pc/100)*b.s.w);
+ sheet(`<div class="sht">Back-off · ${esc(dispTxt(e))}</div>
+ <div class="meta">Top série dnes: <b>${esc(setStr(e,b.s))}</b> → e1RM <b class="e1">${fmt(rInc(b.v))} kg</b></div>
+ <div class="seg"><button class="${BO.mode==='rpe'?'on':''}" data-act="bomode" data-v="rpe">Podle RPE</button><button class="${BO.mode==='pc'?'on':''}" data-act="bomode" data-v="pc">Podle %</button></div>
+ ${BO.mode==='rpe'?`<label>Opakování</label><div class="chips">${[1,2,3,4,5,6,7,8,9,10,12].map(r=>chip(r,'boreps',`data-v="${r}"`,BO.reps===r)).join('')}</div>
+ <label>RPE</label><div class="chips">${RP.map(r=>chip(fmt(r),'borpe',`data-v="${r}"`,BO.rpe===r)).join('')}</div>`
+ :`<label>Ubrat z top série (${fmt(b.s.w)} kg)</label><div class="chips">${[5,7.5,10,12.5,15,20].map(p=>chip('−'+fmt(p)+' %','bopc',`data-v="${p}"`,BO.pc===p)).join('')}</div>`}
+ <div class="res">${fmt(w)} kg</div>
+ <div class="mut sm" style="text-align:center">${BO.mode==='rpe'?BO.reps+'× @'+fmt(BO.rpe)+' = '+fmt(q)+' % z e1RM':'−'+fmt(BO.pc)+' % z '+fmt(b.s.w)+' kg'}</div>
+ ${BO.mode==='rpe'?`<table class="rt"><tr>${RP.map(r=>`<td class="mut">@${fmt(r)}</td>`).join('')}</tr><tr>${RP.map(r=>`<td>${fmt(rInc(pct(BO.reps,r)*b.v/100))}</td>`).join('')}</tr></table>`:'<div style="height:14px"></div>'}
+ <button class="btn" data-act="boapply" data-v="${w}">Použít jako cíl pro nezapsané série</button>
+ <div class="row2"><button class="btn sec" data-act="closesh">Zavřít</button></div>`)}
+
+/* konec tréninku */
+let CI=null;
+function finish(){const id=L.active.dayId,d=dayById(id);
+ CI=Object.assign({srpe:null,energy:null,sleep:null,bw:null,pain:'',note:''},L.sessions[id]&&L.sessions[id].checkin);
+ FREE.ci_sleep={kind:'r',unit:'h',label:'Spánek minulou noc',plan:null,get:()=>CI.sleep,set:v=>{CI.sleep=v}};
+ FREE.ci_bw={kind:'w',unit:'kg',label:'Tělesná váha',plan:null,get:()=>CI.bw,set:v=>{CI.bw=v}};
+ const ch=f=>`<div class="chips">${[1,2,3,4,5,6,7,8,9,10].map(v=>chip(v,'cichip',`data-f="${f}" data-v="${v}"`,CI[f]===v)).join('')}</div>`;
+ SH='ci';
+ sheet(`<div class="sht">Konec tréninku</div><div class="mut sm">${dlab(d.date)} · ${esc(d.title)} · ${clock(Date.now()-L.active.start)}</div>
+ <label>Jak těžký byl trénink celkově (RPE)</label>${ch('srpe')}
+ <label>Energie (1 = mrtvola, 10 = super)</label>${ch('energy')}
+ <div class="two"><div><label>Spánek (h)</label><button class="cell" data-free="ci_sleep">${fmt(CI.sleep)}</button></div><div><label>Váha ráno (kg)</label><button class="cell" data-free="ci_bw">${fmt(CI.bw)}</button></div></div>
+ <label>Bolesti (co a kolik 0–10)</label><textarea id="ci_pain" placeholder="lopatka 2/10 při benchi…">${esc(CI.pain)}</textarea>
+ <label>Poznámka k tréninku</label><textarea id="ci_note">${esc(CI.note)}</textarea>
+ <div class="row2"><button class="btn" data-act="cisave">Uložit a ukončit</button></div>
+ <div class="row2"><button class="btn sec" data-act="closesh">Pokračovat v tréninku</button></div>
+ <div class="row2"><button class="btn red" data-act="cancelws">Zrušit trénink (zápisy zůstanou, čas ne)</button></div>`)}
+function ciSave(){const id=L.active.dayId;CI.pain=$('#ci_pain').value.trim();CI.note=$('#ci_note').value.trim();
+ L.sessions[id]={start:L.active.start,end:Date.now(),checkin:CI};L.active=null;save();wake(false);closeSheet();
+ UI.ws=null;UI.mode='list';UI.tab='week';render();toast('Trénink uložen 💪')}
+
+/* pro trenéra */
+function coachText(w){const o=[`${P.name} · ${P.block.title} · ${w.title} (${rlab(w.from,w.to)})`];
+ w.days.forEach(d=>{const ss=L.sessions[d.id];if(!dayLogged(d)&&!(ss&&ss.end)&&!d.skip&&d.date>today())return;
+  o.push('');let h=`■ ${dlab(d.date)} · ${d.title}`;if(ss&&ss.start&&ss.end)h+=` · ${dur(ss.end-ss.start)}`;
+  if(d.skip&&!dayLogged(d)){o.push(h+' — VYNECHÁNO');return}
+  if(!dayLogged(d)&&!(ss&&ss.end)){o.push(h+' — nezapsáno');return}
+  o.push(h);
+  d.ex.forEach(e=>{const x=L.ex[e.id]||{},sets=[];for(let i=0;i<setsN(e);i++){const s=S(e,i);if(has(s))sets.push(setStr(e,s))}
+   o.push(`${x.sub?x.sub+' (místo '+e.n+')':e.n}${e.v?' – '+e.v:''} | plán ${planSummary(e)}`);
+   const b=isSBD(e)&&bestE(e);
+   o.push('   '+(x.skip?'přeskočeno':sets.length?sets.join(' | ')+(b?' · e1RM '+fmt(rInc(b.v)):''):'nezapsáno'));
+   if(x.note)o.push('   pozn.: '+x.note.replace(/\s*\n\s*/g,' / '))});
+  const c=ss&&ss.checkin;if(c){const p=[];if(c.srpe)p.push('RPE tréninku '+c.srpe);if(c.energy)p.push('energie '+c.energy+'/10');if(c.sleep!=null)p.push('spánek '+fmt(c.sleep)+' h');if(c.bw!=null)p.push('váha '+fmt(c.bw)+' kg');if(c.pain)p.push('bolesti: '+c.pain);if(c.note)p.push('pozn.: '+c.note);
+   if(p.length)o.push('Check-in: '+p.join(' · '))}});
+ return o.join('\n')}
+function coachSheet(wid){const w=P.weeks.find(x=>x.id===wid);SH='coach';
+ sheet(`<div class="sht">Pro trenéra</div><div class="chips" style="margin:8px 0">${P.weeks.filter(x=>x.days.length).map(x=>chip(esc(x.title),'coach',`data-w="${x.id}"`,x.id===wid)).join('')}</div>
+ <textarea id="cpta" readonly style="min-height:280px;font-size:13px">${esc(coachText(w))}</textarea>
+ <div class="row2"><button class="btn" data-act="copy">Zkopírovat</button>${navigator.share?'<button class="btn sec" data-act="share">Sdílet…</button>':''}</div>
+ <div class="row2"><button class="btn sec" data-act="closesh">Zavřít</button></div>`)}
+async function copyText(){const ta=$('#cpta'),t=ta.value;try{await navigator.clipboard.writeText(t);toast('Zkopírováno – vlož to trenérovi');return}catch(e){}
+ ta.removeAttribute('readonly');ta.focus();ta.setSelectionRange(0,t.length);try{document.execCommand('copy');toast('Zkopírováno')}catch(e){toast('Označ text a zkopíruj ručně')}ta.setAttribute('readonly','');ta.blur()}
+
+/* záloha */
+async function backup(){const data=JSON.stringify({app:'trenink',v:1,profile,saved:new Date().toISOString(),log:L});
+ const name=`trenink-${profile}-${today()}.json`,file=new File([data],name,{type:'application/json'});
+ try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Záloha tréninku'});markBackup();return}}
+ catch(e){if(e.name==='AbortError')return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=name;document.body.appendChild(a);a.click();a.remove();markBackup()}
+function markBackup(){L.settings.lastBackup=Date.now();save();render(true);toast('Záloha uložena ✓')}
+$('#rf').addEventListener('change',async ev=>{const f=ev.target.files[0];ev.target.value='';if(!f)return;
+ try{const o=JSON.parse(await f.text());if(!o||o.app!=='trenink'||!o.log||!o.log.sets)throw 0;
+  if(!confirm(`Nahradit současná data zálohou z ${dfull(o.saved)}?`))return;
+  L=norm(o.log);save();render();toast('Záloha nahrána ✓')}catch(e){toast('Tohle není záloha z této aplikace')}});
+
+/* ---------- Více ---------- */
+const RESTS=[60,90,120,150,180,240,300];
+function vMore(s){const S=L.settings,w=curWeek();
+ s.innerHTML=`<div class="hd"><h1>Více</h1></div>
+ <div class="sec-h">Pro trenéra</div><div class="card"><div class="mut sm">Jednou týdně zkopíruj zápisy a check-iny a vlož je trenérovi.</div><div class="row2"><button class="btn" data-act="coach" data-w="${w.id}">Zkopírovat pro trenéra</button></div></div>
+ <div class="sec-h">Záloha</div><div class="card"><div class="sm">Naposledy: <b>${S.lastBackup?dfull(S.lastBackup):'nikdy'}</b></div><div class="mut sm">Doporučeno 1× za měsíc. V nabídce sdílení zvol „Uložit do Souborů“ → iCloud Drive.</div>
+ <div class="row2"><button class="btn" data-act="backup">Uložit zálohu</button><button class="btn sec" data-act="restore">Nahrát zálohu</button></div></div>
+ <div class="sec-h">Kotouče</div><div class="card">${plateSettings('more')}</div>
+ <div class="sec-h">Výchozí pauza</div><div class="card"><label style="margin-top:0">Hlavní cviky (dřep, bench, tah)</label><div class="chips">${RESTS.map(v=>chip(mmss(v),'setrest',`data-k="restMain" data-v="${v}"`,S.restMain===v)).join('')}</div>
+ <label>Doplňky</label><div class="chips">${RESTS.map(v=>chip(mmss(v),'setrest',`data-k="restAcc" data-v="${v}"`,S.restAcc===v)).join('')}</div></div>
+ <div class="sec-h">Krok váhy (±, zaokrouhlení)</div><div class="card"><div class="chips">${[2.5,1.25,1,0.5].map(v=>chip(fmt(v)+' kg','setinc',`data-v="${v}"`,S.inc===v)).join('')}</div></div>
+ ${Object.keys(PROGRAMS).length>1?`<div class="sec-h">Profil</div><div class="card"><div class="chips">${Object.entries(PROGRAMS).map(([k,p])=>chip(esc(p.name),'profile',`data-v="${k}"`,k===profile)).join('')}</div></div>`:''}
+ <div class="sec-h">O aplikaci</div><div class="card sm mut">${esc(P.name)} · ${esc(P.block.title)} · verze ${APP_VER}<br>Data jsou jen v tomto telefonu · úložiště ${PERSIST?'trvalé ✓':'standardní'}<br>RPE tabulka a výpočty: rpecalculator.com</div><div style="height:20px"></div>`}
+
+/* ---------- události ---------- */
+document.addEventListener('click',ev=>{const t=ev.target;
+ const n=t.closest('[data-np]');if(n){npKey(n);return}
+ const c=t.closest('.cell');if(c){npOpen(c);return}
+ if(!$('#np').hidden&&!t.closest('#np'))npClose();
+ if(t.id==='sheet'){closeSheet();return}
+ const a=t.closest('[data-act]');if(!a||a.disabled)return;const A=a.dataset,e=A.e&&EX[A.e];
+ switch(A.act){
+  case'tab':closeOv();closeSheet();if(A.t==='ws'&&UI.tab==='ws'){reWs();break}UI.tab=A.t;if(A.t==='ws'&&!UI.ws&&L.active)UI.ws=L.active.dayId;render();break;
+  case'pager':openPager(dayById(A.d));break;
+  case'closeov':closeOv();render(true);break;
+  case'start':start(A.d);break;
+  case'gows':closeOv();UI.ws=A.d;UI.tab='ws';render();break;
+  case'edit':openEdit(A.d);break;
+  case'doneedit':UI.ws=null;UI.tab='week';UI.mode='list';render();toast('Uloženo ✓');break;
+  case'mode':if(A.m===UI.mode)break;
+   if(A.m==='focus'){const b=$('#wsb'),cs=$$('.ex',b);let k=0;cs.forEach((x,i)=>{if(x.offsetTop<=b.scrollTop+40)k=i});UI.fi=k}
+   UI.mode=A.m;render();
+   if(A.m==='list'){const x=$$('#wsb .ex')[UI.fi];if(x)$('#wsb').scrollTop=x.offsetTop-10}break;
+  case'exmenu':exMenu(A.e);break;
+  case'rest':startRest(restOf(e));if(SH==='menu')closeSheet();break;
+  case'restadd':if(REST){REST.end=Math.max(Date.now()+5000,REST.end+A.v*1000);REST.dur=Math.max(30,REST.dur+(+A.v));REST.beeped=false;LS.set('pl_rest',REST);tickRest()}break;
+  case'restx':REST=null;LS.set('pl_rest',null);showRest();break;
+  case'addset':exL(A.e).extra=(L.ex[A.e].extra||0)+1;save();closeSheet();reWs();break;
+  case'rmset':{const x=exL(A.e);if(x.extra>0){delete L.sets[A.e+'#'+(setsN(e)-1)];x.extra--;save()}closeSheet();reWs();break}
+  case'sub':{const v=prompt('Čím cvik „'+e.n+'“ nahrazuješ?',(L.ex[A.e]&&L.ex[A.e].sub)||'');if(v==null)break;
+   if(v.trim())exL(A.e).sub=v.trim();else delete exL(A.e).sub;save();closeSheet();reWs();break}
+  case'unsub':delete exL(A.e).sub;save();closeSheet();reWs();break;
+  case'skipex':exL(A.e).skip=!L.ex[A.e].skip;save();closeSheet();reWs();break;
+  case'bo':backoff(A.e);break;
+  case'bomode':BO.mode=A.v;drawBO();break;
+  case'boreps':BO.reps=+A.v;drawBO();break;
+  case'borpe':BO.rpe=+A.v;drawBO();break;
+  case'bopc':BO.pc=+A.v;drawBO();break;
+  case'boapply':{const id=BO.id,x2=EX[id],x=exL(id);x.tgt=x.tgt||{};let k=0;
+   for(let i=0;i<setsN(x2);i++)if(!isDone(x2,S(x2,i))){x.tgt[i]=+A.v;k++}
+   save();closeSheet();if(k){reWs();toast('Cíl '+fmt(+A.v)+' kg pro '+k+(k===1?' sérii':' série'))}else toast('Všechny série už jsou zapsané');break}
+  case'plates':plates(A.e);break;
+  case'pltog':L.settings.plates[A.v]=!L.settings.plates[A.v];save();A.ctx==='sheet'?drawPlates():render(true);break;
+  case'plbar':L.settings.bar=+A.v;save();A.ctx==='sheet'?drawPlates():render(true);break;
+  case'finish':finish();break;
+  case'cichip':CI[A.f]=CI[A.f]===+A.v?null:+A.v;$$(`[data-act="cichip"][data-f="${A.f}"]`).forEach(b=>b.classList.toggle('on',CI[A.f]===+b.dataset.v));break;
+  case'cisave':ciSave();break;
+  case'cancelws':if(!confirm('Zrušit běžící trénink? Zápisy sérií zůstanou, jen se neuloží čas.'))break;
+   {const id=L.active.dayId;if(L.sessions[id]&&!L.sessions[id].end)delete L.sessions[id];L.active=null;save();wake(false);closeSheet();UI.ws=null;UI.tab='week';render()}break;
+  case'coach':coachSheet(A.w);break;
+  case'copy':copyText();break;
+  case'share':navigator.share({text:$('#cpta').value}).catch(()=>{});break;
+  case'backup':backup();break;
+  case'restore':$('#rf').click();break;
+  case'setrest':L.settings[A.k]=+A.v;save();render(true);break;
+  case'setinc':L.settings.inc=+A.v;save();render(true);break;
+  case'profile':profile=A.v;LS.set('pl_profile',profile);init();break;
+  case'closesh':closeSheet();break;
+ }});
+document.addEventListener('input',ev=>{const t=ev.target;if(t.matches('textarea.nt')){exL(t.dataset.e).note=t.value.trim()?t.value:'';if(!t.value.trim())delete L.ex[t.dataset.e].note;saveSoon()}});
+
+/* ---------- běh ---------- */
+function tick(){const tw=$('#tabws');
+ if(L.active){const t=clock(Date.now()-L.active.start),c=$('#clock');if(c)c.textContent=t;tw.textContent=t;tw.className='live'}
+ else{tw.textContent='Trénink';tw.className=''}
+ tickRest()}
+function init(){build();loadLog();seed();
+ const h=location.hash.slice(1);UI.tab=['program','week','ws','more'].includes(h)?h:(L.active?'ws':'week');
+ if(L.active)wake(true);render();showRest()}
+init();
+setInterval(tick,500);
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().then(p=>{PERSIST=p}).catch(()=>{});
+if('serviceWorker'in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
