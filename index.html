@@ -210,6 +210,8 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 #toast{position:absolute;left:50%;top:calc(var(--st) + 14px);transform:translateX(-50%);background:var(--navy);color:#fff;font-weight:600;padding:10px 18px;border-radius:999px;z-index:80;font-size:14px;max-width:90%;text-align:center}
 #err{position:absolute;top:0;left:0;right:0;background:#a00;color:#fff;font-size:12px;padding:6px 10px;z-index:99}
 .note{font-size:14px;color:var(--slate)}
+.role{display:inline-block;vertical-align:middle;margin-left:4px;padding:3px 9px;border-radius:999px;background:var(--navy);color:#fff;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;line-height:1.3}
+.ex.cur .role{background:#fff;color:var(--blue)}
 </style>
 </head>
 <body>
@@ -229,7 +231,7 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.10';
+const APP_VER='1.11';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -668,8 +670,13 @@ const isDone=(e,s)=>isCardio(e)?(s.r!=null||s.p!=null):(s.p!=null||(s.r!=null&&s
 const hasLog=e=>{for(let i=0;i<setsN(e);i++)if(has(S(e,i)))return true;return false};
 function planW(e,i){const t=L.ex[e.id]&&L.ex[e.id].tgt;if(t&&t[i]!=null)return fmt(t[i]);return tok(e.t,i)}
 const planR=(e,i)=>tok(e.r,i);
-const dispName=e=>{const x=L.ex[e.id];return x&&x.sub?esc(x.sub)+' <span class="mut sm">(místo '+esc(e.n)+')</span>':esc(e.n)};
+// role SBD cviku z popisku („PRIMÁRNÍ dřep · soutěžní“) → štítek u názvu, zbytek popisku zvlášť
+const ROLE_RE=/^(PRIMÁRNÍ|SEKUNDÁRNÍ|TERCIÁRNÍ|OBJEMOVÝ)\s*(dřep|bench|tah)?\s*·?\s*/,ROLE_AB={primární:'prim.',sekundární:'sek.',terciární:'terc.',objemový:'obj.'};
+const roleOf=e=>{const m=ROLE_RE.exec(e.v);return m?m[1].toLowerCase():''};
+const vTxt=e=>e.v.replace(ROLE_RE,'');
+const dispName=e=>{const x=L.ex[e.id],r=roleOf(e);return(x&&x.sub?esc(x.sub)+' <span class="mut sm">(místo '+esc(e.n)+')</span>':esc(e.n))+(r?` <span class="role">${r}</span>`:'')};
 const dispTxt=e=>{const x=L.ex[e.id];return x&&x.sub?x.sub:e.n};
+const dispShort=e=>{const r=roleOf(e);return dispTxt(e)+(r?' ('+ROLE_AB[r]+')':'')};
 function planSummary(e){const ri=rpeInfo(e.p);return e.s+' × '+(e.r?e.r.replace('/leg','/nohu'):'—')+(ri.lab?' '+ri.lab:'')+(e.t?' · '+e.t:'')}
 function setStr(e,s){if(isCardio(e))return[(s.r!=null?fmt(s.r)+' min':''),(s.p!=null?'@'+fmt(s.p):'')].filter(Boolean).join(' ');
  return(s.w==null?'–':s.w===0?'BW':fmt(s.w))+'×'+(s.r==null?'–':fmt(s.r))+(s.p!=null?' @'+fmt(s.p):'')}
@@ -705,7 +712,7 @@ function exRead(e){const x=L.ex[e.id]||{},sets=[];
  for(let i=0;i<setsN(e);i++){const s=S(e,i);if(has(s))sets.push(`<span class="lg">${esc(setStr(e,s))}</span>`)}
  const b=isSBD(e)&&bestE(e);
  return`<div class="exr${x.skip?' skip':''}"><div class="exn">${dispName(e)}${x.skip?' <span class="mut sm">· přeskočeno</span>':''}</div>
- <div class="mut sm">${esc(planSummary(e))}${e.v?' · '+esc(e.v):''}</div>${cnote(e.note)}
+ <div class="mut sm">${esc(planSummary(e))}${vTxt(e)?' · '+esc(vTxt(e)):''}</div>${cnote(e.note)}
  ${sets.length?`<div class="logl">${sets.join('')}${b?`<span class="lg e1">e1RM ${fmt(rInc(b.v))}</span>`:''}</div>`:''}
  ${x.note?`<div class="an">${ic('edit',13)} ${esc(x.note)}</div>`:''}</div>`}
 function badge(d){const[l,c]=STAT[dayStatus(d)];return l?`<span class="badge ${c}">${l}</span>`:''}
@@ -738,7 +745,7 @@ function vWeek(s){const w=curWeek(),wp=wkProg(w);
  :'<div class="empty">Trenér tento týden ještě nepřipravil.<br>Pošli mu check-in z minulého týdne (Více → Pro trenéra).</div>'}<div style="height:20px"></div>`}
 function dayCard(d){const st=dayStatus(d),done=st==='done'||st==='skip',tod=d.date===today();
  return`<button class="dcard ${done?'done':dayCol(d)}${tod&&!done?' today':''}" data-act="pager" data-d="${d.id}"><div class="top"><div class="l"><span class="pill">${tod?'Dnes · ':''}${dlab(d.date)}</span>${badge(d)}</div><span class="arr">${ic('arrow',18)}</span></div>
- <h2>${esc(d.title)}</h2><div class="sub">${d.ex.length} cviků${sessInfo(d)} · ${esc(d.ex.map(dispTxt).join(', '))}</div></button>`}
+ <h2>${esc(d.title)}</h2><div class="sub">${d.ex.length} cviků${sessInfo(d)} · ${esc(d.ex.map(dispShort).join(', '))}</div></button>`}
 
 function openPager(d){const w=d.week,ov=$('#ov');
  ov.innerHTML=`<div class="bar"><button class="pill" data-act="closeov">${ic('back',16)} Zpět</button><b>${esc(w.title)}</b><span></span></div><div class="snap" id="pgs">${w.days.map(dayPage).join('')}</div>`;
@@ -778,14 +785,14 @@ function exMeta(e){const o=[],p=prevOf(e);
 const exOpen=e=>!(L.ex[e.id]&&L.ex[e.id].skip)&&Array.from({length:setsN(e)},(_,i)=>i).some(i=>!isDone(e,S(e,i)));
 const curEx=d=>d.ex.find(exOpen);
 function exEdit(e){const x=L.ex[e.id]||{};let rows='';for(let i=0;i<setsN(e);i++)rows+=setRow(e,i);
- return`<div class="ex${x.skip?' skip':''}${e===curEx(e.day)?' cur':''}" id="ex-${e.id}" data-e="${e.id}"><div class="exh"><div style="min-width:0"><div class="exn" style="font-size:18px">${dispName(e)}</div>${e.v?`<div class="mut sm">${esc(e.v)}</div>`:''}</div>
+ return`<div class="ex${x.skip?' skip':''}${e===curEx(e.day)?' cur':''}" id="ex-${e.id}" data-e="${e.id}"><div class="exh"><div style="min-width:0"><div class="exn" style="font-size:18px">${dispName(e)}</div>${vTxt(e)?`<div class="mut sm">${esc(vTxt(e))}</div>`:''}</div>
  <div style="display:flex;gap:6px"><button class="ibtn" data-act="rest" data-e="${e.id}" aria-label="Pauza">${ic('timer',18)}</button><button class="ibtn" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">${ic('more',18)}</button></div></div>
  ${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div>${setHead(e)}${rows}
  <textarea class="nt" data-e="${e.id}" placeholder="Poznámka – bolest 0–10, pocit, technika…">${esc(x.note||'')}</textarea></div>`}
 function exFocus(e,i,n){const x=L.ex[e.id]||{},ri=rpeInfo(e.p);let rows='';for(let j=0;j<setsN(e);j++)rows+=setRow(e,j);
  const tags=[e.s+(e.s<5?' série':' sérií'),e.r?e.r.replace('/leg',' / nohu')+(unitOf(e)==='opak.'?' opak.':''):'',ri.full,e.t?'~ '+e.t:''].filter(Boolean);
  return`<section class="page${x.skip?' skip':''}" id="fp-${e.id}"><div class="hero ${COL[i%3]}" style="margin-top:6px"><div class="top"><span class="pill">${i+1} / ${n}${x.skip?' · přeskočeno':''}</span><button class="arr" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">${ic('more',18)}</button></div>
- <div class="big2">${dispName(e)}</div>${e.v?`<div class="mut sm">${esc(e.v)}</div>`:''}
+ <div class="big2">${dispName(e)}</div>${vTxt(e)?`<div class="mut sm">${esc(vTxt(e))}</div>`:''}
  <div class="tags">${tags.map(t=>`<span class="pill">${esc(t)}</span>`).join('')}</div>${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div></div>
  <div class="ex">${setHead(e)}${rows}</div>
  <div class="tools"><button class="chip" data-act="rest" data-e="${e.id}">${ic('timer',16)} Pauza ${mmss(restOf(e))}</button>${isBar(e)?`<button class="chip" data-act="plates" data-e="${e.id}">Kotouče</button>`:''}</div>
@@ -882,7 +889,7 @@ function sheet(html){const s=$('#sheet');s.innerHTML=`<div class="sh" data-scope
 function closeSheet(){npClose();$('#sheet').hidden=true;$('#sheet').innerHTML='';SH=null}
 let SH=null;
 function exMenu(id){const e=EX[id],x=L.ex[id]||{};SH='menu';
- sheet(`<div class="sht">${dispName(e)}</div><div class="mut sm">${esc(e.v)}</div>
+ sheet(`<div class="sht">${dispName(e)}</div><div class="mut sm">${esc(vTxt(e))}</div>
  <button class="li" data-act="rest" data-e="${id}">${ic('timer',20)} Spustit pauzu (${mmss(restOf(e))})</button>
  ${isBar(e)?`<button class="li" data-act="plates" data-e="${id}">${ic('plate',20)} Kotouče</button>`:''}
  <button class="li" data-act="addset" data-e="${id}">${ic('plus',20)} Přidat sérii</button>
