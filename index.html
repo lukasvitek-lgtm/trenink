@@ -120,7 +120,7 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--navy),var(--n
 .wsb{position:relative;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .hsnap{display:flex;overflow-x:scroll;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none}
 .hsnap::-webkit-scrollbar{display:none}
-.fbar{position:absolute;left:0;right:0;top:100%;height:52px;padding:0 18px;display:flex;align-items:center;background:var(--navy);color:#fff;font-size:19px;font-weight:800;letter-spacing:-.3px;border-radius:0 0 18px 18px;box-shadow:0 4px 14px rgba(27,45,82,.25);opacity:0;pointer-events:none}
+.fbar{position:absolute;left:0;right:0;top:100%;height:36px;padding:0 16px;display:flex;align-items:center;font-size:15px;font-weight:800;letter-spacing:-.2px;border-radius:0 0 14px 14px;box-shadow:0 3px 10px rgba(27,45,82,.2);opacity:0;pointer-events:none}
 .fbar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fbar.vis{opacity:1}
 .hsnap>.page{position:relative;flex:0 0 100%;height:100%;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding-bottom:110px}
@@ -240,7 +240,7 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.17';
+const APP_VER='1.18';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -781,7 +781,7 @@ function vWs(s){const id=UI.ws||(L.active&&L.active.dayId);
  if(foc){b.scrollLeft=UI.fi*b.clientWidth;
   // pevná lišta s názvem cviku, jakmile název cviku odjede nahoru
   const ps=$$('.page',b),f=$('#fbar'),upd=()=>{const k=Math.round(b.scrollLeft/b.clientWidth),p=ps[k],h=p&&k<d.ex.length&&p.querySelector('.big2');
-   if(h)f.firstChild.textContent=dispTxt(d.ex[k]);f.classList.toggle('vis',!!h&&p.scrollTop>h.offsetTop+h.offsetHeight-8)};
+   if(h){f.firstChild.textContent=dispTxt(d.ex[k]);f.classList.remove(...COL);f.classList.add(COL[k%3])}f.classList.toggle('vis',!!h&&p.scrollTop>h.offsetTop+h.offsetHeight-8)};
   b.addEventListener('scroll',()=>{UI.fi=Math.min(Math.round(b.scrollLeft/b.clientWidth),d.ex.length-1);upd()},{passive:true});
   ps.forEach(p=>p.addEventListener('scroll',upd,{passive:true}))}}
 function endPage(d,live,foc){const inner=live?`<button class="btn" data-act="finish">Ukončit trénink</button><button class="btn sec" data-act="cancelask" style="margin-top:8px">Zrušit trénink</button>`:`<button class="btn" data-act="doneedit">Hotovo</button>`;
