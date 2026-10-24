@@ -120,7 +120,10 @@ details.dacc[open]>summary::after{content:'−'}
 .wsb{position:relative;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .hsnap{display:flex;overflow-x:scroll;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none}
 .hsnap::-webkit-scrollbar{display:none}
-.hsnap>.page{flex:0 0 100%;height:100%;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding-bottom:110px}
+.fbar{position:sticky;top:0;z-index:5;height:52px;margin:0 -12px -52px;padding:0 18px;display:flex;align-items:center;background:var(--navy);color:#fff;font-size:19px;font-weight:800;letter-spacing:-.3px;border-radius:0 0 18px 18px;box-shadow:0 4px 14px rgba(27,45,82,.25);opacity:0;pointer-events:none;transition:opacity .15s}
+.fbar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fbar.vis{opacity:1}
+.hsnap>.page{position:relative;flex:0 0 100%;height:100%;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding-bottom:110px}
 .list{padding-bottom:110px}
 .npo .list,.npo .page,.npo .hsnap>.page,.npo .sh,.npo #scr:not(.fixed){padding-bottom:360px}
 .ex{--cols:26px 1fr 74px 58px 58px;background:var(--card);border-radius:24px;padding:16px 14px 10px;margin:14px 10px;box-shadow:0 1px 2px rgba(27,45,82,.05)}
@@ -776,7 +779,10 @@ function vWs(s){const id=UI.ws||(L.active&&L.active.dayId);
  <div class="wsb ${foc?'hsnap fbig':'list'}" id="wsb" data-scope>${foc?d.ex.map((e,i)=>exFocus(e,i,d.ex.length)).join('')+endPage(d,live,true):d.ex.map(exEdit).join('')+endPage(d,live,false)}</div>`;
  const b=$('#wsb');
  if(foc){b.scrollLeft=UI.fi*b.clientWidth;
-  b.addEventListener('scroll',()=>{UI.fi=Math.min(Math.round(b.scrollLeft/b.clientWidth),d.ex.length-1)},{passive:true})}}
+  b.addEventListener('scroll',()=>{UI.fi=Math.min(Math.round(b.scrollLeft/b.clientWidth),d.ex.length-1)},{passive:true});
+  // pevná lišta s názvem cviku, jakmile název cviku odjede nahoru
+  b.addEventListener('scroll',ev=>{const p=ev.target,f=p.querySelector&&p.querySelector(':scope>.fbar');if(!f)return;const h=p.querySelector('.big2');
+   f.classList.toggle('vis',p.scrollTop>h.offsetTop+h.offsetHeight-8)},{capture:true,passive:true})}}
 function endPage(d,live,foc){const inner=live?`<button class="btn" data-act="finish">Ukončit trénink</button><button class="btn sec" data-act="cancelask" style="margin-top:8px">Zrušit trénink</button>`:`<button class="btn" data-act="doneedit">Hotovo</button>`;
  return foc?`<section class="page"><div class="hero c-y" style="margin-top:8px"><div class="ht">To je všechno</div><div class="mut sm" style="margin-bottom:14px">Ukonči trénink a vyplň krátký check-in.</div>${inner.replace('class="btn"','class="btn dk"').replace('btn sec','btn w')}</div></section>`:`<div style="margin:16px 12px 30px">${inner}</div>`}
 function cell(k,f,v,ph,off){return`<button class="cell${off?' off':''}" data-k="${k}" data-f="${f}" data-ph="${esc(ph!=null?fmt(ph):'')}">${v!=null?(f==='w'&&v===0?'BW':fmt(v)):''}</button>`}
@@ -797,7 +803,7 @@ function exEdit(e){const x=L.ex[e.id]||{};let rows='';for(let i=0;i<setsN(e);i++
  <textarea class="nt" data-e="${e.id}" placeholder="Poznámka – bolest 0–10, pocit, technika…">${esc(x.note||'')}</textarea></div>`}
 function exFocus(e,i,n){const x=L.ex[e.id]||{},ri=rpeInfo(e.p);let rows='';for(let j=0;j<setsN(e);j++)rows+=setRow(e,j);
  const tags=[e.s+(e.s<5?' série':' sérií'),e.r?e.r.replace('/leg',' / nohu')+(unitOf(e)==='opak.'?' opak.':''):'',ri.full,e.t?'~ '+e.t:''].filter(Boolean);
- return`<section class="page${x.skip?' skip':''}" id="fp-${e.id}"><div class="hero ${COL[i%3]}" style="margin-top:6px"><div class="top"><span class="pill">${i+1} / ${n}${x.skip?' · přeskočeno':''}</span><button class="arr" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">${ic('more',18)}</button></div>
+ return`<section class="page${x.skip?' skip':''}" id="fp-${e.id}"><div class="fbar"><span>${esc(dispTxt(e))}</span></div><div class="hero ${COL[i%3]}" style="margin-top:6px"><div class="top"><span class="pill">${i+1} / ${n}${x.skip?' · přeskočeno':''}</span><button class="arr" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">${ic('more',18)}</button></div>
  <div class="big2">${dispName(e)}</div>${vTxt(e)?`<div class="mut sm">${esc(vTxt(e))}</div>`:''}
  <div class="tags">${tags.map(t=>`<span class="pill">${esc(t)}</span>`).join('')}</div>${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div></div>
  <div class="ex">${setHead(e)}${rows}</div>
