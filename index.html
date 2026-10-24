@@ -118,9 +118,11 @@ details.dacc[open]>summary::after{content:'−'}
 .seg button.on{background:var(--navy);color:#fff}
 .sh .seg{background:var(--card2)}
 .wsb{position:relative;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.wsb.snap{overflow-y:scroll}
-.list{padding-bottom:24px}
-.npo .list,.npo .page,.npo .sh,.npo #scr:not(.fixed){padding-bottom:360px}
+.hsnap{display:flex;overflow-x:scroll;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none}
+.hsnap::-webkit-scrollbar{display:none}
+.hsnap>.page{flex:0 0 100%;height:100%;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding-bottom:110px}
+.list{padding-bottom:110px}
+.npo .list,.npo .page,.npo .hsnap>.page,.npo .sh,.npo #scr:not(.fixed){padding-bottom:360px}
 .ex{--cols:24px 1fr 66px 52px 52px;background:var(--card);border-radius:24px;padding:14px 14px 8px;margin:10px 12px;box-shadow:0 1px 2px rgba(27,45,82,.05)}
 .fbig .ex{--cols:28px 1fr 78px 60px 60px;margin:10px 0}
 .ex.skip,.page.skip .ex{opacity:.4}
@@ -147,6 +149,8 @@ details.dacc[open]>summary::after{content:'−'}
 .ex .set.done .si{background:var(--navy);color:#fff}
 .ex .e1,.ex .e1 b,.ex .meta b{color:var(--navy)}
 .ex .cn{color:var(--navy);background:rgba(255,255,255,.45)}
+.ex textarea.nt{min-height:56px;margin:6px 0 8px;background:rgba(255,255,255,.75);border:0;font-size:16px}
+.ex.cur textarea.nt{background:rgba(255,255,255,.92);color:var(--navy)}
 .ex.cur{background:var(--blue)!important;color:#fff}
 .ex.cur .mut,.ex.cur .meta,.ex.cur .seth,.ex.cur .plan small{color:rgba(255,255,255,.78)}
 .ex.cur .meta b,.ex.cur .e1,.ex.cur .e1 b{color:#fff}
@@ -225,7 +229,7 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.9';
+const APP_VER='1.10';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -756,10 +760,10 @@ function vWs(s){const id=UI.ws||(L.active&&L.active.dayId);
  s.innerHTML=`<div class="wsh"><div class="top" style="padding:0 4px 8px">${live?`<div class="clock" id="clock"></div><button class="arr" data-act="cancelask" aria-label="Zrušit trénink">${ic('close',18)}</button>`
   :`<div class="ht2">Úprava · ${dlab(d.date)}</div><button class="pill" data-act="doneedit">Hotovo</button>`}</div>
  <div class="seg"><button class="${foc?'':'on'}" data-act="mode" data-m="list">Všechny cviky</button><button class="${foc?'on':''}" data-act="mode" data-m="focus">Jeden cvik</button></div></div>
- <div class="wsb ${foc?'snap fbig':'list'}" id="wsb" data-scope>${foc?d.ex.map((e,i)=>exFocus(e,i,d.ex.length)).join('')+endPage(d,live,true):d.ex.map(exEdit).join('')+endPage(d,live,false)}</div>`;
+ <div class="wsb ${foc?'hsnap fbig':'list'}" id="wsb" data-scope>${foc?d.ex.map((e,i)=>exFocus(e,i,d.ex.length)).join('')+endPage(d,live,true):d.ex.map(exEdit).join('')+endPage(d,live,false)}</div>`;
  const b=$('#wsb');
- if(foc){const pg=$$('.page',b)[UI.fi];if(pg)b.scrollTop=pg.offsetTop;
-  b.addEventListener('scroll',()=>{const ps=$$('.page',b);let k=0;ps.forEach((p,i)=>{if(p.offsetTop<=b.scrollTop+b.clientHeight/3)k=i});UI.fi=Math.min(k,d.ex.length-1)},{passive:true})}}
+ if(foc){b.scrollLeft=UI.fi*b.clientWidth;
+  b.addEventListener('scroll',()=>{UI.fi=Math.min(Math.round(b.scrollLeft/b.clientWidth),d.ex.length-1)},{passive:true})}}
 function endPage(d,live,foc){const inner=live?`<button class="btn" data-act="finish">Ukončit trénink</button><button class="btn sec" data-act="cancelask" style="margin-top:8px">Zrušit trénink</button>`:`<button class="btn" data-act="doneedit">Hotovo</button>`;
  return foc?`<section class="page"><div class="hero c-y" style="margin-top:8px"><div class="ht">To je všechno</div><div class="mut sm" style="margin-bottom:14px">Ukonči trénink a vyplň krátký check-in.</div>${inner.replace('class="btn"','class="btn dk"').replace('btn sec','btn w')}</div></section>`:`<div style="margin:16px 12px 30px">${inner}</div>`}
 function cell(k,f,v,ph,off){return`<button class="cell${off?' off':''}" data-k="${k}" data-f="${f}" data-ph="${esc(ph!=null?fmt(ph):'')}">${v!=null?(f==='w'&&v===0?'BW':fmt(v)):''}</button>`}
@@ -776,7 +780,8 @@ const curEx=d=>d.ex.find(exOpen);
 function exEdit(e){const x=L.ex[e.id]||{};let rows='';for(let i=0;i<setsN(e);i++)rows+=setRow(e,i);
  return`<div class="ex${x.skip?' skip':''}${e===curEx(e.day)?' cur':''}" id="ex-${e.id}" data-e="${e.id}"><div class="exh"><div style="min-width:0"><div class="exn" style="font-size:18px">${dispName(e)}</div>${e.v?`<div class="mut sm">${esc(e.v)}</div>`:''}</div>
  <div style="display:flex;gap:6px"><button class="ibtn" data-act="rest" data-e="${e.id}" aria-label="Pauza">${ic('timer',18)}</button><button class="ibtn" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">${ic('more',18)}</button></div></div>
- ${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div>${setHead(e)}${rows}</div>`}
+ ${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div>${setHead(e)}${rows}
+ <textarea class="nt" data-e="${e.id}" placeholder="Poznámka – bolest 0–10, pocit, technika…">${esc(x.note||'')}</textarea></div>`}
 function exFocus(e,i,n){const x=L.ex[e.id]||{},ri=rpeInfo(e.p);let rows='';for(let j=0;j<setsN(e);j++)rows+=setRow(e,j);
  const tags=[e.s+(e.s<5?' série':' sérií'),e.r?e.r.replace('/leg',' / nohu')+(unitOf(e)==='opak.'?' opak.':''):'',ri.full,e.t?'~ '+e.t:''].filter(Boolean);
  return`<section class="page${x.skip?' skip':''}" id="fp-${e.id}"><div class="hero ${COL[i%3]}" style="margin-top:6px"><div class="top"><span class="pill">${i+1} / ${n}${x.skip?' · přeskočeno':''}</span><button class="arr" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">${ic('more',18)}</button></div>
@@ -785,8 +790,9 @@ function exFocus(e,i,n){const x=L.ex[e.id]||{},ri=rpeInfo(e.p);let rows='';for(l
  <div class="ex">${setHead(e)}${rows}</div>
  <div class="tools"><button class="chip" data-act="rest" data-e="${e.id}">${ic('timer',16)} Pauza ${mmss(restOf(e))}</button>${isBar(e)?`<button class="chip" data-act="plates" data-e="${e.id}">Kotouče</button>`:''}</div>
  <textarea class="nt" data-e="${e.id}" placeholder="Poznámka – bolest 0–10, pocit, technika…">${esc(x.note||'')}</textarea>
- <div class="hint">↓ další cvik</div></section>`}
-function reWs(){const b=$('#wsb'),t=b?b.scrollTop:0;render();const nb=$('#wsb');if(nb)nb.scrollTop=t}
+ <div class="hint">přejeď do strany → další cvik</div></section>`}
+function reWs(){const b=$('#wsb'),t=b?b.scrollTop:0,pg=b&&UI.mode==='focus'&&$$('.page',b)[UI.fi],pt=pg?pg.scrollTop:0;render();const nb=$('#wsb');if(!nb)return;
+ if(UI.mode==='focus'){const np=$$('.page',nb)[UI.fi];if(np)np.scrollTop=pt}else nb.scrollTop=t}
 function refreshEx(e){const m=$('#exm-'+e.id);if(m)m.innerHTML=exMeta(e);
  for(let i=0;i<setsN(e);i++){const r=document.getElementById('s-'+e.id+'#'+i);if(r)r.classList.toggle('done',isDone(e,S(e,i)))}
  const c=curEx(e.day);$$('#wsb .ex[data-e]').forEach(el=>el.classList.toggle('cur',!!c&&el.dataset.e===c.id))}
@@ -814,14 +820,15 @@ function meta(c){
   set:v=>{const k=e.id+'#'+j,s=L.sets[k]||{};s[f]=v;if(has(s))L.sets[k]=s;else delete L.sets[k];save();refreshEx(e)}}}
 function npOpen(c){if(NP.cell)NP.cell.classList.remove('on');NP.cell=c;NP.fresh=true;NP.buf='';c.classList.add('on');document.body.classList.add('npo');drawNP();reveal(c)}
 function npClose(){if(NP.cell)NP.cell.classList.remove('on');NP.cell=null;$('#np').hidden=true;document.body.classList.remove('npo')}
-function reveal(c){const sc=c.closest('.wsb,#scr,.sh');if(!sc)return;requestAnimationFrame(()=>{const r=c.getBoundingClientRect(),sr=sc.getBoundingClientRect(),npTop=innerHeight-$('#np').offsetHeight;
+function reveal(c){const sc=c.closest('.hsnap>.page,.wsb,#scr,.sh');if(!sc)return;requestAnimationFrame(()=>{const r=c.getBoundingClientRect(),sr=sc.getBoundingClientRect(),npTop=innerHeight-$('#np').offsetHeight;
  if(r.top<sr.top+8||r.bottom>npTop-12)sc.scrollBy({top:r.top-(sr.top+Math.min(160,(npTop-sr.top)*.4)),behavior:'smooth'})})}
 function drawNP(){const m=meta(NP.cell),cur=m.get(),np=$('#np');
  const show=NP.fresh?(cur!=null?fmt(cur):''):NP.buf;let keys;
- if(m.kind==='p'){keys=`<div class="np-grid">${[6,6.5,7,7.5,8,8.5,9,9.5,10,5,5.5].map(v=>`<button class="k${cur===v?' sel':''}" data-np="v" data-v="${v}">${fmt(v)}</button>`).join('')}<button class="k sm" data-np="clr">Smazat</button></div>
-  <div class="np-row"><button class="k sm" data-np="plan"${m.plan==null?' disabled':''}>= plán${m.plan!=null?' '+fmt(m.plan):''}</button><button class="k sm acc" data-np="next">Další →</button></div>`}
+ // RPE má stejnou mřížku 4×4 jako kg/opak. – „= plán“ a „OK“ zůstávají na stejném místě
+ if(m.kind==='p'){keys=`<div class="np-grid">${[9,9.5,10,5,7.5,8,8.5,5.5,6,6.5,7].map(v=>`<button class="k${cur===v?' sel':''}" data-np="v" data-v="${v}">${fmt(v)}</button>`).join('')}<button class="k sm" data-np="plan"${m.plan==null?' disabled':''}>= plán</button>
+  <button class="k sm" data-np="clr" style="grid-column:span 3">Smazat</button><button class="k acc" data-np="next">OK</button></div>`}
  else{const st=m.kind==='w'?L.settings.inc:1;
-  const K=[['7'],['8'],['9'],['−'+fmt(st),'dec','sm'],['4'],['5'],['6'],['+'+fmt(st),'inc','sm'],['1'],['2'],['3'],['= plán','plan','sm'],[','],['0'],[ic('bksp',24),'bs'],['OK →','ok','acc']];
+  const K=[['7'],['8'],['9'],['−'+fmt(st),'dec','sm'],['4'],['5'],['6'],['+'+fmt(st),'inc','sm'],['1'],['2'],['3'],['= plán','plan','sm'],[','],['0'],[ic('bksp',24),'bs'],['OK','ok','acc']];
   keys=`<div class="np-grid">${K.map(([l,a,c])=>`<button class="k ${c||''}" data-np="${a||'d'}" data-v="${a?'':l}"${a==='plan'&&m.plan==null?' disabled':''}>${l}</button>`).join('')}</div>`}
  np.innerHTML=`<div class="np-h"><span>${esc(m.label)}${m.plan!=null?' · plán '+fmt(m.plan):''}</span><button class="np-x" data-np="close">${ic('close',14)}</button></div>
  <div class="np-d">${show?esc(show):'<span class="mut">—</span>'}<small>${esc(m.unit||'')}</small></div>${keys}`;np.hidden=false}
@@ -829,7 +836,7 @@ function npCommit(v){const m=meta(NP.cell);m.set(v);const c=NP.cell;
  if(c.isConnected)c.textContent=v!=null?(c.dataset.f==='w'&&v===0?'BW':fmt(v)):'';
  if(m.after)m.after()}
 function npNext(){const c=NP.cell,m=meta(c);if(m.single||!c.isConnected){npClose();return}
- const sc=c.closest('[data-scope]')||document,list=$$('.cell:not(.off)',sc),n=list[list.indexOf(c)+1];
+ const sc=c.closest('.ex,[data-scope]')||document,list=$$('.cell:not(.off)',sc),n=list[list.indexOf(c)+1];
  if(n)npOpen(n);else npClose()}
 function npKey(b){const a=b.dataset.np,v=b.dataset.v;if(!NP.cell)return;const m=meta(NP.cell);
  if(a==='close'){npClose();return}
