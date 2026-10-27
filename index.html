@@ -240,7 +240,7 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.18';
+const APP_VER='1.19';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -261,7 +261,7 @@ block:{title:'Blok 1 · hypertrofie',from:'2026-10-05',to:'2026-11-15',sub:'5 t�
 `LOPATKA (vpravo mezi lopatkou a páteří): bolest do 3/10, která se v sérii nezhoršuje a do druhého dne je zpátky = OK. V sérii nad 3/10 → zbytek benche ten den vynech a zapiš (kolikátá série, 0–10). Záložní varianta: cluster 3+3. Když se 2 týdny nedostane pod 3/10 → fyzioterapeut.`,
 `LOKTY: stejné pravidlo 3/10. Před každým benchem cable row. Skull crushers na laně. Biceps od týdne 3 do selhání; loket nad 3/10 → zpět na RIR 2. KYČEL na sumu: 0–10 do poznámky, 4. série jen při ≤2/10.`,
 `Pondělní dřep: když je mezi pin squatem a pondělkem jen 1 den, strop RPE 7. Grip na sumu: když povolí, zapiš sérii a opakování. Dech: nádech před každým opakováním.`,
-`Jídlo ~3450 kcal, váha 81,8 (11. 10.): když průměr k 25. 10. nebude aspoň 82, přidáme ~150–200 kcal; nad 83 ubereme ~150. Běh: zóna 3 max 1× za 14 dní, jinak zóna 2.`]},
+`Jídlo od 26. 10. ~3600 kcal (průměr týdne 3 = 81,9, za 2 týdny jen +0,1 kg → +150). Cíl +0,5–1 kg za měsíc; nad 83 ubereme ~150. Běh: zóna 3 max 1× za 14 dní, jinak zóna 2.`]},
 weeks:[
 W('w1','Týden 1','2026-10-05','2026-10-11','SBD RPE 7 · lopatku zapisuj do poznámky (0–10) · 3 poctivé série',[
  D('2026-10-05','dřep',[
@@ -377,8 +377,42 @@ W('w3','Týden 3','2026-10-19','2026-10-25','SBD RPE 7,5 · doplňky 2 série do
   E('Lateral raises','',2,12,'sel.','6'),
   E('Calf raise','leg press horizontal',2,12,'sel.','150','Jen když noha nebolí')],'Posunuto z pátku. Pondělí je jen 2 dny po → dnes nic nohama do selhání, horní polovina beze změny. Úterní doplňky se nedohánějí.'),
  D('2026-10-25','běh + posilování kyčlí',[E('Run','zone 2, 20–30 min',1,'','','Den před pondělním SBD: běh lehce, zóna 2. Kyčle po běhu max ~20 min, RPE ≤6, žádné selhání, bez RDL na jedné noze se zátěží – jen aktivace. Zadek 0–10 do poznámky.')])
+],{done:true}),
+W('w4','Týden 4','2026-10-26','2026-11-01','SBD RPE 8 · v Po SBD v závodním vybavení · D2 ve středu → St, Čt, Pá tři dny po sobě: ve středu bez tempo suma, nohy jen RIR 2 · lopatka, lokty, zadek 0–10 do poznámky',[
+ D('2026-10-26','SBD · závodní vybavení',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní · top set + back-off',3,'3/5/5','8/7,5/7,5','~157,5/~140','Plán: top 1×3 @8 + 2×5 @7,5',{w:'160/135/130',r:'2/3/3',p:'7/6/6',n:'Top set 160×2. 3. série tempo 2 s dolů'}),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní · top set + back-off',3,'2/3/3','8/7,5/7,5','~87,5/~80','Nejdřív cable row',{w:'90/80/80',r:'2/3/3',p:'7/6/6',n:'Top set 90×2'}),
+  E('Deadlift','PRIMÁRNÍ tah · sumo · opener',1,1,'7','~190','Plán: opener @7 + 2×2 @6,5; nad 7,5 = hotovo, bez back-offů',{w:'210',r:'1',p:'8.5',n:'Single 210, bez back-offů'})],'Doplňky (leg extension, leg curl, biceps) vynechány – jen SBD. Nedohání se.',{hist:true}),
+ D('2026-10-28','long pause bench, objem horní polovina',[
+  E('Bench','TERCIÁRNÍ bench · long pause 3 s',3,4,'7,5','72,5–75','Nejdřív cable row. 1. série 72,5; když je ≤7 a lopatka ≤2/10 → 75. Strop 7,5 (ne 8) – zítra primární bench. Loket nebo lopatka v sérii nad 3/10 → zbytek benche vynech'),
+  E('Leg press','belt squat, když je (pak 140)',2,10,'RIR 2','210','Zítra těžké sumo → dnes bez selhání'),
+  E('Chest-supported row','stroj / T-bar s oporou hrudi; když není: DB row S.A. s oporou o lavici',2,10,'sel.','60'),
+  E('Pulldown','neutral grip',2,8,'sel.','62,5'),
+  E('Incline DB press','',2,8,'tech. sel.','27,5','Do posledního čistého opakování, bez grindu'),
+  E('Shoulder press machine','',2,10,'sel.','35'),
+  E('Skull crushers','na laně (kladka)',2,10,'sel.','17,5'),
+  E('Adductor machine','',2,12,'RIR 2','70','Zítra těžké sumo (adduktory tahají) → dnes bez selhání')],'Posunuto z úterý. Tempo sumo tento týden není – tah byl v pondělí. Stroj, který tu není → nejbližší varianta, zapiš do poznámky.'),
+ D('2026-10-29','sumo, primární bench, zadní řetězec',[
+  E('Deadlift','PRIMÁRNÍ tah · sumo',4,3,'8','180–182,5','1. série 180; když je ≤7,5 a zadek ≤2/10 → zbytek 182,5. 1. série nad 8 → zbytek 172,5. V Po 210 @8,5 jen 3 dny zpátky → nic nad 182,5. Kolena drž venku až do konce (minule missgroove = propnutá moc brzo). 4. série jen při zadku ≤2/10 a předchozích sériích ≤8. Zadek 0–10 + kolikátá série'),
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,4,'8','80–82,5','Nejdřív cable row. 1. série 80; když je ≤7,5 a lopatka ≤2/10 → 82,5. Nový leg drive tady nezkoušej'),
+  E('Cable row','S.A. – před benchem',2,10,'sel.','65'),
+  E('Leg curl','lying',2,10,'sel.','52,5','Minule 50×10,5/10 → krok nahoru'),
+  E('Abductor machine','',2,12,'sel.','75','Minule 70×12,5/13 → krok nahoru'),
+  E('Calf raise','standing S.L. – hacken obě',2,12,'sel.','85'),
+  E('RDL na jedné noze','druhá noha na bedně do strany, propnutá, opřená o patu',3,8,'7,5','30–32,5','Místo klasického RDL, na konec před core (jak jsi to dělal). Minule 28 @6,5 → krok nahoru. Zadek 0–10'),
+  E('Core work','weighted plank',2,'60 s','','15 kg','Minule 15 kg 60 s @10 → drž 15, ať dáš obě série')]),
+ D('2026-10-30','pin, objem',[
+  E('Squat','SEKUNDÁRNÍ dřep · pin',3,5,'8','122,5–125','Tempo 2 s dolů jako vždy. 1. série 122,5; když je ≤7,5 a zadek ≤2/10 → 125. Zadek při rozcvičce nad 3/10 → všechny série 112,5; v sérii nad 3/10 → pin končí'),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',3,6,'8','72,5–75','Hned po dřepu, nejdřív cable row. 75, když včerejší bench nebyl nad 8 a lopatka ≤2/10, jinak 72,5. Tady můžeš zkoušet nový leg drive'),
+  E('Belt squat','',2,10,'sel.','145','Zadek nad 3/10 → RIR 2'),
+  E('Bulgarian split squat','Smith, S.L.',2,'8/leg','RIR 2','35','Zadek po pinu ≤2/10 → bulhary; nad 2/10 → S.L. leg extension 2×12 sel., 40'),
+  E('Pulldown','close grip, podhmat',2,10,'sel.','65','Střídáme po týdnech: tento týden podhmat (příjemnější na záda), týden 5 wide grip'),
+  E('Dips','',2,8,'tech. sel.','12,5 kg','Minule 10 kg 8/8 → krok nahoru. Rameno/loket/lopatka nad 3/10 → stop'),
+  E('Rear delts','face pulls vsedě',2,12,'sel.','30'),
+  E('Lateral raises','',2,12,'sel.','6'),
+  E('Calf raise','leg press horizontal',2,12,'sel.','150')],'Jde to i v sobotu 31. 10. (lepší – tři dny po sobě odpadnou), program beze změny.'),
+ D('2026-11-01','běh + posilování kyčlí',[E('Run','zone 2, 20–30 min',1,'','','Kyčle po běhu max ~30 min, RPE ≤7, bez selhání. Zadek 0–10 do poznámky.')])
 ]),
-W('w4','Týden 4','2026-10-26','2026-11-01','SBD RPE 8',[]),
 W('w5','Týden 5','2026-11-02','2026-11-08','SBD RPE 8 (primární dřep a sumo max 8,5)',[]),
 W('w6','Týden 6 · deload','2026-11-09','2026-11-15','Deload: série zhruba o polovinu, váhy ~90 %',[])
 ]},
@@ -649,16 +683,17 @@ function loadLog(){L=norm(LS.get('pl_log_'+profile,null))}
 function save(){LS.set('pl_log_'+profile,L)}
 let saveT;function saveSoon(){clearTimeout(saveT);saveT=setTimeout(save,400)}
 const exL=id=>L.ex[id]||(L.ex[id]={});
-const SEED=1;
-function seed(){if((L.seeded||0)>=SEED)return;
- DAYS.forEach(d=>{d.ex.forEach(e=>{const h=e.h;if(!h)return;
+const SEED=2;
+function seed(){const from=L.seeded||0;if(from>=SEED)return;
+ DAYS.forEach(d=>{if(from>=1&&!d.hist)return;
+  d.ex.forEach(e=>{const h=e.h;if(!h)return;
    const ws=(h.w||'').split('/'),rs=(h.r||'').split('/'),ps=(h.p||'').split('/');
    const n=Math.max(h.w?ws.length:0,h.r?rs.length:0,h.p?ps.length:0);
    for(let i=0;i<n;i++){const k=e.id+'#'+i;if(L.sets[k])continue;
     L.sets[k]={w:h.w?num(ws[Math.min(i,ws.length-1)]):null,r:h.r?num(rs[Math.min(i,rs.length-1)]):num(tok(e.r,i)),p:h.p?num(ps[Math.min(i,ps.length-1)]):null}}
    if(n>e.s)exL(e.id).extra=n-e.s;
    if(h.n&&!(L.ex[e.id]&&L.ex[e.id].note))exL(e.id).note=h.n});
-  if(d.week.done&&!d.skip&&!L.sessions[d.id])L.sessions[d.id]={end:new Date(d.date+'T20:00').getTime(),hist:true}});
+  if((d.week.done||d.hist)&&!d.skip&&!L.sessions[d.id])L.sessions[d.id]={end:new Date(d.date+'T20:00').getTime(),hist:true}});
  L.seeded=SEED;save()}
 
 /* ---------- model ---------- */
