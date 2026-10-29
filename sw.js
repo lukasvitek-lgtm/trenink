@@ -1,4 +1,4 @@
-// Offline reĹľim: sĂ­ĹĄ napĹ™ed (aby se novĂˇ verze programu hned projevila), bez signĂˇlu z mezipamÄ›ti.
+// Offline režim: síť napřed (aby se nová verze programu hned projevila), bez signálu z mezipaměti.
 const C = 'trenink-v31';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-pwf-512.png', './icon-pwf-180.png'];
 
