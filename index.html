@@ -254,8 +254,8 @@ const D=(date,title,ex,note,opt)=>Object.assign({date,title,ex,note:note||''},op
 const W=(id,title,from,to,note,days,opt)=>Object.assign({id,title,from,to,note,days},opt);
 
 const PROGRAMS={lukas:{name:'Lukáš',
-block:{title:'Blok 1 · hypertrofie',from:'2026-10-05',to:'2026-11-15',sub:'5 týdnů práce + deload · série fixní, progrese přes RPE a váhu',notes:[
-`Progrese SBD: týden 1 RPE 7 → 2: 7–7,5 → 3: 7,5 → 4: 8 → 5: 8 (primární dřep a sumo max 8,5) → 6 (9.–15. 11.) deload: série zhruba o polovinu, váhy ~90 %. Série se v bloku nemění, roste váha.`,
+block:{title:'Blok 1 · hypertrofie',from:'2026-10-05',to:'2026-11-08',sub:'4 týdny práce + deload · série fixní, progrese přes RPE a váhu',notes:[
+`Progrese SBD: týden 1 RPE 7 → 2: 7–7,5 → 3: 7,5 → 4: 8 → 5 (2.–8. 11.) deload, posunutý o týden dřív (tříslo, unavené nohy): série zhruba o polovinu, váhy ~90 %. Silový blok od 9. 11. Série se v bloku nemění, roste váha.`,
 `Doplňky: dvojitá progrese – když dáš všechny série na horní hranici opakování, příště o krok víc. Od týdne 3 doplňky 2 série. „sel.“ = obě série do selhání (stroje, kladky, belt squat, leg press). „tech. sel.“ = do posledního čistého opakování, bez grindu a dopomoci. Bez selhání: cokoli s osou – řídí RPE. Noc pod 6 h → ten den bez selhání u doplňků.`,
 `Tah: sumo je hlavní styl natrvalo, v úterý tempo sumo. Primární bench 4×4 ve čtvrtek, long pause v úterý.`,
 `LOPATKA (vpravo mezi lopatkou a páteří): bolest do 3/10, která se v sérii nezhoršuje a do druhého dne je zpátky = OK. V sérii nad 3/10 → zbytek benche ten den vynech a zapiš (kolikátá série, 0–10). Záložní varianta: cluster 3+3. Když se 2 týdny nedostane pod 3/10 → fyzioterapeut.`,
@@ -411,9 +411,45 @@ W('w4','Týden 4','2026-10-26','2026-11-01','SBD RPE 8 · v Po SBD v závodním 
   E('Lateral raises','',2,12,'sel.','6'),
   E('Calf raise','leg press horizontal',2,12,'sel.','150')],'V pátek (So MČR). Třetí den po sobě → pin strop @7 a belt squat RIR 2 platí napevno. Tříslo 0–10 (chůze ráno + rozcvička pinu) do poznámky.'),
  D('2026-11-01','běh + posilování kyčlí',[E('Run','zone 2, 20–30 min',1,'','','Běh jen bez rýmy a když chůze nebolí, jinak jen kyčle. Kyčle doma max ~30 min, RPE ≤7, bez selhání, nic, co tahá přední stranu kyčle do bolesti (výpady, protahování flexorů). Zadek a tříslo 0–10 do poznámky.')])
-]),
-W('w5','Týden 5','2026-11-02','2026-11-08','SBD RPE 8 (primární dřep a sumo max 8,5)',[]),
-W('w6','Týden 6 · deload','2026-11-09','2026-11-15','Deload: série zhruba o polovinu, váhy ~90 %',[])
+],{done:true}),
+W('w5','Týden 5 · deload','2026-11-02','2026-11-08','DELOAD (posunutý z 9.–15. 11.): frekvence 4×, série zhruba o polovinu, váhy ~90 %, NIC DO SELHÁNÍ – doplňky RIR 2, nohy RIR 3. Vršek drží váhy, ubírají se jen série. U SUMA JE HORNÍ HRANICE VÁHY STROP: i když RPE vychází níž, nad ni nejdi – „letělo to“ napiš do poznámky, přidám příští týden. Tříslo, zadek, lopatka 0–10 do poznámky. Trénink cca 1 h.',[
+ D('2026-11-02','dřep, bench',[
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',2,3,'6','140–145','Deload: jen 2 série. Tříslo 0–10 v rozcvičce (hloubka a šíře postoje ho natahují)'),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',2,3,'7','82,5–85','Nejdřív cable row. Váhu držíme, ubíráme sérii. 85 jen když 82,5 jde ≤6,5'),
+  E('Leg extension','S.L.',1,12,'RIR 2','40'),
+  E('Leg curl','seated',1,12,'RIR 2','45'),
+  E('Skull crushers','na laně (kladka)',2,10,'RIR 2','17,5','Nově v pondělí (z D2). Na konec, po benchi'),
+  E('Bicep curls','machine',2,12,'RIR 2','30/25')],'Obvyklý pondělní gym (křivé lavice). Váhy doplňků z tohoto gymu (týden 1–3).'),
+ D('2026-11-03','long pause bench, tempo sumo',[
+  E('Cable row','S.A. – před benchem',2,10,'RIR 2','75','Letňany: minule 85×9 @10 → dnes s rezervou'),
+  E('Bench','TERCIÁRNÍ bench · long pause 3 s',2,4,'7','75–77,5','Dobrá lavice. Nad 77,5 nejdi'),
+  E('Deadlift','SEKUNDÁRNÍ tah · sumo tempo 3 s ke kolenům',3,3,'5–6','130–140','NÁVRAT PO TŘÍSLE: 140 je strop i při RPE 5 (minule 150 a tříslo začalo už v rozcvičce). Tříslo v rozcvičce nad 1/10 → dnes bez tahu. V sérii nad 2/10 → tah končí. Stehna otevřená, ale nesmí to tahat vpředu v třísle'),
+  E('Belt squat','',1,10,'RIR 3','130','Minule 150 @9 → deload'),
+  E('Pulldown','neutral grip',2,8,'RIR 2','~55','Letňanský stroj – minule close grip 60/58 do selhání. Najdi 1. sérií, zapiš'),
+  E('Chest press machine','místo incline DB',2,10,'RIR 2','najdi','Nový cvik v D2 – 1. série najde váhu, zapiš ji jako výchozí'),
+  E('Adductor machine','',1,12,'RIR 3','55','Jen když tříslo po sumu 0/10; jinak vynech. Lehce = zatížení tkáně, ne trénink')],'Letňany. Nový D2: long pause, tempo sumo, belt squat, pulldown, chest press, adductor (shoulder press pryč, skulls v Po). Ráno po tempo sumu napiš tříslo 0–10.'),
+ D('2026-11-05','sumo, primární bench, zadní řetězec',[
+  E('Deadlift','PRIMÁRNÍ tah · sumo',2,3,'6,5','160–165','STROP 165 (i když letí). Podmínka: tříslo ráno po úterku 0–1/10, jinak 2×3 150 @≤6. Tříslo/zadek v sérii nad 2/10 → tah končí a dnes bez abduktoru'),
+  E('RDL','na jedné noze (druhá na bedně do strany)',2,8,'6,5','28','Začni levou (slabší), pravá dělá stejný počet'),
+  E('Cable row','S.A. – před benchem',2,10,'RIR 2','najdi','Knížecí – jiný stroj, váhu najdi a zapiš'),
+  E('Bench','PRIMÁRNÍ bench · soutěžní',3,4,'7','80–82,5','Knížecí lavice → řídí RPE, ne číslo. Zaběhnutá technika'),
+  E('Leg curl','lying',1,10,'RIR 2','najdi'),
+  E('Abductor machine','',1,12,'RIR 2','najdi'),
+  E('Calf raise','standing',1,12,'RIR 2','najdi'),
+  E('Core work','weighted plank',2,'45 s','','15 kg')],'Knížecí – stroje jiné, u doplňků váhu najdi 1. sérií a zapiš (ať ji příště mám). Stiff bar, když je; jinak napiš, jaká osa.'),
+ D('2026-11-06','pin, objem',[
+  E('Squat','SEKUNDÁRNÍ dřep · pin',2,5,'6','115','Tempo 2 s dolů jako vždy'),
+  E('Cable row','S.A. – před benchem',1,10,'RIR 2','75'),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,6,'7','75','Nový leg drive zkoušej, jen když je tříslo 0/10 – deload je na techniku ideální'),
+  E('Belt squat','',1,10,'RIR 3','130'),
+  E('S.L. leg extension','',1,12,'RIR 2','25','Letňanský stroj (minule 30 do selhání)'),
+  E('Pulldown','wide grip',2,10,'RIR 2','~55','Střídání: tento týden wide'),
+  E('Dips','',2,8,'RIR 2','5 kg','Minule +10 do selhání → deload'),
+  E('Rear delts','face pulls vsedě',2,12,'RIR 2','25'),
+  E('Lateral raises','',2,12,'RIR 2','6'),
+  E('Calf raise','leg press horizontal',1,12,'RIR 2','150')],'Letňany. Bulhary ještě ne (zadní noha natahuje třísla) – vrátí se v silovém bloku.'),
+ D('2026-11-08','běh + posilování kyčlí',[E('Run','zone 2, 20 min',1,'','','Běh jen když tříslo celý týden 0/10 (i po sumu). První po 2 týdnech → 20 min, opravdu konverzační tempo. Kyčle max ~30 min, RPE ≤7. Tříslo 0–10 do poznámky.')])
+])
 ]},
 wife:{name:'Wife',
 block:{title:'Blok 1 · powerbuilding',from:'2026-10-06',to:'2026-11-14',sub:'5 týdnů práce + deload · série fixní, progrese přes RPE a váhu',notes:[
