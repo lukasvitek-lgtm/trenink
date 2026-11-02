@@ -206,6 +206,10 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 .plv i{display:block;border-radius:3px;margin-right:2px;border:1px solid rgba(0,0,0,.12)}
 .plv .sv{width:40px;height:12px;background:#9aa3bb;border-radius:0 2px 2px 0}
 .warnt{color:var(--bad);font-size:14px;text-align:center}
+.pains{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.pain{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:16px;background:#fbe9f0;color:var(--bad);font-size:14px;font-weight:600;line-height:1.35}
+.chip.painadd{background:#fff;color:var(--bad);box-shadow:inset 0 0 0 2px #f0c6d6;padding:9px 14px;font-size:14px}
+.tin{width:100%;height:50px;background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:16px;padding:0 14px;font:inherit;font-size:16px;-webkit-user-select:text;user-select:text}
 #rest{position:absolute;left:12px;right:12px;bottom:calc(var(--tabh) + var(--sb) + 10px);z-index:40;background:var(--navy);color:#fff;border-radius:22px;padding:10px 10px 12px 16px;display:flex;align-items:center;gap:6px;overflow:hidden;box-shadow:0 10px 30px rgba(27,45,82,.35)}
 .npo #rest{bottom:auto;top:calc(var(--st) + 6px)}
 #rest .rx{flex:1}
@@ -240,7 +244,7 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.21';
+const APP_VER='1.22';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -794,7 +798,7 @@ function exRead(e){const x=L.ex[e.id]||{},sets=[];
  return`<div class="exr${x.skip?' skip':''}"><div class="exn">${dispName(e)}${x.skip?' <span class="mut sm">· přeskočeno</span>':''}</div>
  <div class="mut sm">${esc(planSummary(e))}${vTxt(e)?' · '+esc(vTxt(e)):''}</div>${cnote(e.note)}
  ${sets.length?`<div class="logl">${sets.join('')}${b?`<span class="lg e1">e1RM ${fmt(rInc(b.v))}</span>`:''}</div>`:''}
- ${x.note?`<div class="an">${ic('edit',13)} ${esc(x.note)}</div>`:''}</div>`}
+ ${x.note?`<div class="an">${ic('edit',13)} ${esc(x.note)}</div>`:''}${painList(e,false)}</div>`}
 function badge(d){const[l,c]=STAT[dayStatus(d)];return l?`<span class="badge ${c}">${l}</span>`:''}
 function sessInfo(d){const s=L.sessions[d.id];return s&&s.start&&s.end?' · '+dur(s.end-s.start):''}
 function wkProg(w){const n=w.days.length,k=w.days.filter(d=>['done','skip'].includes(dayStatus(d))).length;return{n,k,p:n?Math.round(k/n*100):0}}
@@ -872,7 +876,7 @@ function exEdit(e){const x=L.ex[e.id]||{};let rows='';for(let i=0;i<setsN(e);i++
  return`<div class="ex${x.skip?' skip':''}${e===curEx(e.day)?' cur':''}${!x.skip&&!exOpen(e)?' fin':''}" id="ex-${e.id}" data-e="${e.id}"><div class="exh"><div style="min-width:0"><div class="exn" style="font-size:18px">${dispName(e)}</div>${vTxt(e)?`<div class="mut sm">${esc(vTxt(e))}</div>`:''}</div>
  <div style="display:flex;gap:6px"><button class="ibtn" data-act="rest" data-e="${e.id}" aria-label="Pauza">${ic('timer',18)}</button><button class="ibtn" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">${ic('more',18)}</button></div></div>
  ${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div>${setHead(e)}${rows}
- <textarea class="nt" data-e="${e.id}" placeholder="Poznámka – bolest 0–10, pocit, technika…">${esc(x.note||'')}</textarea></div>`}
+ <textarea class="nt" data-e="${e.id}" placeholder="Poznámka – pocit, technika…">${esc(x.note||'')}</textarea>${painList(e,true)}</div>`}
 function exFocus(e,i,n){const x=L.ex[e.id]||{},ri=rpeInfo(e.p);let rows='';for(let j=0;j<setsN(e);j++)rows+=setRow(e,j);
  const tags=[e.s+(e.s<5?' série':' sérií'),e.r?e.r.replace('/leg',' / nohu')+(unitOf(e)==='opak.'?' opak.':''):'',ri.full,e.t?'~ '+e.t:''].filter(Boolean);
  return`<section class="page${x.skip?' skip':''}" id="fp-${e.id}"><div class="hero ${COL[i%3]}" style="margin-top:6px"><div class="top"><span class="pill">${i+1} / ${n}${x.skip?' · přeskočeno':''}</span><button class="arr" data-act="exmenu" data-e="${e.id}" aria-label="Možnosti">${ic('more',18)}</button></div>
@@ -880,7 +884,7 @@ function exFocus(e,i,n){const x=L.ex[e.id]||{},ri=rpeInfo(e.p);let rows='';for(l
  <div class="tags">${tags.map(t=>`<span class="pill">${esc(t)}</span>`).join('')}</div>${cnote(e.note)}<div class="meta" id="exm-${e.id}">${exMeta(e)}</div></div>
  <div class="ex">${setHead(e)}${rows}</div>
  <div class="tools"><button class="chip" data-act="rest" data-e="${e.id}">${ic('timer',16)} Pauza ${mmss(restOf(e))}</button>${isBar(e)?`<button class="chip" data-act="plates" data-e="${e.id}">Kotouče</button>`:''}</div>
- <textarea class="nt" data-e="${e.id}" placeholder="Poznámka – bolest 0–10, pocit, technika…">${esc(x.note||'')}</textarea>
+ <textarea class="nt" data-e="${e.id}" placeholder="Poznámka – pocit, technika…">${esc(x.note||'')}</textarea>${painList(e,true)}
  <div class="hint">přejeď do strany → další cvik</div></section>`}
 function reWs(){const b=$('#wsb'),t=b?b.scrollTop:0,pg=b&&UI.mode==='focus'&&$$('.page',b)[UI.fi],pt=pg?pg.scrollTop:0;render();const nb=$('#wsb');if(!nb)return;
  if(UI.mode==='focus'){const np=$$('.page',nb)[UI.fi];if(np)np.scrollTop=pt}else nb.scrollTop=t}
@@ -981,7 +985,43 @@ function exMenu(id){const e=EX[id],x=L.ex[id]||{};SH='menu';
  <button class="li" data-act="sub" data-e="${id}">${ic('swap',20)} ${x.sub?'Změnit náhradu':'Nahradit cvik (obsazený stroj…)'}</button>
  ${x.sub?`<button class="li" data-act="unsub" data-e="${id}">${ic('undo',20)} Vrátit původní cvik</button>`:''}
  <button class="li" data-act="skipex" data-e="${id}">${x.skip?ic('undo',20)+' Vrátit cvik':ic('skip',20)+' Přeskočit cvik'}</button>
+ <button class="li" data-act="painedit" data-e="${id}" data-i="-1">${ic('plus',20)} Zapsat bolest</button>
  <button class="li mut" data-act="closesh">Zavřít</button>`)}
+
+/* bolesti u cviku: L.ex[id].pains = [{loc,v,type[],when[],set,course,note,t}] */
+const PT={type:['tupá','ostrá','bodavá','pálivá','vystřelující','tahá / napětí','ztuhlost','křeč'],
+ when:['v rozcvičce','během série','na konci série','po cviku','mimo trénink'],
+ course:['zhoršuje se','stejná','po rozehřátí lepší','odešla']};
+let PN=null;
+const painsOf=id=>(L.ex[id]&&L.ex[id].pains)||[];
+function painLocs(){const m=new Map();Object.values(L.ex).forEach(x=>(x.pains||[]).forEach(p=>{if(!p.loc)return;const k=p.loc.toLowerCase();if(!m.has(k)||m.get(k).t<(p.t||0))m.set(k,{loc:p.loc,t:p.t||0})}));
+ return[...m.values()].sort((a,b)=>b.t-a.t).slice(0,8).map(x=>x.loc)}
+function painStr(p){return[(p.loc||'bolest')+' '+(p.v!=null?p.v:'?')+'/10',(p.type||[]).join(', '),(p.when||[]).join(', '),p.set?'od '+p.set+'. série':'',p.course||'',p.note||''].filter(Boolean).join(' · ')}
+function painList(e,edit){const ps=painsOf(e.id);if(!ps.length&&!edit)return'';
+ return`<div class="pains">${ps.map((p,i)=>edit?`<button class="pain" data-act="painedit" data-e="${e.id}" data-i="${i}">${esc(painStr(p))}</button>`:`<div class="pain">${esc(painStr(p))}</div>`).join('')}${edit?`<button class="chip painadd" data-act="painedit" data-e="${e.id}" data-i="-1">+ Bolest</button>`:''}</div>`}
+function painSheet(id,i){const ps=painsOf(id);PN={id,i,p:i>=0&&ps[i]?JSON.parse(JSON.stringify(ps[i])):{loc:'',v:null,type:[],when:[],set:null,course:'',note:''}};
+ PN.p.type=PN.p.type||[];PN.p.when=PN.p.when||[];SH='pain';
+ const p=PN.p,e=EX[id],locs=painLocs();
+ const multi=f=>`<div class="chips">${PT[f].map(v=>chip(esc(v),'painm',`data-f="${f}" data-v="${esc(v)}"`,p[f].includes(v))).join('')}</div>`;
+ const one=(f,vals,lab)=>`<div class="chips">${vals.map((v,k)=>chip(esc(lab?lab(v):v),'pain1',`data-f="${f}" data-v="${esc(v)}"`,p[f]===v)).join('')}</div>`;
+ sheet(`<div class="sht">Bolest</div><div class="mut sm">${dispName(e)}</div>
+ <label>Co a kde</label><input id="pn_loc" class="tin" value="${esc(p.loc)}" placeholder="levé tříslo, lopatka vpravo…" autocomplete="off">
+ ${locs.length?`<div class="chips" style="margin-top:9px">${locs.map(l=>chip(esc(l),'painloc',`data-v="${esc(l)}"`)).join('')}</div>`:''}
+ <label>Kolik (0–10)</label>${one('v',[0,1,2,3,4,5,6,7,8,9,10])}
+ <label>Jaká (může být víc)</label>${multi('type')}
+ <label>Kdy (může být víc)</label>${multi('when')}
+ ${setsN(e)>1?`<label>Od které série</label>${one('set',Array.from({length:setsN(e)},(_,k)=>k+1),v=>v+'.')}`:''}
+ <label>Průběh</label>${one('course',PT.course)}
+ <label>Poznámka</label><input id="pn_note" class="tin" value="${esc(p.note)}" placeholder="co to spouští, co pomáhá…" autocomplete="off">
+ <div class="row2"><button class="btn" data-act="painsave">Uložit</button></div>
+ ${i>=0?'<div class="row2"><button class="btn red" data-act="paindel">Smazat záznam</button></div>':''}
+ <div class="row2"><button class="btn sec" data-act="closesh">Zrušit</button></div>`)}
+function painRefresh(){closeSheet();if(UI.tab==='ws')reWs();else render(true)}
+function painSave(){const p=PN.p;p.loc=$('#pn_loc').value.trim();p.note=$('#pn_note').value.trim();
+ if(p.v==null){toast('Vyber, kolik to bolí (0–10)');return}
+ p.t=p.t||Date.now();const x=exL(PN.id),ps=x.pains=x.pains||[];if(PN.i>=0&&ps[PN.i])ps[PN.i]=p;else ps.push(p);
+ save();painRefresh();toast('Bolest zapsaná')}
+function painDel(){const x=exL(PN.id);if(x.pains){x.pains.splice(PN.i,1);if(!x.pains.length)delete x.pains}save();painRefresh();toast('Záznam smazán')}
 
 /* kotouče */
 const PLATES=[25,20,15,10,5,2.5,1.25];
@@ -1017,7 +1057,7 @@ function finish(){const id=L.active.dayId,d=dayById(id);
  <label>Jak těžký byl trénink celkově (RPE)</label>${ch('srpe')}
  <label>Energie (1 = mrtvola, 10 = super)</label>${ch('energy')}
  <div class="two"><div><label>Spánek (h)</label><button class="cell" data-free="ci_sleep">${fmt(CI.sleep)}</button></div><div><label>Váha ráno (kg)</label><button class="cell" data-free="ci_bw">${fmt(CI.bw)}</button></div></div>
- <label>Bolesti (co a kolik 0–10)</label><textarea id="ci_pain" placeholder="lopatka 2/10 při benchi…">${esc(CI.pain)}</textarea>
+ <label>Bolesti (co a kolik 0–10)</label>${(()=>{const ps=d.ex.flatMap(e=>painsOf(e.id).map(p=>e.n+': '+painStr(p)));return ps.length?`<div class="pains">${ps.map(t=>`<div class="pain">${esc(t)}</div>`).join('')}</div><div class="mut sm" style="margin-bottom:8px">Zapsané u cviků – sem už jen to, co k tomu chybí (ráno, mimo trénink…)</div>`:''})()}<textarea id="ci_pain" placeholder="lopatka 2/10 při benchi…">${esc(CI.pain)}</textarea>
  <label>Poznámka k tréninku</label><textarea id="ci_note">${esc(CI.note)}</textarea>
  <div class="row2"><button class="btn" data-act="cisave">Uložit a ukončit</button></div>
  <div class="row2"><button class="btn sec" data-act="closesh">Pokračovat v tréninku</button></div>
@@ -1037,7 +1077,8 @@ function coachText(w){const o=[`${P.name} · ${P.block.title} · ${w.title} (${r
    o.push(`${x.sub?x.sub+' (místo '+e.n+')':e.n}${e.v?' – '+e.v:''} | plán ${planSummary(e)}`);
    const b=isSBD(e)&&bestE(e);
    o.push('   '+(x.skip?'přeskočeno':sets.length?sets.join(' | ')+(b?' · e1RM '+fmt(rInc(b.v)):''):'nezapsáno'));
-   if(x.note)o.push('   pozn.: '+x.note.replace(/\s*\n\s*/g,' / '))});
+   if(x.note)o.push('   pozn.: '+x.note.replace(/\s*\n\s*/g,' / '));
+   (x.pains||[]).forEach(p=>o.push('   BOLEST: '+painStr(p)))});
   const c=ss&&ss.checkin;if(c){const p=[];if(c.srpe)p.push('RPE tréninku '+c.srpe);if(c.energy)p.push('energie '+c.energy+'/10');if(c.sleep!=null)p.push('spánek '+fmt(c.sleep)+' h');if(c.bw!=null)p.push('váha '+fmt(c.bw)+' kg');if(c.pain)p.push('bolesti: '+c.pain);if(c.note)p.push('pozn.: '+c.note);
    if(p.length)o.push('Check-in: '+p.join(' · '))}});
  return o.join('\n')}
@@ -1128,6 +1169,13 @@ document.addEventListener('click',ev=>{const t=ev.target;
   case'profile':if(L.active){toast('Nejdřív ukonči běžící trénink');break}profile=A.v;LS.set('pl_profile',profile);init();break;
   case'pickprof':profile=A.v;LS.set('pl_profile',profile);init();break;
   case'closesh':closeSheet();break;
+  case'painedit':painSheet(A.e,+A.i);break;
+  case'painloc':$('#pn_loc').value=A.v;break;
+  case'painm':{const arr=PN.p[A.f],k=arr.indexOf(A.v);if(k<0)arr.push(A.v);else arr.splice(k,1);a.classList.toggle('on',k<0);break}
+  case'pain1':{const v=A.f==='course'?A.v:+A.v;PN.p[A.f]=PN.p[A.f]===v?null:v;
+   $$(`[data-act="pain1"][data-f="${A.f}"]`).forEach(b=>b.classList.toggle('on',String(PN.p[A.f])===b.dataset.v));break}
+  case'painsave':painSave();break;
+  case'paindel':painDel();break;
  }});
 document.addEventListener('input',ev=>{const t=ev.target;if(t.matches('textarea.nt')){exL(t.dataset.e).note=t.value.trim()?t.value:'';if(!t.value.trim())delete L.ex[t.dataset.e].note;saveSoon()}});
 
