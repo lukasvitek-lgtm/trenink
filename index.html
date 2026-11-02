@@ -7,13 +7,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Trénink">
-<meta name="theme-color" content="#ebe3d2">
+<meta name="theme-color" content="#e6dcc6">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-pwf-180.png">
 <link rel="icon" type="image/png" href="icon-pwf-512.png">
 <link rel="manifest" href="manifest.webmanifest">
 <title>Trénink</title>
 <style>
-:root{--bg:#ebe3d2;--card:#f5efe3;--card2:#e0d6c2;--line:rgba(22,20,18,.16);--txt:#161412;--mut:#6a6255;--navy:#161412;--blue:#d5372a;--lav:#1d1b19;--peri:#e2d8c4;--slate:#4a443b;--pink:#ecc2b5;--bad:#b3261e;--tabh:62px;--sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px)}
+:root{--bg:#e6dcc6;--card:#fbf8f1;--card2:#e3d9c5;--line:rgba(17,16,15,.28);--txt:#11100f;--mut:#4d463c;--navy:#11100f;--blue:#d42f20;--lav:#11100f;--peri:#e2d8c4;--slate:#3d3830;--pink:#fbf8f1;--bad:#b3261e;--tabh:62px;--sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:17px/1.4 "Helvetica Neue",Helvetica,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-text-size-adjust:100%}
 body{position:fixed;inset:0;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
@@ -336,6 +336,53 @@ textarea,.tin{background:#fbf8f1;border-radius:4px;border-color:rgba(22,20,18,.2
 details.dacc>summary::after{background:linear-gradient(#fff,#fff) center/14px 2px no-repeat,linear-gradient(#fff,#fff) center/2px 14px no-repeat,var(--blue)}
 details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)) center/14px 2px no-repeat,var(--navy)}
 .fbar{border-radius:0 0 4px 4px}
+/* ===== v2: kontrast + centrování (2026-11-02) ===== */
+/* víc kontrastu: tmavší pozadí, světlejší karty s tuší linkou */
+.card,details.dacc{box-shadow:inset 0 0 0 1px rgba(17,16,15,.55)!important}
+.card.c-s,.card.c-y,.card.c-o{box-shadow:none!important}
+.ex{box-shadow:inset 0 0 0 1px rgba(17,16,15,.55)!important}
+.ex.cur{box-shadow:none!important}
+.ex.fin{box-shadow:inset 0 0 0 2px var(--navy)!important}
+/* c-o = bílý papír s tlustou tuší linkou místo bledě růžové */
+.c-o{background:#fbf8f1;box-shadow:inset 0 0 0 2px var(--navy)!important}
+.dcard.c-o.today{box-shadow:inset 0 0 0 4px var(--blue)!important}
+.c-o .cn{background:#efe6d6}
+.c-o .badge{background:transparent;color:var(--navy)}
+/* černá karta: tlačítka červená / krémová, nikdy černá */
+.c-y .btn,.c-y .btn.dk{background:var(--blue);color:#fff}
+.c-y .btn.w,.c-y .btn.sec{background:#f1eadb;color:var(--navy)}
+.c-y .ibtn,.c-y .np-x{background:rgba(241,234,219,.16);color:#f1eadb}
+.c-y .si{background:rgba(241,234,219,.16);color:#f1eadb}
+/* červená karta: černé prvky drží, texty bílé */
+.c-s .btn.sec{background:transparent;color:#fff;box-shadow:inset 0 0 0 1px #fff}
+.c-s .chip{color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
+.c-s .chip.on{background:var(--navy);color:#fff;box-shadow:none}
+/* aktivní cvik: buňky tmavší, ať čísla svítí */
+.ex.cur .cell{background:rgba(17,16,15,.2);color:#fff}
+.ex.cur .cell:not(:empty){background:#fff;color:var(--navy)}
+.ex.cur .cell:empty::before{color:rgba(255,255,255,.95)}
+.ex.cur .si{background:rgba(17,16,15,.22)}
+.ex .cell:empty::before{color:#7a7062}
+.ex .cell{background:#ece4d4}
+/* neaktivní texty tmavší */
+#tabs button{color:#3d3830}
+.seg button{color:#3d3830}
+.chip{box-shadow:inset 0 0 0 1px rgba(17,16,15,.7)}
+.lg{box-shadow:inset 0 0 0 1px rgba(17,16,15,.45)}
+.cn{color:#3a1a12}
+#sheet{background:rgba(17,16,15,.55)}
+/* centrování: prostrkání (letter-spacing) přidává mezeru za posledním písmenem → vyrovnat zleva */
+.btn{padding-left:calc(15px + 1.5px)}
+.seg button{padding-left:13px}
+#tabs button{text-indent:1px}#tabs .ic{text-indent:0}
+.seth span{text-indent:1.5px}
+.role{padding-left:10.5px}
+.hd .lb,.sec-h{letter-spacing:2px}
+/* ikony v kolečkách a tlačítkách: přesný střed */
+.arr,.ibtn,.np-x,.si,.k,#rest .rbtn,#tabs .ic{display:grid!important;place-items:center;line-height:1;padding:0}
+.arr .i,.ibtn .i,.np-x .i,.k .i,#rest .rbtn .i,#tabs .ic svg,.pill .i,.btn .i,.chip .i,.li .i{vertical-align:0;display:block}
+.cell{display:flex;align-items:center;justify-content:center;line-height:1;padding:0}
+.pill,.badge,.role{line-height:1.2}
 </style>
 </head>
 <body>
