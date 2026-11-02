@@ -244,7 +244,7 @@ textarea{width:100%;min-height:90px;background:var(--card);color:var(--txt);bord
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.22';
+const APP_VER='1.23';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -997,8 +997,8 @@ const painsOf=id=>(L.ex[id]&&L.ex[id].pains)||[];
 function painLocs(){const m=new Map();Object.values(L.ex).forEach(x=>(x.pains||[]).forEach(p=>{if(!p.loc)return;const k=p.loc.toLowerCase();if(!m.has(k)||m.get(k).t<(p.t||0))m.set(k,{loc:p.loc,t:p.t||0})}));
  return[...m.values()].sort((a,b)=>b.t-a.t).slice(0,8).map(x=>x.loc)}
 function painStr(p){return[(p.loc||'bolest')+' '+(p.v!=null?p.v:'?')+'/10',(p.type||[]).join(', '),(p.when||[]).join(', '),p.set?'od '+p.set+'. série':'',p.course||'',p.note||''].filter(Boolean).join(' · ')}
-function painList(e,edit){const ps=painsOf(e.id);if(!ps.length&&!edit)return'';
- return`<div class="pains">${ps.map((p,i)=>edit?`<button class="pain" data-act="painedit" data-e="${e.id}" data-i="${i}">${esc(painStr(p))}</button>`:`<div class="pain">${esc(painStr(p))}</div>`).join('')}${edit?`<button class="chip painadd" data-act="painedit" data-e="${e.id}" data-i="-1">+ Bolest</button>`:''}</div>`}
+function painList(e,edit){const ps=painsOf(e.id);if(!ps.length)return'';
+ return`<div class="pains">${ps.map((p,i)=>edit?`<button class="pain" data-act="painedit" data-e="${e.id}" data-i="${i}">${esc(painStr(p))}</button>`:`<div class="pain">${esc(painStr(p))}</div>`).join('')}</div>`}
 function painSheet(id,i){const ps=painsOf(id);PN={id,i,p:i>=0&&ps[i]?JSON.parse(JSON.stringify(ps[i])):{loc:'',v:null,type:[],when:[],set:null,course:'',note:''}};
  PN.p.type=PN.p.type||[];PN.p.when=PN.p.when||[];SH='pain';
  const p=PN.p,e=EX[id],locs=painLocs();
