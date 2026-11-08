@@ -639,9 +639,9 @@ W('w5','Týden 5 · deload','2026-11-02','2026-11-08','DELOAD (posunutý z 9.–
 ])
 ]},
 wife:{name:'Wife',
-block:{title:'Blok 1 · powerbuilding',from:'2026-10-06',to:'2026-11-14',sub:'5 týdnů práce + deload · série fixní, progrese přes RPE a váhu',notes:[
+block:{title:'Blok 1 · powerbuilding',from:'2026-10-06',to:'2026-11-15',sub:'6 týdnů práce, bez deloadu · série fixní, progrese přes RPE a váhu',notes:[
 `SBD (dřep, bench, tah): váhu hledej každý trénink podle RPE posledního warmupu – číslo v plánu je jen orientační, drž RPE.`,
-`PROGRESE: SBD týden 2 RPE 7–7,5 → 3: 7,5 → 4: 8 → 5: 8 → 6 (10.–14. 11.) deload: polovina sérií, váhy ~90 %. Když RPE vyjde o 1 výš dvakrát po sobě, uber 2,5 kg; když o 1 níž, přidej 2,5 kg. Doplňky: dvojitá progrese – když dáš všechny série na horní hranici opakování, příště o krok víc.`,
+`PROGRESE: SBD týden 2 RPE 7–7,5 → 3: 7,5 → 4: 8 → 5: 8 → 6: 8 (deload zrušen – týden 4 skoro celý vypadl, únava není; deload až v dalším bloku). Když RPE vyjde o 1 výš dvakrát po sobě, uber 2,5 kg; když o 1 níž, přidej 2,5 kg. Doplňky: dvojitá progrese – když dáš všechny série na horní hranici opakování, příště o krok víc.`,
 `Bolest mezi lopatkami v sérii nad 3/10 → zbytek benche ten den vynech. Tah vždy s vlastním pásem.`]},
 weeks:[
 W('w1','Týden 1','2026-10-05','2026-10-11','SBD RPE 7 · doplňky RIR 1 (žádné selhání, první týden nového programu) · tah: hledáme pracovní váhu',[
@@ -817,40 +817,40 @@ W('w5','Týden 5','2026-11-02','2026-11-08','SBD RPE 8 · nejtěžší týden bl
  D('2026-11-08','run',[
   E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','Rýma nebo velká zima → vynech, nedohání se.')])
 ]),
-W('w6','Týden 6','2026-11-09','2026-11-15','DELOAD · u všeho jen POLOVINA sérií (zaokrouhli nahoru), SBD RPE 6, doplňky RIR 3, nic do selhání',[
+W('w6','Týden 6','2026-11-09','2026-11-15','SBD RPE 8 · NE DELOAD – v týdnu 4 vypadl skoro celý týden, únava není kde vzít, jedeme dál naplno · \'sel.\' = obě série do selhání · RÝMA: jen nad krkem (nos, krk) → trénuj, RPE o 0,5 níž je OK; horečka, kašel, bolest těla → den vynech, nedohání se',[
  D('2026-11-10','dřep (bez belt squatu)',[
-  E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','6','55',''),
-  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','6','25',''),
-  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 3','10',''),
-  E('Leg curl','lying nebo seated',2,'10','RIR 3','30',''),
-  E('Abductor machine','trup v předklonu = víc zadek',2,'12','RIR 3','70',''),
-  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','RIR 3','40',''),
-  E('Pulldown','neutral grip',2,'10','RIR 3','40',''),
-  E('Core work','plank',2,'45 s','','10 kg',''),
-  E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
+  E('Squat','PRIMÁRNÍ dřep · soutěžní',4,'5','8','dle RPE · ~62,5–65','Každá série celých 5. Když 5 nejde, uber 2,5 kg, sérii nezkracuj. Když minulý týden šlo 62,5 ≤7,5 → 65. První trénink po nachlazení: když je 1. série nad 8, zbytek o 2,5 kg níž.'),
+  E('Bench','SEKUNDÁRNÍ bench · soutěžní',3,'6','8','dle RPE · ~35','Minule 35 ≤7,5 ve všech sériích → 37,5. Rameno v sérii nad 3/10 → zbytek benche dnes vynech.'),
+  E('Bulgarian split squat','DB nebo Smith · trup lehce v předklonu = víc zadek',2,'8/leg','RIR 2','10','Minule obě série 8+ na RIR 2 → 12.'),
+  E('Leg curl','lying nebo seated',2,'10','sel.','35',''),
+  E('Abductor machine','trup v předklonu = víc zadek',2,'12','sel.','70','Max stroje → nahoře pauza 1 s, dolů pomalu.'),
+  E('Chest-supported row','stroj / T-bar; když není: DB row S.A. o lavici',2,'8','sel.','45',''),
+  E('Pulldown','neutral grip',2,'10','sel.','45','Když se 45 nedáš aspoň 7, druhá série 40.'),
+  E('Core work','plank',2,'45 s','','10 kg','Když nestíháš, vynech jako první.'),
+  E('Roller','hlavně zadek · 5–10 min',1,'','','','')],'1–2 h před tréninkem pořádné jídlo, během pij (bolest hlavy na nohách byla z málo jídla).'),
  D('2026-11-11','tah (bez belt squatu)',[
-  E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','6','70',''),
-  E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','6','25',''),
-  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 3','50',''),
-  E('Adductor machine','',2,'12','RIR 3','40',''),
-  E('Leg curl','lying',2,'10','RIR 3','35',''),
-  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','RIR 3','50',''),
+  E('Deadlift','PRIMÁRNÍ tah · conventional',3,'5','8','dle RPE · ~77,5–80','S pásem. 80 jen když 1. série 77,5 jde ≤7 a bedra 0/10. Každá série celých 5; když nejde, uber 2,5 kg. Bedra při tahu nad 2/10 → zbylé série 70.'),
+  E('Bench','SEKUNDÁRNÍ bench · pauza 2 s na hrudi',3,'5','8','dle RPE · ~32,5–35','35 jen když 1. série 32,5 jde ≤7.'),
+  E('Hip thrust','stroj (Knížecí) nebo osa/Smith · nahoře pauza 1 s',3,'8','RIR 2','50','Minule 3×8 a ještě rezerva → +5.'),
+  E('Adductor machine','',2,'12','sel.','45',''),
+  E('Leg curl','lying',2,'10','sel.','35',''),
+  E('Row machine','s oporou hrudi (šetří bedra po tahu a hip thrustu)',2,'8','sel.','50',''),
   E('Core work','Pallof press',2,'10/side','','10',''),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-11-13','bench (nejdelší den, jen 1 cvik na nohy)',[
-  E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','6','30',''),
-  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','6','22,5',''),
-  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 3','BS 50 / LP 80',''),
-  E('Incline DB press','30°',3,'8','RIR 3','12',''),
-  E('Pulldown','wide grip',2,'10','RIR 3','40',''),
-  E('Cable fly / pec deck','',2,'10','RIR 3','7,5',''),
-  E('Lateral raises','DB nebo kladka',2,'10','RIR 3','8',''),
-  E('Triceps pushdown','lano nebo tyč',2,'10','RIR 3','10',''),
-  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','RIR 3','FP 20',''),
-  E('Bicep curls','DB nebo stroj',2,'10','RIR 3','8',''),
+  E('Bench','PRIMÁRNÍ bench · soutěžní',4,'3','8','dle RPE · ~37,5','1. série nad 8 → zbytek o 2,5 kg níž. Minule 37,5 ≤7,5 → 40.'),
+  E('Bench','OBJEMOVÝ bench · soutěžní, lehčí',2,'8','8','dle RPE · ~30–32,5',''),
+  E('Belt squat','když není volný: leg press 3×8 RIR 2',3,'8','RIR 2','BS 55 / LP 80',''),
+  E('Incline DB press','30°',3,'8','RIR 1','10','12,5 až když na 10 dáš 3×10.'),
+  E('Pulldown','wide grip',2,'10','sel.','40',''),
+  E('Cable fly / pec deck','',2,'10','sel.','10',''),
+  E('Lateral raises','kladka · poutko kolem zápěstí místo rukojeti',2,'10','sel.','dle sel.','Zápěstí nad 3/10 → vynech.'),
+  E('Triceps pushdown','lano nebo tyč',2,'10','sel.','12,5',''),
+  E('Rear delts / face pull','reverse fly, reverse pec deck nebo face pull',2,'12','sel.','FP 22,5',''),
+  E('Bicep curls','DB nebo stroj',2,'10','sel.','10','Když nedáš aspoň 7, zpět na 8. Zápěstí nad 3/10 → stroj.'),
   E('Roller','hlavně zadek · 5–10 min',1,'','','','')]),
  D('2026-11-14','run',[
-  E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','')])
+  E('Run','zone 2, 20–30 min (jako Lukáš)',1,'','','','Kašel nebo velká zima → vynech, nedohání se.')])
 ]),
 ]}
 };
