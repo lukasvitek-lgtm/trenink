@@ -455,7 +455,7 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.25';
+const APP_VER='1.26';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -1442,7 +1442,7 @@ function vMore(s){const S=L.settings,w=curWeek();
    Únava: session-RPE (Foster) = RPE tréninku × minuty; akutní/chronická zátěž = EWMA 7 / 28 dní, ACWR = akutní / chronická.
    Barvy: první 3 sloty ověřené kategorické palety (dataviz) – projdou CVD kontrolou ve všech dvojicích. */
 const LIFTS=[['squat','Dřep','#2a78d6'],['bench','Bench','#eb6834'],['deadlift','Tah','#1baf7a']];
-let CHS=Object.assign({tab:'int',range:'all',int:'pct',vol:'ton'},LS.get('pl_charts',{}));
+let CHS=Object.assign({tab:'e1',range:'all',int:'pct',vol:'ton',e1:'comp',mgw:null},LS.get('pl_charts',{}));
 const chSave=()=>LS.set('pl_charts',CHS);
 const CH={};
 const f1=v=>fmt(Math.round(v*10)/10);
@@ -1455,6 +1455,7 @@ function chart(id,c){const W=340,H=210,L0=36,R0=6,T0=12,B0=22,n=c.labels.length,
  if(c.bars){const bw=Math.max(1.5,Math.min(st-1,10));c.bars.vals.forEach((v,i)=>{if(v>0)g+=`<path d="${barP(X(i)-bw/2,y(v),bw,y(c.lo)-y(v),2)}" fill="${c.bars.color}"/>`})}
  if(c.stacks){const bw=Math.min(st*.62,28);for(let i=0;i<n;i++){let acc=0;const segs=c.stacks.filter(s=>s.vals[i]>0);
   segs.forEach((s,j)=>{const v=s.vals[i],y1=y(acc+v),y0=y(acc);acc+=v;g+=`<path d="${barP(X(i)-bw/2,y1,bw,Math.max(0,y0-y1-(j?2:0)),j===segs.length-1?4:0)}" fill="${s.color}"/>`})}}
+ (c.refs||[]).forEach(r=>{const yy=y(r.v).toFixed(1);g+=`<line x1="${L0}" x2="${W-R0}" y1="${yy}" y2="${yy}" stroke="var(--navy)" stroke-width="1"${r.solid?' opacity=".55"':' stroke-dasharray="4 3" opacity=".6"'}/>${r.label?`<text x="${W-R0}" y="${(+yy-4).toFixed(1)}" text-anchor="end" class="cht">${esc(r.label)}</text>`:''}`});
  (c.lines||[]).forEach(s=>{let d='',pen=false;s.vals.forEach((v,i)=>{if(v==null){pen=false;return}d+=(pen?'L':'M')+X(i).toFixed(1)+' '+y(v).toFixed(1);pen=true});
   g+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
   if(s.marker)s.vals.forEach((v,i)=>{if(v!=null)g+=`<circle cx="${X(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="4" fill="${s.color}" stroke="var(--card)" stroke-width="2"/>`})});
@@ -1474,12 +1475,34 @@ const chEmpty=t=>`<div class="card"><div class="mut sm">${esc(t)}</div></div>`;
 function chWeeks(){const t=today();let ws=P.weeks.filter(w=>w.from<=t&&w.days.length);
  if(CHS.range==='blok')ws=ws.filter(w=>w.to>=P.block.from&&w.from<=P.block.to);else ws=ws.slice(-12);return ws}
 const wLab=w=>'T'+((w.id.match(/\d+/)||[''])[0]);
-function weekStats(w){const o={hard:0};LIFTS.forEach(([k])=>o[k]={qr:0,qn:0,pS:0,pN:0,ton:0,nl:0});
+// plánované RPE série (rozsah 7–7,5 → 7,25; „7 / 6“ → top / back-off; RIR → 10 − RIR; selhání → 10)
+function planRPE(e,i){const s=tok(e.p,i);if(!s)return null;const m=!/RIR/i.test(s)&&s.match(/(\d+(?:[.,]\d+)?)\s*[–-]\s*(\d+(?:[.,]\d+)?)/);return m?(num(m[1])+num(m[2]))/2:rpeInfo(s).n}
+// tvrdá série = RPE ≥ 7; když RPE chybí, rozhoduje plán (zapsaná opakování + plán RPE ≥ 7 / selhání)
+function isHard(e,i,s){if(s.p!=null)return s.p>=7;if(!(s.r>0))return false;const pl=planRPE(e,i);return pl!=null&&pl>=7}
+// soutěžní varianta = bez pinu, pauzy, tempa apod.
+const isComp=e=>!/pin|pauz|pause|tempo|long|deficit|block|box|spoto|larsen|úzk|close|negativ|half|horní/i.test(e.v);
+// svalové partie (frakční počítání: přímo 1, nepřímo 0,5)
+const MG_ORDER=['Hrudník','Záda','Ramena','Triceps','Biceps','Stehna','Zadek','Hamstringy','Adduktory','Lýtka','Core'];
+const MG=[[/roller|run|stojka/,[]],[/plank|pallof|core|dead ?bug|ab /,[['Core',1]]],[/rear delt|face pull|reverse/,[['Ramena',1]]],
+ [/ohp|overhead|shoulder press|military/,[['Ramena',1],['Triceps',.5]]],[/lateral/,[['Ramena',1]]],[/leg curl|nordic/,[['Hamstringy',1]]],[/leg ext/,[['Stehna',1]]],
+ [/rdl|romanian|good ?morning/,[['Hamstringy',1],['Zadek',.5]]],[/deadlift/,[['Zadek',1],['Hamstringy',.5],['Záda',.5]]],[/hip thrust|glute|kickback/,[['Zadek',1]]],
+ [/abductor/,[['Zadek',1]]],[/adductor/,[['Adduktory',1]]],[/bulgar|split|lunge|výpad|step/,[['Zadek',1],['Stehna',.5]]],[/squat|leg press|hack|dřep/,[['Stehna',1],['Zadek',.5]]],
+ [/calf|lýtk/,[['Lýtka',1]]],[/row|pulldown|pull-?up|shyby|chin/,[['Záda',1],['Biceps',.5]]],[/dip/,[['Hrudník',1],['Triceps',1]]],[/fly|pec deck|crossover/,[['Hrudník',1]]],
+ [/bench|chest press|incline|push-?up|kliky|press/,[['Hrudník',1],['Triceps',.5]]],[/triceps|skull|pushdown|extension/,[['Triceps',1]]],[/curl|biceps/,[['Biceps',1]]]];
+function muscles(e,x){const n=((x&&x.sub)||e.n).toLowerCase();const r=MG.find(([re])=>re.test(n));return r?r[1]:[]}
+function weekStats(w){const o={hard:0,mg:{}};LIFTS.forEach(([k])=>o[k]={qr:0,qn:0,pS:0,pN:0,ton:0,nl:0,dS:0,dN:0,e1:null,e1a:null});
  w.days.forEach(d=>d.ex.forEach(e=>{const x=L.ex[e.id]||{};if(x.skip||isCardio(e))return;
-  for(let i=0;i<setsN(e);i++){const s=S(e,i);if(!has(s))continue;if(s.p!=null&&s.p>=7)o.hard++;
+  for(let i=0;i<setsN(e);i++){const s=S(e,i);if(!has(s))continue;
+   if(isHard(e,i,s)){o.hard++;muscles(e,x).forEach(([g,f])=>o.mg[g]=(o.mg[g]||0)+f)}
    if(!isSBD(e)||x.sub)continue;const b=o[e.n.toLowerCase()];if(!b||!(s.r>0)||!(s.w>0))continue;
-   b.ton+=s.w*s.r;b.nl+=s.r;if(s.p!=null){const q=pct(s.r,s.p);if(q){b.qr+=q*s.r;b.qn+=s.r}b.pS+=s.p;b.pN++}}}));
+   b.ton+=s.w*s.r;b.nl+=s.r;
+   if(s.p!=null){const q=pct(s.r,s.p);if(q){b.qr+=q*s.r;b.qn+=s.r}b.pS+=s.p;b.pN++;
+    const pl=planRPE(e,i);if(pl!=null&&pl<10){b.dS+=s.p-pl;b.dN++}
+    const v=e1rm(s.w,s.r,s.p);if(v){const c={v,s};if(!b.e1a||v>b.e1a.v)b.e1a=c;if(isComp(e)&&(!b.e1||v>b.e1.v))b.e1=c}}}}));
  return o}
+// osa: zarovnané kroky, max. 6 dílků
+function rng(all,step,pad,lo0,hi0){let lo,hi,t;for(;;){lo=Math.floor((Math.min(...all)-pad)/step)*step;hi=Math.ceil((Math.max(...all)+pad)/step)*step;
+ if(lo0!=null)lo=Math.max(lo0,lo);if(hi0!=null)hi=Math.min(hi0,hi);if(hi<=lo){if(hi0!=null&&lo+step>hi0)lo=hi-step;else hi=lo+step}t=Math.round((hi-lo)/step);if(t<=6)break;step*=2}return{lo,hi,ticks:t}}
 function wkTip(ws,i,rows){const r=rows.filter(Boolean);return r.length?`<b>${wLab(ws[i])}</b> · ${rlab(ws[i].from,ws[i].to)}<br>${r.join('<br>')}`:null}
 function chInt(){const ws=chWeeks(),st=ws.map(weekStats),m=CHS.int;
  const ser=LIFTS.map(([k,n,c])=>({name:n,color:c,marker:true,vals:st.map(o=>m==='pct'?(o[k].qn?o[k].qr/o[k].qn:null):(o[k].pN?o[k].pS/o[k].pN:null))}));
@@ -1492,7 +1515,8 @@ function chInt(){const ws=chWeeks(),st=ws.map(weekStats),m=CHS.int;
   tip:i=>wkTip(ws,i,ser.map(s=>s.vals[i]!=null?tipRow(s.color,s.name+' '+val(s.vals[i])):''))})}
  <p class="mut sm chnote">${m==='pct'?'Intenzita série = % 1RM toho dne podle RPE tabulky (např. 5 @8 = 81 %). Týdenní průměr zapsaných sérií dřepu, benche a tahu (vč. variant), vážený počtem opakování.':'Průměrné RPE zapsaných sérií dřepu, benche a tahu (vč. variant).'}</p></div>`}
 function chVol(){const ws=chWeeks(),st=ws.map(weekStats),m=CHS.vol;
- const sw=`<div class="chips">${chip('Tonáž','chs','data-k="vol" data-v="ton"',m==='ton')}${chip('Tvrdé série','chs','data-k="vol" data-v="hard"',m==='hard')}${chip('Opakování','chs','data-k="vol" data-v="nl"',m==='nl')}</div>`;
+ const sw=`<div class="chips">${chip('Tonáž','chs','data-k="vol" data-v="ton"',m==='ton')}${chip('Tvrdé série','chs','data-k="vol" data-v="hard"',m==='hard')}${chip('Partie','chs','data-k="vol" data-v="mg"',m==='mg')}${chip('Opakování','chs','data-k="vol" data-v="nl"',m==='nl')}</div>`;
+ if(m==='mg')return chMg(ws,st,sw);
  const ser=m==='hard'?[{name:'Tvrdé série',color:LIFTS[0][2],vals:st.map(o=>o.hard)}]:LIFTS.map(([k,n,c])=>({name:n,color:c,vals:st.map(o=>m==='ton'?o[k].ton:o[k].nl)}));
  const tot=ws.map((_,i)=>ser.reduce((a,s)=>a+(s.vals[i]||0),0)),mx=Math.max(0,...tot);
  if(!mx)return`<div class="card">${sw}<div class="mut sm" style="margin-top:14px">Zatím žádné zapsané série.</div></div>`;
@@ -1516,7 +1540,64 @@ function fatigue(){const ses=[],durs=[];
  for(let t=first;t<=today();t=addD(t,1)){const v=by[t]?by[t].load:0;a+=(v-a)*2/8;c+=(v-c)*2/29;n++;out.push({t,v,est:by[t]&&by[t].est,a,c,r:n>=28&&c>0?a/c:null})}
  return out}
 function acwrStat(r){if(r==null)return{l:'Málo dat',c:'#898781'};if(r<0.8)return{l:'Nízká zátěž',c:'#898781'};if(r<=1.3)return{l:'Optimální pásmo',c:'#0ca30c'};if(r<=1.5)return{l:'Zvýšená',c:'#fab219'};return{l:'Vysoká – riziko',c:'#d03b3b'}}
-function chFat(){const all=fatigue();if(!all)return chEmpty('Zatím žádné zapsané tréninky.');
+// tvrdé série po partiích – vodorovné sloupce za vybraný týden nebo průměr; pásmo 10–20 sérií = běžné doporučení pro růst svalů
+function chMg(ws,st,sw){const W=340,LW=86,RW=40,RH=26,list=ws.map((w,i)=>({w,o:st[i]})).filter(x=>x.o.hard>0);
+ if(!list.length)return`<div class="card">${sw}<div class="mut sm" style="margin-top:14px">Zatím žádné tvrdé série.</div></div>`;
+ const opts=list.slice(-5);if(CHS.mgw!=='avg'&&!opts.some(x=>x.w.id===CHS.mgw))CHS.mgw=opts[opts.length-1].w.id;
+ const val=g=>CHS.mgw==='avg'?list.reduce((a,x)=>a+(x.o.mg[g]||0),0)/list.length:(list.find(x=>x.w.id===CHS.mgw).o.mg[g]||0);
+ const rows=MG_ORDER.map(g=>({g,v:val(g)})).filter(r=>r.v>0),mx=Math.max(22,...rows.map(r=>r.v)),H=rows.length*RH+18,X=v=>LW+(W-LW-RW)*v/mx;
+ let g=`<rect x="${X(10).toFixed(1)}" y="0" width="${(X(20)-X(10)).toFixed(1)}" height="${H-18}" fill="rgba(12,163,12,.1)"/>`;
+ [0,10,20].forEach(v=>{g+=`<line x1="${X(v).toFixed(1)}" x2="${X(v).toFixed(1)}" y1="0" y2="${H-18}" stroke="rgba(17,16,15,${v?.15:.4})"/><text x="${X(v).toFixed(1)}" y="${H-5}" text-anchor="middle" class="cht">${v}</text>`});
+ rows.forEach((r,i)=>{const y=i*RH+5,bh=RH-10;g+=`<text x="0" y="${y+bh/2+4}" class="cht" style="font-size:12px;fill:var(--txt)">${esc(r.g)}</text><path d="M${LW} ${y}H${(X(r.v)-4).toFixed(1)}Q${X(r.v).toFixed(1)} ${y} ${X(r.v).toFixed(1)} ${y+4}V${y+bh-4}Q${X(r.v).toFixed(1)} ${y+bh} ${(X(r.v)-4).toFixed(1)} ${y+bh}H${LW}Z" fill="${LIFTS[0][2]}"/><text x="${(X(r.v)+6).toFixed(1)}" y="${y+bh/2+4}" class="cht" style="font-size:12px;fill:var(--txt);font-weight:700">${f1(r.v)}</text>`});
+ return`<div class="card">${sw}<div class="chips" style="margin-top:12px">${opts.map(x=>chip(wLab(x.w),'chs',`data-k="mgw" data-v="${x.w.id}"`,CHS.mgw===x.w.id)).join('')}${chip('Průměr','chs','data-k="mgw" data-v="avg"',CHS.mgw==='avg')}</div>
+ <svg viewBox="0 0 ${W} ${H}" style="display:block;width:100%;height:auto;margin-top:14px" role="img" aria-label="Tvrdé série po partiích">${g}</svg>
+ <p class="mut sm chnote">Tvrdé série za týden po partiích. Cvik se počítá celou sérií sval, který jde přímo, a půl série pomocný (např. bench = hrudník 1 + triceps 0,5). Zelené pásmo 10–20 sérií je běžné doporučení pro růst svalu, u menších partií stačí méně.</p></div>`}
+// síla: nejlepší e1RM týdne
+function chE1(){const ws=chWeeks(),st=ws.map(weekStats),m=CHS.e1;
+ const sw=`<div class="chips">${chip('Soutěžní','chs','data-k="e1" data-v="comp"',m==='comp')}${chip('Vč. variant','chs','data-k="e1" data-v="all"',m==='all')}</div>`;
+ const pick=o=>m==='comp'?o.e1:o.e1a,ser=LIFTS.map(([k,n,c])=>({name:n,color:c,marker:true,vals:st.map(o=>pick(o[k])?pick(o[k]).v:null)}));
+ const all=ser.flatMap(s=>s.vals).filter(v=>v!=null);
+ if(!all.length)return`<div class="card">${sw}<div class="mut sm" style="margin-top:14px">Zatím žádné série s RPE.</div></div>`;
+ const {lo,hi,ticks}=rng(all,5,5,0),half=v=>fmt(Math.round(v*2)/2);
+ return`<div class="card">${sw}${lgd(ser)}${chart('e1',{labels:ws.map(wLab),lines:ser,lo,hi,ticks,fy:v=>String(Math.round(v)),aria:'e1RM po týdnech',
+  tip:i=>wkTip(ws,i,LIFTS.map(([k,n,c])=>{const b=pick(st[i][k]);return b?tipRow(c,`${n} ${half(b.v)} kg <span style="opacity:.7">(${fmt(b.s.w)}×${b.s.r} @${fmt(b.s.p)})</span>`):''}))})}
+ <p class="mut sm chnote">Nejlepší odhad 1RM týdne z jedné série (váha + opakování + RPE přes RPE tabulku). „Soutěžní“ vynechá pin, pauzy, tempo apod. Jeden týden nic neznamená, sleduj trend přes blok.</p></div>`}
+// odchylka zapsaného RPE od plánu
+function chDev(){const ws=chWeeks(),st=ws.map(weekStats);
+ const ser=LIFTS.map(([k,n,c])=>({name:n,color:c,marker:true,vals:st.map(o=>o[k].dN?o[k].dS/o[k].dN:null)})),all=ser.flatMap(s=>s.vals).filter(v=>v!=null);
+ if(!all.length)return chEmpty('Odchylka RPE od plánu: zatím žádné série s RPE.');
+ const mm=Math.max(1,Math.ceil(Math.max(...all.map(Math.abs))*2)/2),stp=mm<=1.5?.5:1,sg=v=>(v>0?'+':v<0?'−':'')+f1(Math.abs(v));
+ return`<div class="card"><div class="exn" style="font-size:18px">Odchylka RPE od plánu</div>${lgd(ser)}${chart('dev',{labels:ws.map(wLab),lines:ser,lo:-mm,hi:mm,ticks:Math.round(2*mm/stp),refs:[{v:0,solid:true}],fy:sg,aria:'Odchylka RPE od plánu po týdnech',
+  tip:i=>wkTip(ws,i,ser.map(s=>s.vals[i]!=null?tipRow(s.color,s.name+' '+sg(s.vals[i])):''))})}
+ <p class="mut sm chnote">Průměr (zapsané RPE − plánované RPE) u sérií dřepu, benche a tahu. Kolem 0 = sedí to. Když stejné váhy začnou vycházet trvale o +0,5 až +1 nad plán, hromadí se únava – nejcitlivější signál u silového tréninku.</p></div>`}
+// monotonie a strain (Foster): monotonie = průměr denní zátěže / směrodatná odchylka za týden; strain = týdenní zátěž × monotonie
+function chMono(){const all=fatigue();if(!all)return'';const by={};all.forEach(o=>by[o.t]=o.v);const ws=chWeeks(),t0=today();
+ const rows=ws.map(w=>{const v=[];for(let t=w.from;t<=w.to&&t<=t0;t=addD(t,1))v.push(by[t]||0);if(v.length<3)return null;const s=v.reduce((a,b)=>a+b,0),m=s/v.length,sd=Math.sqrt(v.reduce((a,b)=>a+(b-m)**2,0)/v.length);return s?{s,mo:sd?m/sd:null,days:v.length}:null});
+ const vals=rows.map(r=>r&&r.mo!=null?r.mo:null);if(!vals.some(v=>v!=null))return'';
+ return`<div class="card"><div class="exn" style="font-size:18px">Monotonie</div>${chart('mono',{labels:ws.map(wLab),stacks:[{name:'Monotonie',color:LIFTS[0][2],vals:vals.map(v=>v||0)}],lo:0,hi:Math.max(2.5,Math.ceil(Math.max(...vals.filter(v=>v!=null))*2)/2),ticks:5,refs:[{v:2,label:'hranice 2,0'}],fy:v=>f1(v),aria:'Monotonie po týdnech',
+  tip:i=>{const r=rows[i];return r&&r.mo!=null?wkTip(ws,i,['Monotonie '+f1(r.mo),'Týdenní zátěž '+Math.round(r.s),'Strain '+Math.round(r.s*r.mo)+(r.days<7?' (týden běží)':'')]):null}})}
+ <p class="mut sm chnote">Jak moc jsou dny v týdnu stejné. Nízká hodnota = těžké a lehké dny se střídají (dobře). Nad 2,0 = každý den podobně těžký, tělo nemá kdy si odpočinout – vyšší riziko přetížení a nemoci (Foster). Strain v tooltipu = týdenní zátěž × monotonie.</p></div>`}
+// regenerace: týdenní průměry z check-inu
+function chRec(){const ws=chWeeks(),wk=ws.map(w=>{const a={bw:[],sleep:[],energy:[]};w.days.forEach(d=>{const c=L.sessions[d.id]&&L.sessions[d.id].checkin;if(c)Object.keys(a).forEach(k=>{if(c[k]!=null)a[k].push(+c[k])})});
+  const av=x=>x.length?x.reduce((p,q)=>p+q,0)/x.length:null;return{bw:av(a.bw),sleep:av(a.sleep),energy:av(a.energy),n:a.bw.length}});
+ const one=(id,title,k,unit,st,pad,lo0,hi0,note)=>{const vals=wk.map(o=>o[k]),all=vals.filter(v=>v!=null);if(!all.length)return`<div class="card"><div class="exn" style="font-size:18px">${title}</div><div class="mut sm" style="margin-top:8px">Zatím nic zapsáno v check-inu.</div></div>`;
+  const r=rng(all,st,pad,lo0,hi0);return`<div class="card"><div class="exn" style="font-size:18px">${title}</div>${chart(id,{labels:ws.map(wLab),lines:[{name:title,color:LIFTS[0][2],marker:true,vals}],lo:r.lo,hi:r.hi,ticks:r.ticks,fy:v=>f1(v),aria:title+' po týdnech',
+   tip:i=>vals[i]!=null?wkTip(ws,i,[f1(vals[i])+' '+unit]):null})}${note?`<p class="mut sm chnote">${note}</p>`:''}</div>`};
+ return one('bw','Tělesná váha','bw','kg',.5,.5,null,null,'Týdenní průměr z check-inů (jednotlivá vážení kolísají o 1–2 kg vodou a jídlem). Pro trend se važ ráno, vždy stejně.')
+  +one('sleep','Spánek','sleep','h',1,.5,0,12,'Průměr hodin spánku z check-inů. Pod ~7 h dlouhodobě = horší regenerace i výkon.')
+  +one('energy','Energie','energy','/ 10',1,.5,0,10,'Průměr energie z check-inů (1–10). Propad několik týdnů po sobě = signál pro lehčí týden.')}
+// bolest: nejvyšší hodnota týdne pro každé místo, hranice 3/10
+function chPain(){const ws=chWeeks(),COLS=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300'],m={};
+ Object.entries(L.ex).forEach(([id,x])=>{const e=EX[id];if(!e||!x.pains)return;const wi=ws.findIndex(w=>w===e.day.week);if(wi<0)return;
+  x.pains.forEach(p=>{if(!p.loc||p.v==null)return;const k=p.loc.trim().toLowerCase(),o=m[k]||(m[k]={name:p.loc.trim(),vals:ws.map(()=>null),last:-1});o.vals[wi]=Math.max(o.vals[wi]??0,+p.v);o.last=Math.max(o.last,wi)})});
+ const locs=Object.values(m).sort((a,b)=>b.last-a.last).slice(0,6);
+ if(!locs.length)return chEmpty('V tomto období žádná zapsaná bolest. 👍');
+ const ser=locs.map((o,i)=>({name:o.name.charAt(0).toUpperCase()+o.name.slice(1),color:COLS[i],marker:true,vals:o.vals}));
+ return`<div class="card">${lgd(ser)}${chart('pain',{labels:ws.map(wLab),lines:ser,lo:0,hi:10,ticks:5,refs:[{v:3,label:'hranice 3/10'}],fy:v=>String(Math.round(v)),aria:'Bolest po týdnech',
+  tip:i=>wkTip(ws,i,ser.map(s=>s.vals[i]!=null?tipRow(s.color,s.name+' '+fmt(s.vals[i])+'/10'):''))})}
+ <p class="mut sm chnote">Nejvyšší zapsaná bolest týdne pro každé místo (z bolestí u cviků). Pravidlo: v sérii nad 3/10 → upravit cvik; 2 týdny nad 3/10 nebo roste → fyzioterapeut. Týden bez zápisu = bez bolesti nebo nezapsáno.</p></div>`}
+function chFat(){return chDev()+chAcwr()+chMono()}
+function chAcwr(){const all=fatigue();if(!all)return chEmpty('Zatím žádné zapsané tréninky.');
  const from=CHS.range==='blok'?P.block.from:addD(today(),-83),D=all.filter(o=>o.t>=from);if(!D.length)return chEmpty('V tomto období zatím žádné tréninky.');
  const last=D[D.length-1],s=acwrStat(last.r),A='#2a78d6',C='#eb6834',G='rgba(17,16,15,.2)';
  const mx=Math.max(...D.map(o=>Math.max(o.v,o.a,o.c))),wide=D.length>42;
@@ -1527,11 +1608,11 @@ function chFat(){const all=fatigue();if(!all)return chEmpty('Zatím žádné zap
  ${chart('fat',{labels:D.map(o=>o.t),xl,bars:{color:G,vals:D.map(o=>o.v)},lines:[{name:'Akutní',color:A,vals:D.map(o=>o.a)},{name:'Chronická',color:C,vals:D.map(o=>o.c)}],lo:0,hi:niceMax(mx*1.05),fy:v=>String(Math.round(v)),aria:'Akumulovaná únava po dnech',
   tip:i=>{const o=D[i];return`<b>${dlab(o.t)}</b><br>${o.v?'Zátěž '+Math.round(o.v)+(o.est?' (odhad)':''):'Volno'}<br>${tipRow(A,'Akutní '+Math.round(o.a))}<br>${tipRow(C,'Chronická '+Math.round(o.c))}${o.r!=null?'<br>ACWR '+fmt(Math.round(o.r*100)/100):''}`}})}
  <p class="mut sm chnote">Zátěž tréninku = RPE tréninku z check-inu × minuty (metoda session-RPE). Akutní zátěž = vážený průměr posledních ~7 dní (únava), chronická = ~28 dní (kondice). ACWR nad 1,5 = prudký skok v zátěži. Když chybí RPE tréninku nebo čas, použije se průměrné RPE sérií a obvyklá délka tréninku („odhad“). ACWR se ukazuje po 28 dnech dat.</p></div>`}
-function vCharts(s){const T=[['int','Intenzita'],['vol','Volume'],['fat','Únava']];
+function vCharts(s){const T=[['e1','Síla'],['int','Intenzita'],['vol','Volume'],['fat','Únava'],['rec','Regenerace'],['pain','Bolest']],V={e1:chE1,int:chInt,vol:chVol,fat:chFat,rec:chRec,pain:chPain};if(!V[CHS.tab])CHS.tab='e1';
  s.innerHTML=`<div class="hd"><div class="lb">${esc(P.name)}</div><h1>Grafy</h1></div>
  <div class="card" style="padding:14px 16px"><div class="chips">${T.map(([k,l])=>chip(l,'chs',`data-k="tab" data-v="${k}"`,CHS.tab===k)).join('')}</div>
  <div class="chips" style="margin-top:10px">${chip('12 týdnů','chs','data-k="range" data-v="all"',CHS.range==='all')}${chip('Aktuální blok','chs','data-k="range" data-v="blok"',CHS.range==='blok')}</div></div>
- ${CHS.tab==='int'?chInt():CHS.tab==='vol'?chVol():chFat()}<div style="height:20px"></div>`}
+ ${V[CHS.tab]()}<div style="height:20px"></div>`}
 
 /* ---------- RPE kalkulačka (jako rpecalculator.com: poslední série → e1RM, RPE tabulka, další série) ---------- */
 let CALC=Object.assign({w:null,r:5,p:8,inc:2.5,mode:'rpe',br:5,bp:8,bpct:10,bbr:1,bbp:8},LS.get('pl_calc',{}));
