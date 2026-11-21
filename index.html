@@ -408,6 +408,26 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 .ex.fin textarea.nt{background:rgba(241,234,219,.1);color:#f1eadb}
 .ex.fin textarea.nt::placeholder{color:rgba(241,234,219,.6)}
 .ex.fin .exn::after{color:var(--blue);font-weight:800}
+/* Více vpravo nahoře */
+#topmore{position:absolute;top:calc(var(--st) + 16px);right:14px;z-index:25;width:44px;height:44px;border-radius:50%;background:var(--navy);color:var(--bg);display:grid;place-items:center;box-shadow:0 2px 6px rgba(17,16,15,.25)}
+#topmore[hidden]{display:none!important}
+#topmore svg{width:22px;height:22px;fill:currentColor}
+#topmore.on{background:var(--bg);color:var(--navy);box-shadow:inset 0 0 0 2px var(--navy)}
+/* Grafy */
+.chw{position:relative;margin-top:8px}
+.chw svg{display:block;width:100%;height:auto;touch-action:pan-y;overflow:visible}
+.cht{font-size:10px;fill:var(--mut);font-variant-numeric:tabular-nums}
+.chtip{position:absolute;top:-6px;pointer-events:none;background:var(--navy);color:var(--bg);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.4;white-space:nowrap;transform:translateX(-50%);z-index:2;font-variant-numeric:tabular-nums}
+.chtip[hidden]{display:none}
+.chtip i,.lgd i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.lgd{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--mut);margin-top:14px;font-weight:600}
+.lgd .ln i{width:14px;height:3px;border-radius:2px;vertical-align:3px}
+.lgd .br i{border-radius:2px}
+.chnote{margin:14px 0 0;line-height:1.45}
+.acwr{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.acwr .big2{margin:2px 0 0;font-variant-numeric:tabular-nums}
+.stat{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:15px;white-space:nowrap}
+.stat i{width:11px;height:11px;border-radius:50%;display:inline-block}
 /* RPE kalkulačka */
 .cgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
 .cgrid.c5{grid-template-columns:repeat(5,minmax(0,1fr))}.cgrid.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -420,12 +440,13 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 <main id="scr"></main>
 <div id="ov" hidden></div>
 <div id="rest" hidden></div>
+<button id="topmore" data-act="tab" data-t="more" aria-label="Více" hidden><svg viewBox="0 0 24 24"><path d="M3 5h18v2.6H3zm0 5.7h18v2.6H3zm0 5.7h18V19H3z"/></svg></button>
 <nav id="tabs">
   <button data-act="tab" data-t="program"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg></span>Program</button>
   <button data-act="tab" data-t="week"><span class="ic"><svg viewBox="0 0 24 24"><path d="M7 2h2.4v2h5.2V2H17v2h2.5A1.5 1.5 0 0 1 21 5.5v14a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-14A1.5 1.5 0 0 1 4.5 4H7zM5.4 9.5v9.1h13.2V9.5z"/></svg></span>Týden</button>
   <button data-act="tab" data-t="ws"><span class="ic"><svg viewBox="0 0 24 24"><path d="M1 9.5h2v-2h2.5V5.5H8v13H5.5v-2H3v-2H1zm22 0h-2v-2h-2.5V5.5H16v13h2.5v-2H21v-2h2zM9.5 10.8h5v2.4h-5z"/></svg></span><span id="tabws">Trénink</span></button>
   <button data-act="tab" data-t="calc"><span class="ic"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm1 3v4h10V5zm0 7v2.2h2.2V12zm3.9 0v2.2h2.2V12zm3.9 0v2.2H17V12zM7 16.3v2.2h2.2v-2.2zm3.9 0v2.2h2.2v-2.2zm3.9 0v2.2H17v-2.2z"/></svg></span>RPE</button>
-  <button data-act="tab" data-t="more"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18v2.6H3zm0 5.7h18v2.6H3zm0 5.7h18V19H3z"/></svg></span>Více</button>
+  <button data-act="tab" data-t="charts"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 20h18v2H3zM4.5 11h3.4v7.5H4.5zm5.8-6h3.4v13.5h-3.4zm5.8 3.5h3.4v10h-3.4z"/></svg></span>Grafy</button>
 </nav>
 <div id="sheet" hidden></div>
 <div id="np" hidden></div>
@@ -434,7 +455,7 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.24';
+const APP_VER='1.25';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -1083,7 +1104,8 @@ let PERSIST=false;
 function render(keep){
  $$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===UI.tab));
  const s=$('#scr'),top=s.scrollTop;s.className='';
- ({program:vProgram,week:vWeek,ws:vWs,calc:vCalc,more:vMore})[UI.tab](s);
+ const tm=$('#topmore');tm.hidden=UI.tab==='ws';tm.classList.toggle('on',UI.tab==='more');
+ ({program:vProgram,week:vWeek,ws:vWs,calc:vCalc,charts:vCharts,more:vMore})[UI.tab](s);
  s.scrollTop=keep?top:0;tick()}
 
 /* ---------- čtecí bloky ---------- */
@@ -1414,6 +1436,103 @@ function vMore(s){const S=L.settings,w=curWeek();
  ${Object.keys(PROGRAMS).length>1?`<div class="sec-h">Profil</div><div class="card"><div class="chips">${Object.entries(PROGRAMS).map(([k,p])=>chip(esc(p.name),'profile',`data-v="${k}"`,k===profile)).join('')}</div></div>`:''}
  <div class="sec-h">O aplikaci</div><div class="card sm mut">${esc(P.name)} · ${esc(P.block.title)} · verze ${APP_VER}<br>Data jsou jen v tomto telefonu · úložiště ${PERSIST?'trvalé':'standardní'}<br>RPE tabulka a výpočty: rpecalculator.com</div><div style="height:20px"></div>`}
 
+/* ---------- Grafy ----------
+   Intenzita: % 1RM série z RPE tabulky (opakování + RPE), týdenní průměr vážený opakováními (SBD vč. variant).
+   Volume: tonáž SBD (váha × opak.), tvrdé série (RPE ≥ 7, všechny cviky), opakování SBD (NL, Prilepin).
+   Únava: session-RPE (Foster) = RPE tréninku × minuty; akutní/chronická zátěž = EWMA 7 / 28 dní, ACWR = akutní / chronická.
+   Barvy: první 3 sloty ověřené kategorické palety (dataviz) – projdou CVD kontrolou ve všech dvojicích. */
+const LIFTS=[['squat','Dřep','#2a78d6'],['bench','Bench','#eb6834'],['deadlift','Tah','#1baf7a']];
+let CHS=Object.assign({tab:'int',range:'all',int:'pct',vol:'ton'},LS.get('pl_charts',{}));
+const chSave=()=>LS.set('pl_charts',CHS);
+const CH={};
+const f1=v=>fmt(Math.round(v*10)/10);
+function niceMax(v){if(!(v>0))return 1;const p=10**Math.floor(Math.log10(v)),n=v/p;return(n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p}
+function barP(x,y,w,h,r){r=Math.max(0,Math.min(r,h,w/2));return`M${x} ${y+h}V${y+r}Q${x} ${y} ${x+r} ${y}H${x+w-r}Q${x+w} ${y} ${x+w} ${y+r}V${y+h}Z`}
+function chart(id,c){const W=340,H=210,L0=36,R0=6,T0=12,B0=22,n=c.labels.length,st=(W-L0-R0)/n,X=i=>L0+st*(i+.5),
+  y=v=>T0+(H-T0-B0)*(1-(Math.max(c.lo,Math.min(c.hi,v))-c.lo)/(c.hi-c.lo));let g='';
+ const nt=c.ticks||4;for(let k=0;k<=nt;k++){const v=c.lo+(c.hi-c.lo)*k/nt,yy=y(v).toFixed(1);g+=`<line x1="${L0}" x2="${W-R0}" y1="${yy}" y2="${yy}" stroke="rgba(17,16,15,${k?.1:.4})" stroke-width="1"/><text x="${L0-6}" y="${(+yy+3.5).toFixed(1)}" text-anchor="end" class="cht">${esc(c.fy(v))}</text>`}
+ c.labels.forEach((l,i)=>{const t=c.xl?c.xl(i):l;if(t)g+=`<text x="${X(i).toFixed(1)}" y="${H-6}" text-anchor="middle" class="cht">${esc(t)}</text>`});
+ if(c.bars){const bw=Math.max(1.5,Math.min(st-1,10));c.bars.vals.forEach((v,i)=>{if(v>0)g+=`<path d="${barP(X(i)-bw/2,y(v),bw,y(c.lo)-y(v),2)}" fill="${c.bars.color}"/>`})}
+ if(c.stacks){const bw=Math.min(st*.62,28);for(let i=0;i<n;i++){let acc=0;const segs=c.stacks.filter(s=>s.vals[i]>0);
+  segs.forEach((s,j)=>{const v=s.vals[i],y1=y(acc+v),y0=y(acc);acc+=v;g+=`<path d="${barP(X(i)-bw/2,y1,bw,Math.max(0,y0-y1-(j?2:0)),j===segs.length-1?4:0)}" fill="${s.color}"/>`})}}
+ (c.lines||[]).forEach(s=>{let d='',pen=false;s.vals.forEach((v,i)=>{if(v==null){pen=false;return}d+=(pen?'L':'M')+X(i).toFixed(1)+' '+y(v).toFixed(1);pen=true});
+  g+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if(s.marker)s.vals.forEach((v,i)=>{if(v!=null)g+=`<circle cx="${X(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="4" fill="${s.color}" stroke="var(--card)" stroke-width="2"/>`})});
+ CH[id]={c,W,L0,st,n,X};
+ return`<div class="chw" data-ch="${id}"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(c.aria||'')}">${g}<line class="chx" x1="0" x2="0" y1="${T0}" y2="${H-B0}" stroke="var(--navy)" stroke-width="1" opacity="0"/></svg><div class="chtip" hidden></div></div>`}
+function chHover(ev){const w=ev.target.closest&&ev.target.closest('.chw');
+ $$('.chw').forEach(o=>{if(o!==w){const t=o.querySelector('.chtip');if(t)t.hidden=true;const l=o.querySelector('.chx');if(l)l.setAttribute('opacity',0)}});
+ if(!w)return;const k=CH[w.dataset.ch];if(!k)return;const sv=w.querySelector('svg'),r=sv.getBoundingClientRect(),sx=(ev.clientX-r.left)*k.W/r.width;
+ const i=Math.max(0,Math.min(k.n-1,Math.floor((sx-k.L0)/k.st))),html=k.c.tip(i),tip=w.querySelector('.chtip'),ln=w.querySelector('.chx');
+ if(!html){tip.hidden=true;ln.setAttribute('opacity',0);return}
+ const xx=k.X(i);ln.setAttribute('x1',xx);ln.setAttribute('x2',xx);ln.setAttribute('opacity',.35);tip.innerHTML=html;tip.hidden=false;
+ const px=xx*r.width/k.W,tw=tip.offsetWidth;tip.style.left=Math.max(tw/2,Math.min(r.width-tw/2,px))+'px';tip.style.transform='translate(-50%,-100%)'}
+document.addEventListener('pointermove',chHover);document.addEventListener('pointerdown',chHover);
+const lgd=items=>`<div class="lgd">${items.map(s=>`<span class="${s.k||''}"><i style="background:${s.color}"></i>${esc(s.name)}</span>`).join('')}</div>`;
+const tipRow=(color,txt)=>`<i style="background:${color}"></i>${txt}`;
+const chEmpty=t=>`<div class="card"><div class="mut sm">${esc(t)}</div></div>`;
+function chWeeks(){const t=today();let ws=P.weeks.filter(w=>w.from<=t&&w.days.length);
+ if(CHS.range==='blok')ws=ws.filter(w=>w.to>=P.block.from&&w.from<=P.block.to);else ws=ws.slice(-12);return ws}
+const wLab=w=>'T'+((w.id.match(/\d+/)||[''])[0]);
+function weekStats(w){const o={hard:0};LIFTS.forEach(([k])=>o[k]={qr:0,qn:0,pS:0,pN:0,ton:0,nl:0});
+ w.days.forEach(d=>d.ex.forEach(e=>{const x=L.ex[e.id]||{};if(x.skip||isCardio(e))return;
+  for(let i=0;i<setsN(e);i++){const s=S(e,i);if(!has(s))continue;if(s.p!=null&&s.p>=7)o.hard++;
+   if(!isSBD(e)||x.sub)continue;const b=o[e.n.toLowerCase()];if(!b||!(s.r>0)||!(s.w>0))continue;
+   b.ton+=s.w*s.r;b.nl+=s.r;if(s.p!=null){const q=pct(s.r,s.p);if(q){b.qr+=q*s.r;b.qn+=s.r}b.pS+=s.p;b.pN++}}}));
+ return o}
+function wkTip(ws,i,rows){const r=rows.filter(Boolean);return r.length?`<b>${wLab(ws[i])}</b> · ${rlab(ws[i].from,ws[i].to)}<br>${r.join('<br>')}`:null}
+function chInt(){const ws=chWeeks(),st=ws.map(weekStats),m=CHS.int;
+ const ser=LIFTS.map(([k,n,c])=>({name:n,color:c,marker:true,vals:st.map(o=>m==='pct'?(o[k].qn?o[k].qr/o[k].qn:null):(o[k].pN?o[k].pS/o[k].pN:null))}));
+ const all=ser.flatMap(s=>s.vals).filter(v=>v!=null);
+ const sw=`<div class="chips">${chip('% 1RM','chs','data-k="int" data-v="pct"',m==='pct')}${chip('Průměrné RPE','chs','data-k="int" data-v="rpe"',m==='rpe')}</div>`;
+ if(!all.length)return`<div class="card">${sw}<div class="mut sm" style="margin-top:14px">Zatím žádné zapsané série dřepu, benche nebo tahu s RPE.</div></div>`;
+ let lo,hi;if(m==='pct'){lo=Math.floor((Math.min(...all)-2)/5)*5;hi=Math.min(100,Math.ceil((Math.max(...all)+2)/5)*5)}else{lo=Math.max(5,Math.floor(Math.min(...all)-.5));hi=Math.min(10,Math.ceil(Math.max(...all)+.5))}if(hi<=lo)hi=lo+(m==='pct'?5:1);const stp=m==='pct'?(hi-lo<=25?5:10):1;hi=Math.min(m==='pct'?100:10,lo+Math.ceil((hi-lo)/stp)*stp);if(hi-lo<stp)lo=hi-stp;const ticks=Math.round((hi-lo)/stp);
+ const val=v=>m==='pct'?f1(v)+' %':'@'+f1(v);
+ return`<div class="card">${sw}${lgd(ser)}${chart('int',{labels:ws.map(wLab),lines:ser,lo,hi,ticks,fy:v=>m==='pct'?Math.round(v)+'%':f1(v),aria:'Intenzita po týdnech',
+  tip:i=>wkTip(ws,i,ser.map(s=>s.vals[i]!=null?tipRow(s.color,s.name+' '+val(s.vals[i])):''))})}
+ <p class="mut sm chnote">${m==='pct'?'Intenzita série = % 1RM toho dne podle RPE tabulky (např. 5 @8 = 81 %). Týdenní průměr zapsaných sérií dřepu, benche a tahu (vč. variant), vážený počtem opakování.':'Průměrné RPE zapsaných sérií dřepu, benche a tahu (vč. variant).'}</p></div>`}
+function chVol(){const ws=chWeeks(),st=ws.map(weekStats),m=CHS.vol;
+ const sw=`<div class="chips">${chip('Tonáž','chs','data-k="vol" data-v="ton"',m==='ton')}${chip('Tvrdé série','chs','data-k="vol" data-v="hard"',m==='hard')}${chip('Opakování','chs','data-k="vol" data-v="nl"',m==='nl')}</div>`;
+ const ser=m==='hard'?[{name:'Tvrdé série',color:LIFTS[0][2],vals:st.map(o=>o.hard)}]:LIFTS.map(([k,n,c])=>({name:n,color:c,vals:st.map(o=>m==='ton'?o[k].ton:o[k].nl)}));
+ const tot=ws.map((_,i)=>ser.reduce((a,s)=>a+(s.vals[i]||0),0)),mx=Math.max(0,...tot);
+ if(!mx)return`<div class="card">${sw}<div class="mut sm" style="margin-top:14px">Zatím žádné zapsané série.</div></div>`;
+ const val=v=>m==='ton'?f1(v/1000)+' t':Math.round(v)+(m==='hard'?' sérií':' opak.');
+ const note={ton:'Tonáž = váha × opakování ze zapsaných sérií dřepu, benche a tahu (vč. variant). Rozcvička se nezapisuje, takže jde o pracovní série.',
+  hard:'Tvrdá série = série s RPE 7 a víc (max. 3 opakování v rezervě), všechny cviky kromě běhu a rolleru. Nejpoužívanější míra objemu ve výzkumu.',
+  nl:'Počet opakování v dřepu, benchi a tahu (vč. variant) – „NL“ podle Prilepina.'}[m];
+ return`<div class="card">${sw}${m==='hard'?'':lgd(ser.map(s=>({...s,k:'br'})))}${chart('vol',{labels:ws.map(wLab),stacks:ser,lo:0,hi:niceMax(mx*1.05),aria:'Volume po týdnech',
+  fy:v=>m==='ton'?(v?f1(v/1000)+'t':'0'):String(Math.round(v)),
+  tip:i=>tot[i]?wkTip(ws,i,[...(m==='hard'?[]:ser.map(s=>s.vals[i]?tipRow(s.color,s.name+' '+val(s.vals[i])):'')),'<b>Celkem '+val(tot[i])+'</b>']):null})}
+ <p class="mut sm chnote">${note}</p></div>`}
+const addD=(iso,n)=>{const d=new Date(iso+'T12:00');d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+function fatigue(){const ses=[],durs=[];
+ DAYS.forEach(d=>{const ss=L.sessions[d.id],ck=ss&&ss.checkin;if(d.skip||d.date>today())return;if(!dayLogged(d)&&!(ck&&ck.srpe))return;
+  let m=ss&&ss.start&&ss.end?(ss.end-ss.start)/60000:null;if(m!=null&&(m<10||m>240))m=null;if(m!=null)durs.push(m);ses.push({d,ck,m})});
+ if(!ses.length)return null;durs.sort((a,b)=>a-b);const med=durs.length?durs[Math.floor(durs.length/2)]:75,by={};
+ ses.forEach(({d,ck,m})=>{let r=ck&&ck.srpe,est=false;
+  if(!r){const ps=[];d.ex.forEach(e=>{for(let i=0;i<setsN(e);i++){const s=S(e,i);if(s.p!=null)ps.push(s.p)}});r=ps.length?ps.reduce((a,b)=>a+b,0)/ps.length:6;est=true}
+  if(m==null){m=med;est=true}const o=by[d.date]||(by[d.date]={load:0,est:false});o.load+=r*m;o.est=o.est||est});
+ const first=Object.keys(by).sort()[0],out=[];let a=0,c=0,n=0;
+ for(let t=first;t<=today();t=addD(t,1)){const v=by[t]?by[t].load:0;a+=(v-a)*2/8;c+=(v-c)*2/29;n++;out.push({t,v,est:by[t]&&by[t].est,a,c,r:n>=28&&c>0?a/c:null})}
+ return out}
+function acwrStat(r){if(r==null)return{l:'Málo dat',c:'#898781'};if(r<0.8)return{l:'Nízká zátěž',c:'#898781'};if(r<=1.3)return{l:'Optimální pásmo',c:'#0ca30c'};if(r<=1.5)return{l:'Zvýšená',c:'#fab219'};return{l:'Vysoká – riziko',c:'#d03b3b'}}
+function chFat(){const all=fatigue();if(!all)return chEmpty('Zatím žádné zapsané tréninky.');
+ const from=CHS.range==='blok'?P.block.from:addD(today(),-83),D=all.filter(o=>o.t>=from);if(!D.length)return chEmpty('V tomto období zatím žádné tréninky.');
+ const last=D[D.length-1],s=acwrStat(last.r),A='#2a78d6',C='#eb6834',G='rgba(17,16,15,.2)';
+ const mx=Math.max(...D.map(o=>Math.max(o.v,o.a,o.c))),wide=D.length>42;
+ const xl=i=>{const d=new Date(D[i].t+'T12:00');if(d.getDay()!==1)return'';if(wide&&Math.floor(i/7)%2)return'';return d.getDate()+'.'+(d.getMonth()+1)+'.'};
+ return`<div class="card"><div class="acwr"><div><div class="mut sm">Poměr akutní / chronická (ACWR)</div><div class="big2">${last.r!=null?fmt(Math.round(last.r*100)/100):'—'}</div></div>
+ <div style="text-align:right"><span class="stat"><i style="background:${s.c}"></i>${s.l}</span><div class="mut sm" style="margin-top:4px;white-space:nowrap">pásmo 0,8–1,3</div></div></div></div>
+ <div class="card">${lgd([{name:'Akutní (7 dní)',color:A,k:'ln'},{name:'Chronická (28 dní)',color:C,k:'ln'},{name:'Zátěž tréninku',color:G,k:'br'}])}
+ ${chart('fat',{labels:D.map(o=>o.t),xl,bars:{color:G,vals:D.map(o=>o.v)},lines:[{name:'Akutní',color:A,vals:D.map(o=>o.a)},{name:'Chronická',color:C,vals:D.map(o=>o.c)}],lo:0,hi:niceMax(mx*1.05),fy:v=>String(Math.round(v)),aria:'Akumulovaná únava po dnech',
+  tip:i=>{const o=D[i];return`<b>${dlab(o.t)}</b><br>${o.v?'Zátěž '+Math.round(o.v)+(o.est?' (odhad)':''):'Volno'}<br>${tipRow(A,'Akutní '+Math.round(o.a))}<br>${tipRow(C,'Chronická '+Math.round(o.c))}${o.r!=null?'<br>ACWR '+fmt(Math.round(o.r*100)/100):''}`}})}
+ <p class="mut sm chnote">Zátěž tréninku = RPE tréninku z check-inu × minuty (metoda session-RPE). Akutní zátěž = vážený průměr posledních ~7 dní (únava), chronická = ~28 dní (kondice). ACWR nad 1,5 = prudký skok v zátěži. Když chybí RPE tréninku nebo čas, použije se průměrné RPE sérií a obvyklá délka tréninku („odhad“). ACWR se ukazuje po 28 dnech dat.</p></div>`}
+function vCharts(s){const T=[['int','Intenzita'],['vol','Volume'],['fat','Únava']];
+ s.innerHTML=`<div class="hd"><div class="lb">${esc(P.name)}</div><h1>Grafy</h1></div>
+ <div class="card" style="padding:14px 16px"><div class="chips">${T.map(([k,l])=>chip(l,'chs',`data-k="tab" data-v="${k}"`,CHS.tab===k)).join('')}</div>
+ <div class="chips" style="margin-top:10px">${chip('12 týdnů','chs','data-k="range" data-v="all"',CHS.range==='all')}${chip('Aktuální blok','chs','data-k="range" data-v="blok"',CHS.range==='blok')}</div></div>
+ ${CHS.tab==='int'?chInt():CHS.tab==='vol'?chVol():chFat()}<div style="height:20px"></div>`}
+
 /* ---------- RPE kalkulačka (jako rpecalculator.com: poslední série → e1RM, RPE tabulka, další série) ---------- */
 let CALC=Object.assign({w:null,r:5,p:8,inc:2.5,mode:'rpe',br:5,bp:8,bpct:10,bbr:1,bbp:8},LS.get('pl_calc',{}));
 const calcSave=()=>LS.set('pl_calc',CALC);
@@ -1454,6 +1573,7 @@ document.addEventListener('click',ev=>{const t=ev.target;
   case'pager':openPager(dayById(A.d));break;
   case'closeov':closeOv();render(true);break;
   case'start':start(A.d);break;
+  case'chs':CHS[A.k]=A.v;chSave();render(true);break;
   case'calc':CALC[A.k]=A.k==='mode'?A.v:+A.v;calcSave();render(true);break;
   case'gows':closeOv();UI.ws=A.d;UI.tab='ws';render();break;
   case'edit':openEdit(A.d);break;
@@ -1511,10 +1631,10 @@ function tick(){const tw=$('#tabws');if(!L)return;
  if(L.active){const t=clock(Date.now()-L.active.start),c=$('#clock');if(c)c.textContent=t;tw.textContent=t;tw.className='live'}
  else{tw.textContent='Trénink';tw.className=''}
  tickRest()}
-function chooser(){$('#tabs').hidden=true;
+function chooser(){$('#tabs').hidden=true;$('#topmore').hidden=true;
  $('#scr').innerHTML=`<div class="hd"><div class="lb">Vítej</div><h1>Kdo trénuje?</h1></div>${Object.entries(PROGRAMS).map(([k,p],i)=>`<button class="dcard ${COL[i%3]}" data-act="pickprof" data-v="${k}"><div class="top"><span class="pill">${esc(p.block.title)}</span><span class="arr">${ic('arrow',18)}</span></div><h2>${esc(p.name)}</h2><div class="sub">Zápisy budou jen v tomto telefonu · změníš ve Více → Profil</div></button>`).join('')}`}
 function init(){if(!profile){chooser();return}$('#tabs').hidden=false;UI.ws=null;UI.pw=null;UI.mode='list';build();loadLog();seed();
- const h=location.hash.slice(1);UI.tab=['program','week','ws','calc','more'].includes(h)?h:(L.active?'ws':'week');
+ const h=location.hash.slice(1);UI.tab=['program','week','ws','calc','charts','more'].includes(h)?h:(L.active?'ws':'week');
  if(L.active)wake(true);render();showRest()}
 init();
 setInterval(tick,500);
