@@ -408,6 +408,17 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 .ex.fin textarea.nt{background:rgba(241,234,219,.1);color:#f1eadb}
 .ex.fin textarea.nt::placeholder{color:rgba(241,234,219,.6)}
 .ex.fin .exn::after{color:var(--blue);font-weight:800}
+/* RPE kalkulačka */
+.cgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
+.cgrid.c5{grid-template-columns:repeat(5,minmax(0,1fr))}.cgrid.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cgrid .chip{justify-content:center;padding:10px 0;min-width:0;font-size:14px;font-variant-numeric:tabular-nums}
+.cres{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cres .big2{margin:4px 0 0;font-variant-numeric:tabular-nums}
+.rtab{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:16px;margin-top:12px}
+.rtab th{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:600;text-align:right;padding:6px 8px}
+.rtab td{text-align:right;padding:10px 8px;border-top:1px solid var(--line)}
+.rtab th:first-child,.rtab td:first-child{text-align:left}
+.rtab tr.on td{font-weight:800;background:var(--card2)}
 </style>
 </head>
 <body>
@@ -418,6 +429,7 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
   <button data-act="tab" data-t="program"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg></span>Program</button>
   <button data-act="tab" data-t="week"><span class="ic"><svg viewBox="0 0 24 24"><path d="M7 2h2.4v2h5.2V2H17v2h2.5A1.5 1.5 0 0 1 21 5.5v14a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-14A1.5 1.5 0 0 1 4.5 4H7zM5.4 9.5v9.1h13.2V9.5z"/></svg></span>Týden</button>
   <button data-act="tab" data-t="ws"><span class="ic"><svg viewBox="0 0 24 24"><path d="M1 9.5h2v-2h2.5V5.5H8v13H5.5v-2H3v-2H1zm22 0h-2v-2h-2.5V5.5H16v13h2.5v-2H21v-2h2zM9.5 10.8h5v2.4h-5z"/></svg></span><span id="tabws">Trénink</span></button>
+  <button data-act="tab" data-t="calc"><span class="ic"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm1 3v4h10V5zm0 7v2.2h2.2V12zm3.9 0v2.2h2.2V12zm3.9 0v2.2H17V12zM7 16.3v2.2h2.2v-2.2zm3.9 0v2.2h2.2v-2.2zm3.9 0v2.2H17v-2.2z"/></svg></span>RPE</button>
   <button data-act="tab" data-t="more"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 5h18v2.6H3zm0 5.7h18v2.6H3zm0 5.7h18V19H3z"/></svg></span>Více</button>
 </nav>
 <div id="sheet" hidden></div>
@@ -427,7 +439,7 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.23';
+const APP_VER='1.24';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -1075,7 +1087,7 @@ let PERSIST=false;
 function render(keep){
  $$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===UI.tab));
  const s=$('#scr'),top=s.scrollTop;s.className='';
- ({program:vProgram,week:vWeek,ws:vWs,more:vMore})[UI.tab](s);
+ ({program:vProgram,week:vWeek,ws:vWs,calc:vCalc,more:vMore})[UI.tab](s);
  s.scrollTop=keep?top:0;tick()}
 
 /* ---------- čtecí bloky ---------- */
@@ -1406,6 +1418,37 @@ function vMore(s){const S=L.settings,w=curWeek();
  ${Object.keys(PROGRAMS).length>1?`<div class="sec-h">Profil</div><div class="card"><div class="chips">${Object.entries(PROGRAMS).map(([k,p])=>chip(esc(p.name),'profile',`data-v="${k}"`,k===profile)).join('')}</div></div>`:''}
  <div class="sec-h">O aplikaci</div><div class="card sm mut">${esc(P.name)} · ${esc(P.block.title)} · verze ${APP_VER}<br>Data jsou jen v tomto telefonu · úložiště ${PERSIST?'trvalé':'standardní'}<br>RPE tabulka a výpočty: rpecalculator.com</div><div style="height:20px"></div>`}
 
+/* ---------- RPE kalkulačka (jako rpecalculator.com: poslední série → e1RM, RPE tabulka, další série) ---------- */
+let CALC=Object.assign({w:null,r:5,p:8,inc:2.5,tr:5,mode:'rpe',br:5,bp:8,bpct:10,bbr:1,bbp:8},LS.get('pl_calc',{}));
+const calcSave=()=>LS.set('pl_calc',CALC);
+const C_REPS=[1,2,3,4,5,6,7,8,9,10,11,12],C_RPE=[10,9.5,9,8.5,8,7.5,7,6.5,6];
+const cRound=v=>Math.round(v/CALC.inc)*CALC.inc;
+const cChips=(k,vals,cls,lab)=>`<div class="cgrid ${cls||''}">${vals.map(v=>chip(lab?lab(v):fmt(v),'calc',`data-k="${k}" data-v="${v}"`,CALC[k]===v)).join('')}</div>`;
+function calcE1(){return CALC.w>0?e1rm(CALC.w,CALC.r,CALC.p):null}
+function calcOut(){const e1=calcE1(),kg=v=>e1?fmt(cRound(v))+' kg':'—';
+ let next,how;
+ if(CALC.mode==='rpe'){const q=pct(CALC.br,CALC.bp);next=e1&&q?e1*q/100:null;how=CALC.br+' × @'+fmt(CALC.bp)}
+ else{const q=pct(CALC.bbr,CALC.bbp);next=e1&&q?e1*q/100*(1-CALC.bpct/100):null;how=CALC.br+' × −'+fmt(CALC.bpct)+' % z '+CALC.bbr+' @'+fmt(CALC.bbp)}
+ const rows=C_RPE.map(p=>{const q=pct(CALC.tr,p);return`<tr class="${CALC.tr===CALC.r&&p===CALC.p?'on':''}"><td>@${fmt(p)}</td><td>${q!=null?fmt(q)+' %':'—'}</td><td>${q!=null&&e1?kg(e1*q/100):'—'}</td></tr>`}).join('');
+ return`<div class="card"><div class="cres"><div><div class="mut sm">Odhad 1RM</div><div class="big2">${e1?fmt(Math.round(e1*10)/10)+' kg':'—'}</div></div>${e1?`<div class="mut sm" style="text-align:right">z ${fmt(CALC.w)} × ${CALC.r} @${fmt(CALC.p)}</div>`:''}</div>${e1?'':'<div class="mut sm" style="margin-top:6px">Zadej váhu poslední série</div>'}</div>
+ <div class="sec-h">Další série</div><div class="card">
+ <div class="chips">${chip('Podle RPE','calc','data-k="mode" data-v="rpe"',CALC.mode==='rpe')}${chip('% backoff','calc','data-k="mode" data-v="pct"',CALC.mode==='pct')}</div>
+ <label>Opakování</label>${cChips('br',C_REPS)}
+ ${CALC.mode==='rpe'?`<label>RPE</label>${cChips('bp',C_RPE,'c5')}`:
+  `<label>Backoff</label>${cChips('bpct',[5,7.5,10,12.5,15,17.5,20,25],'c4',v=>'−'+fmt(v)+' %')}
+  <label>Z jaké série (opakování)</label>${cChips('bbr',C_REPS)}<label>@ RPE</label>${cChips('bbp',C_RPE,'c5')}`}
+ <div class="cres" style="margin-top:16px"><div><div class="mut sm">${esc(how)}</div><div class="big2">${next?fmt(cRound(next))+' kg':'—'}</div></div></div></div>
+ <div class="sec-h">RPE tabulka</div><div class="card"><label style="margin-top:0">Opakování</label>${cChips('tr',C_REPS)}
+ <table class="rtab"><tr><th>RPE</th><th>% 1RM</th><th>Váha</th></tr>${rows}</table></div><div style="height:20px"></div>`}
+function calcRefresh(){const o=$('#calc-out');if(o)o.innerHTML=calcOut()}
+function vCalc(s){
+ FREE.calc_w={kind:'w',unit:'kg',label:'Váha poslední série',plan:null,single:true,get:()=>CALC.w,set:v=>{CALC.w=v;calcSave();calcRefresh()}};
+ s.innerHTML=`<div class="hd"><div class="lb">Kalkulačka</div><h1>RPE</h1></div>
+ <div class="sec-h">Poslední série</div><div class="card"><label style="margin-top:0">Váha (kg)</label><button class="cell" data-free="calc_w" style="height:56px;font-size:24px">${CALC.w!=null?fmt(CALC.w):''}</button>
+ <label>Opakování</label>${cChips('r',C_REPS)}<label>RPE</label>${cChips('p',C_RPE,'c5')}
+ <label>Zaokrouhlit na</label>${cChips('inc',[0.5,1,1.25,2.5,5],'c5',v=>fmt(v)+' kg')}</div>
+ <div id="calc-out">${calcOut()}</div>`}
+
 /* ---------- události ---------- */
 document.addEventListener('click',ev=>{const t=ev.target;
  const n=t.closest('[data-np]');if(n){npKey(n);return}
@@ -1418,6 +1461,7 @@ document.addEventListener('click',ev=>{const t=ev.target;
   case'pager':openPager(dayById(A.d));break;
   case'closeov':closeOv();render(true);break;
   case'start':start(A.d);break;
+  case'calc':CALC[A.k]=A.k==='mode'?A.v:+A.v;calcSave();render(true);break;
   case'gows':closeOv();UI.ws=A.d;UI.tab='ws';render();break;
   case'edit':openEdit(A.d);break;
   case'doneedit':UI.ws=null;UI.tab='week';UI.mode='list';render();toast('Uloženo');break;
@@ -1477,7 +1521,7 @@ function tick(){const tw=$('#tabws');if(!L)return;
 function chooser(){$('#tabs').hidden=true;
  $('#scr').innerHTML=`<div class="hd"><div class="lb">Vítej</div><h1>Kdo trénuje?</h1></div>${Object.entries(PROGRAMS).map(([k,p],i)=>`<button class="dcard ${COL[i%3]}" data-act="pickprof" data-v="${k}"><div class="top"><span class="pill">${esc(p.block.title)}</span><span class="arr">${ic('arrow',18)}</span></div><h2>${esc(p.name)}</h2><div class="sub">Zápisy budou jen v tomto telefonu · změníš ve Více → Profil</div></button>`).join('')}`}
 function init(){if(!profile){chooser();return}$('#tabs').hidden=false;UI.ws=null;UI.pw=null;UI.mode='list';build();loadLog();seed();
- const h=location.hash.slice(1);UI.tab=['program','week','ws','more'].includes(h)?h:(L.active?'ws':'week');
+ const h=location.hash.slice(1);UI.tab=['program','week','ws','calc','more'].includes(h)?h:(L.active?'ws':'week');
  if(L.active)wake(true);render();showRest()}
 init();
 setInterval(tick,500);
