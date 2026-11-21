@@ -1477,8 +1477,8 @@ function chWeeks(){const t=today();let ws=P.weeks.filter(w=>w.from<=t&&w.days.le
 const wLab=w=>'T'+((w.id.match(/\d+/)||[''])[0]);
 // plánované RPE série (rozsah 7–7,5 → 7,25; „7 / 6“ → top / back-off; RIR → 10 − RIR; selhání → 10)
 function planRPE(e,i){const s=tok(e.p,i);if(!s)return null;const m=!/RIR/i.test(s)&&s.match(/(\d+(?:[.,]\d+)?)\s*[–-]\s*(\d+(?:[.,]\d+)?)/);return m?(num(m[1])+num(m[2]))/2:rpeInfo(s).n}
-// tvrdá série = RPE ≥ 7; když RPE chybí, rozhoduje plán (zapsaná opakování + plán RPE ≥ 7 / selhání)
-function isHard(e,i,s){if(s.p!=null)return s.p>=7;if(!(s.r>0))return false;const pl=planRPE(e,i);return pl!=null&&pl>=7}
+// tvrdá série = RPE ≥ 6 (max. 4 opakování v rezervě, běžná definice); když RPE chybí, rozhoduje plán
+function isHard(e,i,s){if(s.p!=null)return s.p>=6;if(!(s.r>0))return false;const pl=planRPE(e,i);return pl!=null&&pl>=6}
 // soutěžní varianta = bez pinu, pauzy, tempa apod.
 const isComp=e=>!/pin|pauz|pause|tempo|long|deficit|block|box|spoto|larsen|úzk|close|negativ|half|horní/i.test(e.v);
 // svalové partie (frakční počítání: přímo 1, nepřímo 0,5)
@@ -1522,7 +1522,7 @@ function chVol(){const ws=chWeeks(),st=ws.map(weekStats),m=CHS.vol;
  if(!mx)return`<div class="card">${sw}<div class="mut sm" style="margin-top:14px">Zatím žádné zapsané série.</div></div>`;
  const val=v=>m==='ton'?f1(v/1000)+' t':Math.round(v)+(m==='hard'?' sérií':' opak.');
  const note={ton:'Tonáž = váha × opakování ze zapsaných sérií dřepu, benche a tahu (vč. variant). Rozcvička se nezapisuje, takže jde o pracovní série.',
-  hard:'Tvrdá série = série s RPE 7 a víc (max. 3 opakování v rezervě), všechny cviky kromě běhu a rolleru. Nejpoužívanější míra objemu ve výzkumu.',
+  hard:'Tvrdá série = série s RPE 6 a víc (max. 4 opakování v rezervě), všechny cviky kromě běhu a rolleru. Nejpoužívanější míra objemu ve výzkumu.',
   nl:'Počet opakování v dřepu, benchi a tahu (vč. variant) – „NL“ podle Prilepina.'}[m];
  return`<div class="card">${sw}${m==='hard'?'':lgd(ser.map(s=>({...s,k:'br'})))}${chart('vol',{labels:ws.map(wLab),stacks:ser,lo:0,hi:niceMax(mx*1.05),aria:'Volume po týdnech',
   fy:v=>m==='ton'?(v?f1(v/1000)+'t':'0'):String(Math.round(v)),
