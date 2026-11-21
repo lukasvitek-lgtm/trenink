@@ -470,7 +470,7 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.30';
+const APP_VER='1.31';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -1279,7 +1279,8 @@ function prCheck(e,j){if(isCardio(e))return;
  // jen dnešní / právě běžící trénink – úprava starých zápisů fanfáru nespouští
  if(e.day.date!==today()&&!(L.active&&L.active.dayId===e.day.id))return;
  const s=S(e,j),k=e.id+'#'+j;if(s.w==null||!(s.r>0))return;
- const seen=PRK[k];if(seen&&s.w<=seen.w&&s.r<=seen.r&&(seen.p==null||s.p==null||s.p>=seen.p))return;
+ // stejná série (váha + opakování) už oslavená → znovu jen při nižším RPE; jiné hodnoty se posuzují znovu
+ const seen=PRK[k];if(seen&&s.w===seen.w&&s.r===seen.r&&(seen.p==null||s.p==null||s.p>=seen.p))return;
  const id=exIdent(e),d0=e.day.date,prev=[];let hist=false;
  DAYS.forEach(d=>{if(d.date>d0)return;d.ex.forEach(x=>{if(isCardio(x)||(L.ex[x.id]&&L.ex[x.id].skip)||exIdent(x)!==id)return;
   for(let i=0;i<setsN(x);i++){if(x===e&&i===j)continue;const t=S(x,i);if(t.w!=null&&t.r>0){prev.push(t);if(d.date<d0)hist=true}}})});
