@@ -408,6 +408,21 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 .ex.fin textarea.nt{background:rgba(241,234,219,.1);color:#f1eadb}
 .ex.fin textarea.nt::placeholder{color:rgba(241,234,219,.6)}
 .ex.fin .exn::after{color:var(--blue);font-weight:800}
+/* PR fanfára */
+#pr{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:rgba(17,16,15,.35);animation:prfade .25s ease-out;overflow:hidden}
+#pr.out{opacity:0;transition:opacity .4s}
+#pr .cf i{position:absolute;top:-20px;height:14px;border-radius:2px;animation:prfall linear forwards}
+#pr .prc{position:relative;background:var(--card);color:var(--navy);border-radius:28px;padding:26px 30px 24px;text-align:center;min-width:240px;max-width:86vw;box-shadow:0 10px 40px rgba(0,0,0,.3);animation:prpop .5s cubic-bezier(.2,1.6,.4,1)}
+#pr .prt{font-size:54px;line-height:1;display:inline-block;animation:prblow .45s ease-in-out 3 alternate}
+#pr .prh{font-size:52px;font-weight:800;letter-spacing:-1.5px;line-height:1;margin-top:6px;color:var(--blue)}
+#pr .prn{font-size:18px;font-weight:700;margin-top:12px}
+#pr .prs{font-size:28px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+#pr .prw{font-size:14px;color:var(--mut);margin-top:6px;font-weight:600}
+@keyframes prfade{from{opacity:0}}
+@keyframes prpop{from{transform:scale(.4);opacity:0}}
+@keyframes prblow{from{transform:rotate(-12deg) scale(1)}to{transform:rotate(8deg) scale(1.18)}}
+@keyframes prfall{to{transform:translateY(110vh) rotate(var(--r))}}
+@media (prefers-reduced-motion:reduce){#pr .cf{display:none}#pr .prc,#pr .prt{animation:none}}
 /* Více vpravo nahoře */
 #topmore{position:absolute;top:calc(var(--st) + 16px);right:14px;z-index:25;width:44px;height:44px;border-radius:50%;background:var(--navy);color:var(--bg);display:grid;place-items:center;box-shadow:0 2px 6px rgba(17,16,15,.25)}
 #topmore[hidden]{display:none!important}
@@ -455,7 +470,7 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.26';
+const APP_VER='1.27';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -1233,8 +1248,8 @@ function meta(c){
   plan:f==='w'?num(planW(e,j)):f==='r'?num(planR(e,j)):rpeInfo(e.p).n,
   get:()=>S(e,j)[f],
   set:v=>{const k=e.id+'#'+j,s=L.sets[k]||{};s[f]=v;if(has(s))L.sets[k]=s;else delete L.sets[k];save();refreshEx(e)}}}
-function npOpen(c){if(NP.cell)NP.cell.classList.remove('on');NP.cell=c;NP.fresh=true;NP.buf='';c.classList.add('on');document.body.classList.add('npo');drawNP();reveal(c)}
-function npClose(){if(NP.cell)NP.cell.classList.remove('on');NP.cell=null;$('#np').hidden=true;document.body.classList.remove('npo')}
+function npOpen(c){if(NP.cell){NP.cell.classList.remove('on');prCell(NP.cell)}NP.cell=c;NP.fresh=true;NP.buf='';c.classList.add('on');document.body.classList.add('npo');drawNP();reveal(c)}
+function npClose(){if(NP.cell){NP.cell.classList.remove('on');prCell(NP.cell)}NP.cell=null;$('#np').hidden=true;document.body.classList.remove('npo')}
 function reveal(c){const sc=c.closest('.hsnap>.page,.wsb,#scr,.sh');if(!sc)return;requestAnimationFrame(()=>{const r=c.getBoundingClientRect(),sr=sc.getBoundingClientRect(),npTop=innerHeight-$('#np').offsetHeight;
  if(r.top<sr.top+8||r.bottom>npTop-12)sc.scrollBy({top:r.top-(sr.top+Math.min(160,(npTop-sr.top)*.4)),behavior:'smooth'})})}
 function drawNP(){const m=meta(NP.cell),cur=m.get(),np=$('#np');
@@ -1249,7 +1264,40 @@ function drawNP(){const m=meta(NP.cell),cur=m.get(),np=$('#np');
  <div class="np-d">${show?esc(show):'<span class="mut">—</span>'}<small>${esc(m.unit||'')}</small></div>${keys}`;np.hidden=false}
 function npCommit(v){const m=meta(NP.cell);m.set(v);const c=NP.cell;
  if(c.isConnected)c.textContent=v!=null?(c.dataset.f==='w'&&v===0?'BW':fmt(v)):'';
- if(m.after)m.after()}
+ if(m.after)m.after();prCell(c)}
+
+/* ---------- PR fanfára ----------
+   Série je PR, když ji žádná jiná série stejného cviku (stejná varianta) nepřekonává:
+   překonává ji série s váhou ≥, opakováními ≥ a RPE ≤ (chybějící RPE se nebere jako výhoda).
+   Tj. vyšší váha / víc opakování se stejnou či vyšší váhou / stejná váha a opakování s nižším RPE.
+   Cvik musí mít historii z dřívějších dnů (první zápis není PR). */
+const PRK={};
+function exIdent(e){const x=L.ex[e.id];if(x&&x.sub)return'sub:'+x.sub.toLowerCase();
+ const t=isSBD(e)?((e.v.match(/sumo|conventional|long pause|pin|pauz|pause|tempo|deficit|box|spoto|larsen|úzk|close/i)||[''])[0].toLowerCase().replace(/^pauz$/,'pause')):'';return e.n.toLowerCase()+'|'+t}
+function prCell(c){if(!c||c.dataset.free||!c.dataset.k)return;const[id,i]=c.dataset.k.split('#'),e=EX[id];if(e)prCheck(e,+i)}
+function prCheck(e,j){if(isCardio(e))return;const s=S(e,j),k=e.id+'#'+j;if(s.w==null||!(s.r>0))return;
+ const seen=PRK[k];if(seen&&s.w<=seen.w&&s.r<=seen.r&&(seen.p==null||s.p==null||s.p>=seen.p))return;
+ const id=exIdent(e),d0=e.day.date,prev=[];let hist=false;
+ DAYS.forEach(d=>{if(d.date>d0)return;d.ex.forEach(x=>{if(isCardio(x)||(L.ex[x.id]&&L.ex[x.id].skip)||exIdent(x)!==id)return;
+  for(let i=0;i<setsN(x);i++){if(x===e&&i===j)continue;const t=S(x,i);if(t.w!=null&&t.r>0){prev.push(t);if(d.date<d0)hist=true}}})});
+ if(!hist)return;
+ if(prev.some(t=>t.w>=s.w&&t.r>=s.r&&(t.p==null||s.p==null||t.p<=s.p)))return;
+ PRK[k]={w:s.w,r:s.r,p:s.p};
+ const maxW=Math.max(...prev.map(t=>t.w)),what=s.w>maxW?'Nejvyšší váha':!prev.some(t=>t.w>=s.w&&t.r>=s.r)?'Víc opakování s touhle váhou':'Nižší RPE se stejnou váhou';
+ const v=e1rm(s.w,s.r,s.p),pb=Math.max(0,...prev.map(t=>e1rm(t.w,t.r,t.p)||0));
+ fanfare(dispTxt(e),setStr(e,s),what,v&&v>pb?'nové e1RM '+fmt(rInc(v))+' kg':'')}
+function fanfare(name,set,what,extra){
+ try{navigator.vibrate&&navigator.vibrate([80,60,80,60,80,60,400])}catch(_){}
+ try{unlockAudio();if(AC){const t=AC.currentTime+.05,lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2400;lp.connect(AC.destination);
+  // ta-ta-ta-táá (G4 G4 G4 C5, pak E5 G5 C6)
+  [[392,0,.13],[392,.16,.13],[392,.32,.13],[523.3,.48,.42],[659.3,.95,.16],[784,1.13,.16],[1046.5,1.31,.7]].forEach(([f,o,d])=>{
+   [1,1.005].forEach(det=>{const os=AC.createOscillator(),g=AC.createGain();os.type='sawtooth';os.frequency.value=f*det;os.connect(g);g.connect(lp);
+    g.gain.setValueAtTime(0,t+o);g.gain.linearRampToValueAtTime(.09,t+o+.02);g.gain.setValueAtTime(.09,t+o+d*.75);g.gain.linearRampToValueAtTime(0,t+o+d);os.start(t+o);os.stop(t+o+d+.02)})})}}catch(_){}
+ let el=$('#pr');if(el)el.remove();el=document.createElement('div');el.id='pr';
+ const C=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#d42f20'];let cf='';
+ for(let i=0;i<46;i++)cf+=`<i style="left:${Math.random()*100}%;background:${C[i%C.length]};animation-delay:${(Math.random()*.5).toFixed(2)}s;animation-duration:${(1.8+Math.random()*1.4).toFixed(2)}s;--r:${Math.round(Math.random()*720-360)}deg;width:${6+Math.round(Math.random()*6)}px"></i>`;
+ el.innerHTML=`<div class="cf">${cf}</div><div class="prc"><div class="prt">🎺</div><div class="prh">PR!</div><div class="prn">${esc(name)}</div><div class="prs">${esc(set)}</div><div class="prw">${esc(what)}${extra?' · '+esc(extra):''}</div></div>`;
+ el.addEventListener('click',()=>el.remove());document.body.appendChild(el);setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),400)},3600)}
 function npNext(){const c=NP.cell,m=meta(c);if(m.single||!c.isConnected){npClose();return}
  const sc=c.closest('.ex,[data-scope]')||document,list=$$('.cell:not(.off)',sc),n=list[list.indexOf(c)+1];
  if(n)npOpen(n);else npClose()}
