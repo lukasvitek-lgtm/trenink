@@ -470,7 +470,7 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.29';
+const APP_VER='1.30';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -1349,8 +1349,18 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 function sheet(html){const s=$('#sheet');s.innerHTML=`<div class="sh" data-scope>${html}</div>`;s.hidden=false}
 function closeSheet(){npClose();$('#sheet').hidden=true;$('#sheet').innerHTML='';SH=null}
 let SH=null;
+// rekordy cviku = série, které nic nepřekonává (stejná logika jako PR fanfára)
+function prFront(e){const id=exIdent(e),all=[];
+ DAYS.forEach(d=>{if(d.date>today())return;d.ex.forEach(x=>{if(isCardio(x)||(L.ex[x.id]&&L.ex[x.id].skip)||exIdent(x)!==id)return;
+  for(let i=0;i<setsN(x);i++){const s=S(x,i);if(s.w!=null&&s.r>0)all.push({s,x,d,i})}})});
+ const beats=(a,b)=>a.w>=b.w&&a.r>=b.r&&(a.p==null||b.p==null||a.p<=b.p)&&(a.w>b.w||a.r>b.r||(a.p!=null&&b.p!=null&&a.p<b.p));
+ const f=all.filter(o=>!all.some(q=>q!==o&&beats(q.s,o.s))),seen=new Set();
+ return f.filter(o=>{const k=o.s.w+'|'+o.s.r+'|'+o.s.p;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>b.s.w-a.s.w||b.s.r-a.s.r).slice(0,6)}
+function prList(e){if(isCardio(e))return'';const f=prFront(e);if(!f.length)return'';
+ return`<div class="sec-h" style="margin:16px 0 6px">Rekordy v historii</div>${f.map(o=>`<button class="li" data-act="goday" data-d="${o.d.id}"><span><b>${esc(setStr(o.x,o.s))}</b>${o.s.p==null?' <span class="mut sm">(bez RPE)</span>':''}<br><span class="mut sm">${dlab(o.d.date)} · ${esc(o.d.week.title)} · ${o.i+1}. série → otevřít</span></span></button>`).join('')}
+ <div class="mut sm" style="margin:4px 0 8px">PR = série, kterou žádná z těchto nepřekonává. Špatný zápis oprav v daném dni.</div>`}
 function exMenu(id){const e=EX[id],x=L.ex[id]||{};SH='menu';
- sheet(`<div class="sht">${dispName(e)}</div><div class="mut sm">${esc(vTxt(e))}</div>
+ sheet(`<div class="sht">${dispName(e)}</div><div class="mut sm">${esc(vTxt(e))}</div>${prList(e)}
  <button class="li" data-act="rest" data-e="${id}">${ic('timer',20)} Spustit pauzu (${mmss(restOf(e))})</button>
  ${isBar(e)?`<button class="li" data-act="plates" data-e="${id}">${ic('plate',20)} Kotouče</button>`:''}
  <button class="li" data-act="addset" data-e="${id}">${ic('plus',20)} Přidat sérii</button>
@@ -1717,6 +1727,7 @@ document.addEventListener('click',ev=>{const t=ev.target;
    UI.mode=A.m;render();
    if(A.m==='list'){const x=$$('#wsb .ex')[UI.fi];if(x)$('#wsb').scrollTop=x.offsetTop-10}break;
   case'exmenu':exMenu(A.e);break;
+  case'goday':closeSheet();openEdit(A.d);break;
   case'rest':startRest(restOf(e));if(SH==='menu')closeSheet();break;
   case'restadd':if(REST){REST.end=Math.max(Date.now()+5000,REST.end+A.v*1000);REST.dur=Math.max(30,REST.dur+(+A.v));REST.beeped=false;LS.set('pl_rest',REST);tickRest()}break;
   case'restx':REST=null;LS.set('pl_rest',null);showRest();break;
