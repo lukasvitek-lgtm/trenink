@@ -414,11 +414,6 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 .cgrid .chip{justify-content:center;padding:10px 0;min-width:0;font-size:14px;font-variant-numeric:tabular-nums}
 .cres{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .cres .big2{margin:4px 0 0;font-variant-numeric:tabular-nums}
-.rtab{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:16px;margin-top:12px}
-.rtab th{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:600;text-align:right;padding:6px 8px}
-.rtab td{text-align:right;padding:10px 8px;border-top:1px solid var(--line)}
-.rtab th:first-child,.rtab td:first-child{text-align:left}
-.rtab tr.on td{font-weight:800;background:var(--card2)}
 </style>
 </head>
 <body>
@@ -1420,17 +1415,16 @@ function vMore(s){const S=L.settings,w=curWeek();
  <div class="sec-h">O aplikaci</div><div class="card sm mut">${esc(P.name)} · ${esc(P.block.title)} · verze ${APP_VER}<br>Data jsou jen v tomto telefonu · úložiště ${PERSIST?'trvalé':'standardní'}<br>RPE tabulka a výpočty: rpecalculator.com</div><div style="height:20px"></div>`}
 
 /* ---------- RPE kalkulačka (jako rpecalculator.com: poslední série → e1RM, RPE tabulka, další série) ---------- */
-let CALC=Object.assign({w:null,r:5,p:8,inc:2.5,tr:5,mode:'rpe',br:5,bp:8,bpct:10,bbr:1,bbp:8},LS.get('pl_calc',{}));
+let CALC=Object.assign({w:null,r:5,p:8,inc:2.5,mode:'rpe',br:5,bp:8,bpct:10,bbr:1,bbp:8},LS.get('pl_calc',{}));
 const calcSave=()=>LS.set('pl_calc',CALC);
 const C_REPS=[1,2,3,4,5,6,7,8,9,10,11,12],C_RPE=[10,9.5,9,8.5,8,7.5,7,6.5,6];
 const cRound=v=>Math.round(v/CALC.inc)*CALC.inc;
 const cChips=(k,vals,cls,lab)=>`<div class="cgrid ${cls||''}">${vals.map(v=>chip(lab?lab(v):fmt(v),'calc',`data-k="${k}" data-v="${v}"`,CALC[k]===v)).join('')}</div>`;
 function calcE1(){return CALC.w>0?e1rm(CALC.w,CALC.r,CALC.p):null}
-function calcOut(){const e1=calcE1(),kg=v=>e1?fmt(cRound(v))+' kg':'—';
+function calcOut(){const e1=calcE1();
  let next,how;
  if(CALC.mode==='rpe'){const q=pct(CALC.br,CALC.bp);next=e1&&q?e1*q/100:null;how=CALC.br+' × @'+fmt(CALC.bp)}
  else{const q=pct(CALC.bbr,CALC.bbp);next=e1&&q?e1*q/100*(1-CALC.bpct/100):null;how=CALC.br+' × −'+fmt(CALC.bpct)+' % z '+CALC.bbr+' @'+fmt(CALC.bbp)}
- const rows=C_RPE.map(p=>{const q=pct(CALC.tr,p);return`<tr class="${CALC.tr===CALC.r&&p===CALC.p?'on':''}"><td>@${fmt(p)}</td><td>${q!=null?fmt(q)+' %':'—'}</td><td>${q!=null&&e1?kg(e1*q/100):'—'}</td></tr>`}).join('');
  return`<div class="card"><div class="cres"><div><div class="mut sm">Odhad 1RM</div><div class="big2">${e1?fmt(Math.round(e1*10)/10)+' kg':'—'}</div></div>${e1?`<div class="mut sm" style="text-align:right">z ${fmt(CALC.w)} × ${CALC.r} @${fmt(CALC.p)}</div>`:''}</div>${e1?'':'<div class="mut sm" style="margin-top:6px">Zadej váhu poslední série</div>'}</div>
  <div class="sec-h">Další série</div><div class="card">
  <div class="chips">${chip('Podle RPE','calc','data-k="mode" data-v="rpe"',CALC.mode==='rpe')}${chip('% backoff','calc','data-k="mode" data-v="pct"',CALC.mode==='pct')}</div>
@@ -1438,9 +1432,7 @@ function calcOut(){const e1=calcE1(),kg=v=>e1?fmt(cRound(v))+' kg':'—';
  ${CALC.mode==='rpe'?`<label>RPE</label>${cChips('bp',C_RPE,'c5')}`:
   `<label>Backoff</label>${cChips('bpct',[5,7.5,10,12.5,15,17.5,20,25],'c4',v=>'−'+fmt(v)+' %')}
   <label>Z jaké série (opakování)</label>${cChips('bbr',C_REPS)}<label>@ RPE</label>${cChips('bbp',C_RPE,'c5')}`}
- <div class="cres" style="margin-top:16px"><div><div class="mut sm">${esc(how)}</div><div class="big2">${next?fmt(cRound(next))+' kg':'—'}</div></div></div></div>
- <div class="sec-h">RPE tabulka</div><div class="card"><label style="margin-top:0">Opakování</label>${cChips('tr',C_REPS)}
- <table class="rtab"><tr><th>RPE</th><th>% 1RM</th><th>Váha</th></tr>${rows}</table></div><div style="height:20px"></div>`}
+ <div class="cres" style="margin-top:16px"><div><div class="mut sm">${esc(how)}</div><div class="big2">${next?fmt(cRound(next))+' kg':'—'}</div></div></div></div><div style="height:20px"></div>`}
 function calcRefresh(){const o=$('#calc-out');if(o)o.innerHTML=calcOut()}
 function vCalc(s){
  FREE.calc_w={kind:'w',unit:'kg',label:'Váha poslední série',plan:null,single:true,get:()=>CALC.w,set:v=>{CALC.w=v;calcSave();calcRefresh()}};
