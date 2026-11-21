@@ -470,7 +470,7 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.27';
+const APP_VER='1.28';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -1286,13 +1286,15 @@ function prCheck(e,j){if(isCardio(e))return;const s=S(e,j),k=e.id+'#'+j;if(s.w==
  const maxW=Math.max(...prev.map(t=>t.w)),what=s.w>maxW?'Nejvyšší váha':!prev.some(t=>t.w>=s.w&&t.r>=s.r)?'Víc opakování s touhle váhou':'Nižší RPE se stejnou váhou';
  const v=e1rm(s.w,s.r,s.p),pb=Math.max(0,...prev.map(t=>e1rm(t.w,t.r,t.p)||0));
  fanfare(dispTxt(e),setStr(e,s),what,v&&v>pb?'nové e1RM '+fmt(rInc(v))+' kg':'')}
+// vibrace na maximum: Android = Vibration API (dlouhý vzor); iPhone ho nemá → haptika přes systémový přepínač
+// (<input type="checkbox" switch>, Safari 18+): každé přepnutí = jedno „ťuknutí“ Taptic Engine.
+function prBuzz(){
+ try{if(navigator.vibrate&&navigator.vibrate([400,100,400,100,400,100,400,100,1000]))return}catch(_){}
+ try{let l=$('#prhap');if(!l){l=document.createElement('label');l.id='prhap';l.style.cssText='position:fixed;left:-99px;top:0;opacity:0;pointer-events:none';
+   l.innerHTML='<input type="checkbox" switch>';l.addEventListener('click',ev=>ev.stopPropagation());document.body.appendChild(l)}
+  for(let i=0;i<14;i++)setTimeout(()=>l.click(),i*90)}catch(_){}}
 function fanfare(name,set,what,extra){
- try{navigator.vibrate&&navigator.vibrate([80,60,80,60,80,60,400])}catch(_){}
- try{unlockAudio();if(AC){const t=AC.currentTime+.05,lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2400;lp.connect(AC.destination);
-  // ta-ta-ta-táá (G4 G4 G4 C5, pak E5 G5 C6)
-  [[392,0,.13],[392,.16,.13],[392,.32,.13],[523.3,.48,.42],[659.3,.95,.16],[784,1.13,.16],[1046.5,1.31,.7]].forEach(([f,o,d])=>{
-   [1,1.005].forEach(det=>{const os=AC.createOscillator(),g=AC.createGain();os.type='sawtooth';os.frequency.value=f*det;os.connect(g);g.connect(lp);
-    g.gain.setValueAtTime(0,t+o);g.gain.linearRampToValueAtTime(.09,t+o+.02);g.gain.setValueAtTime(.09,t+o+d*.75);g.gain.linearRampToValueAtTime(0,t+o+d);os.start(t+o);os.stop(t+o+d+.02)})})}}catch(_){}
+ prBuzz();
  let el=$('#pr');if(el)el.remove();el=document.createElement('div');el.id='pr';
  const C=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#d42f20'];let cf='';
  for(let i=0;i<46;i++)cf+=`<i style="left:${Math.random()*100}%;background:${C[i%C.length]};animation-delay:${(Math.random()*.5).toFixed(2)}s;animation-duration:${(1.8+Math.random()*1.4).toFixed(2)}s;--r:${Math.round(Math.random()*720-360)}deg;width:${6+Math.round(Math.random()*6)}px"></i>`;
