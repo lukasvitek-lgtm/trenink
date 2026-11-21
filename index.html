@@ -470,7 +470,7 @@ details.dacc[open]>summary::after{background:linear-gradient(var(--bg),var(--bg)
 <script>
 'use strict';
 window.onerror=(m,s,l,c)=>{const d=document.createElement('div');d.id='err';d.textContent='Chyba: '+m+' ('+l+':'+c+')';document.body.appendChild(d)};
-const APP_VER='1.28';
+const APP_VER='1.29';
 
 /* ---------- RPE tabulka (rpecalculator.com = list RPE v Excelu) ----------
    % z 1RM závisí jen na (opakování + 10 − RPE): PCT[(reps + 10 − rpe − 1) × 2] */
@@ -1275,7 +1275,10 @@ const PRK={};
 function exIdent(e){const x=L.ex[e.id];if(x&&x.sub)return'sub:'+x.sub.toLowerCase();
  const t=isSBD(e)?((e.v.match(/sumo|conventional|long pause|pin|pauz|pause|tempo|deficit|box|spoto|larsen|úzk|close/i)||[''])[0].toLowerCase().replace(/^pauz$/,'pause')):'';return e.n.toLowerCase()+'|'+t}
 function prCell(c){if(!c||c.dataset.free||!c.dataset.k)return;const[id,i]=c.dataset.k.split('#'),e=EX[id];if(e)prCheck(e,+i)}
-function prCheck(e,j){if(isCardio(e))return;const s=S(e,j),k=e.id+'#'+j;if(s.w==null||!(s.r>0))return;
+function prCheck(e,j){if(isCardio(e))return;
+ // jen dnešní / právě běžící trénink – úprava starých zápisů fanfáru nespouští
+ if(e.day.date!==today()&&!(L.active&&L.active.dayId===e.day.id))return;
+ const s=S(e,j),k=e.id+'#'+j;if(s.w==null||!(s.r>0))return;
  const seen=PRK[k];if(seen&&s.w<=seen.w&&s.r<=seen.r&&(seen.p==null||s.p==null||s.p>=seen.p))return;
  const id=exIdent(e),d0=e.day.date,prev=[];let hist=false;
  DAYS.forEach(d=>{if(d.date>d0)return;d.ex.forEach(x=>{if(isCardio(x)||(L.ex[x.id]&&L.ex[x.id].skip)||exIdent(x)!==id)return;
